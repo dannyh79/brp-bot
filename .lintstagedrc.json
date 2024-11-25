@@ -1,3 +1,4 @@
 {
-  "*.ts": "tsc --noEmit"
+  "*.ts": "tsc --noEmit",
+  "*.{cjs,json,md,mjs,ts}": "prettier -w"
 }
