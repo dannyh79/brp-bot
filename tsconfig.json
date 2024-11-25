@@ -39,6 +39,6 @@
     /* Skip type checking all .d.ts files. */
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "test"],
+  "exclude": ["node_modules/", "test"],
   "include": ["worker-configuration.d.ts", "src/**/*.ts"]
 }

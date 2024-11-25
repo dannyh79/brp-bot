@@ -4,11 +4,12 @@
 
 - asdf
 
-
 ## Getting Started
 
 ```sh
 asdf install
 
 pnpm dev
+
+# OpenAPI available at http://localhost:8787/doc
 ```
