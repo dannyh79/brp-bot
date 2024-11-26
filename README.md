@@ -13,4 +13,11 @@ pnpm dev
 
 # OpenAPI available at http://localhost:8787/doc
 # SwaggerUI available at http://localhost:8787/ui
+
+# To test scheduled tasks
+# See: https://developers.cloudflare.com/workers/examples/cron-trigger/#test-cron-triggers-using-wrangler
+pnpm dev --test-scheduled
+
+# Use cron query value by desired schedule
+curl "http://localhost:8787/__scheduled?cron=0+0+*+*+*"
 ```
