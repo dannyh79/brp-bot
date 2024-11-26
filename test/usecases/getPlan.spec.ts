@@ -1,16 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import getPlan from '../../src/usecases/getPlan';
+import { Repository } from '../../src/repositories/types';
+import { Plan } from '../../src/entities/plan';
+
+const stubPlan = {
+  date: '2024-11-26',
+  scope: '創世紀 23',
+  content: ['1. 從亞伯拉罕與赫人和以弗倫的對話中你可以看見他是一位怎麼樣的人呢?為什麼?'],
+};
+
+class StubRepository implements Repository<Plan> {
+  findById(date: string): Promise<Plan | null> {
+    return Promise.resolve(date === stubPlan.date ? stubPlan : null);
+  }
+}
 
 describe('getPlan()', () => {
-  it('returns plan object', () => {
-    expect(getPlan({ date: '2024-11-26' })).toMatchObject({
-      date: '2024-11-26',
-      scope: '創世紀 23',
-      content: ['1. 從亞伯拉罕與赫人和以弗倫的對話中你可以看見他是一位怎麼樣的人呢?為什麼?'],
-    });
+  const repo = new StubRepository();
+
+  it('returns plan object', async () => {
+    expect(await getPlan(repo)({ date: '2024-11-26' })).toMatchObject(stubPlan);
   });
 
-  it('returns null', () => {
-    expect(getPlan({ date: '2024-11-32' })).toBeNull();
+  it('returns null', async () => {
+    expect(await getPlan(repo)({ date: '2024-11-32' })).toBeNull();
   });
 });

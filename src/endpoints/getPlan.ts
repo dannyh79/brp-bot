@@ -2,6 +2,7 @@ import { OpenAPIRoute, Str } from 'chanfana';
 import { Context } from 'hono';
 import { z } from 'zod';
 import getPlan, { GetPlanOutputSchema } from '../usecases/getPlan';
+import InMemoryPlanRepository from '../repositories/inMemoryPlan';
 
 export const GetPlanQuery = z.object({
   date: Str({ example: '2024-11-26' }),
@@ -32,9 +33,10 @@ export class GetPlan extends OpenAPIRoute {
   };
 
   async handle(c: AppContext) {
+    const repo = new InMemoryPlanRepository();
     const { query } = await this.getValidatedData<typeof this.schema>();
 
-    const data = getPlan(query);
+    const data = await getPlan(repo)(query);
     if (!data) {
       c.notFound();
       return;
