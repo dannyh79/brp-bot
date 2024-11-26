@@ -1,8 +1,8 @@
 import { Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
-import InMemoryPlanRepository from '../repositories/inMemoryPlan';
-import getPlan from '../usecases/getPlan';
-import { AppContext, Vars } from '../types';
+import InMemoryPlanRepository from '../../src/repositories/inMemoryPlan';
+import getPlan from '../../src/usecases/getPlan';
+import { AppContext, Vars } from '../../src/types';
 
 export const withUsecases = createMiddleware<{ Variables: Vars }>(
   async (c: AppContext, next: Next) => {
