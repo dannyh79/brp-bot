@@ -12,8 +12,8 @@ type AppContext = Context;
 
 export class GetPlan extends OpenAPIRoute {
   schema = {
-    tags: ['Hello World'],
-    summary: `Returns message "Hello World!`,
+    tags: ['Plans'],
+    summary: `Returns a plan`,
     request: {
       query: GetPlanQuery,
     },
