@@ -1,7 +1,7 @@
 import { OpenAPIRoute, Str } from 'chanfana';
 import { Context } from 'hono';
 import { z } from 'zod';
-import getPlan, { Plan } from '../usecases/getPlan';
+import getPlan, { GetPlanOutputSchema } from '../usecases/getPlan';
 
 export const GetPlanQuery = z.object({
   date: Str({ example: '2024-11-26' }),
@@ -21,7 +21,7 @@ export class GetPlan extends OpenAPIRoute {
         description: 'Returns reading plan for the date',
         content: {
           'application/json': {
-            schema: Plan,
+            schema: GetPlanOutputSchema,
           },
         },
       },

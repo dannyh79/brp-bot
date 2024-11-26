@@ -1,7 +1,12 @@
 import { Str } from 'chanfana';
 import { z } from 'zod';
+import { Plan } from '../entities/plan';
 
-export const Plan = z.object({
+export type GetPlanArgs = {
+  date: string;
+};
+
+export const GetPlanOutputSchema = z.object({
   date: Str({ example: '2024-11-26' }),
   scope: Str({ example: '創世紀 23' }),
   content: z.array(
@@ -9,12 +14,8 @@ export const Plan = z.object({
   ),
 });
 
-export type GetPlanArgs = {
-  date: string;
-};
-
-export const getPlan = ({ date }: GetPlanArgs): z.infer<typeof Plan> | null => {
-  const stubData: Record<string, z.infer<typeof Plan>> = {
+export const getPlan = ({ date }: GetPlanArgs): Plan | null => {
+  const stubData: Record<string, Plan> = {
     '2024-11-26': {
       date: '2024-11-26',
       scope: '創世紀 23',
