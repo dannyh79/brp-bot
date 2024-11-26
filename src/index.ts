@@ -1,6 +1,6 @@
 import { fromHono } from 'chanfana';
 import { Hono } from 'hono';
-import HelloWorld from './endpoints/helloWorld';
+import { GetPlan } from './endpoints/getPlan';
 
 const app = new Hono();
 
@@ -10,6 +10,6 @@ const openapi = fromHono(app, {
 });
 
 // Register OpenAPI endpoints
-openapi.get('/', HelloWorld);
+openapi.get('/plan', GetPlan);
 
 export default app;
