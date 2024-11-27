@@ -4,7 +4,7 @@ export type LineMessagingApiClientArg = {
   channelAccessToken: string;
 };
 
-export type LineFlexComponent = line.FlexComponent;
+export type LineFlexComponent = line.messagingApi.FlexComponent;
 
 export type LineMessage = line.messagingApi.Message;
 
