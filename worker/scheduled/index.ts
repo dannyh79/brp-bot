@@ -20,6 +20,10 @@ export const getPlan: ScheduledWorker = async (event) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
   console.log(data);
+
+  if (!data) {
+    return;
+  }
 };
 
 export default getPlan;

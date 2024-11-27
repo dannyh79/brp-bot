@@ -1,4 +1,4 @@
-import { Env, ExecutionContext } from 'hono';
+import { ExecutionContext } from 'hono';
 
 interface ScheduledEvent extends ScheduledController {
   /** Unix timestamp of when the event was scheduled. */
@@ -8,6 +8,10 @@ interface ScheduledEvent extends ScheduledController {
    * See: https://developers.cloudflare.com/workers/configuration/cron-triggers/#supported-cron-expressions
    * */
   cron: string;
+}
+
+export interface Env {
+  LINE_CHANNEL_ACCESS_TOKEN: string;
 }
 
 export type ScheduledWorker = (
