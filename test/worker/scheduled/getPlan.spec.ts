@@ -1,5 +1,4 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getPlan } from '@worker/scheduled';
 
 vi.mock('@worker/scheduled/messageClient/line', () => {

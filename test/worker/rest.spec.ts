@@ -1,5 +1,4 @@
 import { SELF } from 'cloudflare:test';
-import { describe, expect, it } from 'vitest';
 
 const stubDomain = 'https://brp-bot.pages.dev';
 

@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import getPlan from '@/usecases/getPlan';
 import { Repository } from '@/repositories/types';
 import { Plan } from '@/entities/plan';
