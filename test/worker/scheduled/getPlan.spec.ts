@@ -1,8 +1,8 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getPlan } from '../../../worker/scheduled';
+import { getPlan } from '@worker/scheduled';
 
-vi.mock('../../../worker/scheduled/messageClient/line', () => {
+vi.mock('@worker/scheduled/messageClient/line', () => {
   return {
     createClient: vi.fn(() => ({
       pushMessage: vi.fn(() => Promise.resolve('Mocked pushMessage response')),

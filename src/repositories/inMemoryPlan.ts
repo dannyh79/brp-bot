@@ -1,4 +1,4 @@
-import { Plan } from '../entities/plan';
+import { Plan } from '@/entities/plan';
 import { Repository } from './types';
 
 export default class InMemoryPlanRepository implements Repository<Plan> {

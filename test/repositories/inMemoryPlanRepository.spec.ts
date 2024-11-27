@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import InMemoryPlanRepository from '../../src/repositories/inMemoryPlan';
+import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
 
 describe('InMemoryPlanRepository', () => {
   const repo = new InMemoryPlanRepository();

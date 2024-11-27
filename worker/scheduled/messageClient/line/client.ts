@@ -1,4 +1,5 @@
-import { LineMessage, LineMessageArg, LineMessagingApiClientArg, MessageClient } from './types';
+import { MessageClient } from '../types';
+import { LineMessage, LineMessageArg, LineMessagingApiClientArg } from './types';
 
 /** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
 class LineMessagingApiClient implements MessageClient<LineMessageArg, LineMessage[]> {

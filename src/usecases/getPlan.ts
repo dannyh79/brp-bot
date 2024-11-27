@@ -1,6 +1,6 @@
 import { z } from '@hono/zod-openapi';
-import { Plan } from '../entities/plan';
-import { Repository } from '../repositories/types';
+import { Plan } from '@/entities/plan';
+import { Repository } from '@/repositories/types';
 
 export type GetPlanArgs = {
   date: string;

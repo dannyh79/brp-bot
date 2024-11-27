@@ -1,4 +1,4 @@
-import { GetPlanOutput } from '../../../../src/usecases/getPlan';
+import { GetPlanOutput } from '@/usecases/getPlan';
 import { LineFlexComponent, LineMessage } from './types';
 
 export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {

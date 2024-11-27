@@ -1,5 +1,5 @@
-import InMemoryPlanRepository from '../../src/repositories/inMemoryPlan';
-import getPlanUsecase from '../../src/usecases/getPlan';
+import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
+import getPlanUsecase from '@/usecases/getPlan';
 import * as line from './messageClient/line';
 import { ScheduledWorker } from './types';
 

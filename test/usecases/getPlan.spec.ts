@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import getPlan from '../../src/usecases/getPlan';
-import { Repository } from '../../src/repositories/types';
-import { Plan } from '../../src/entities/plan';
+import getPlan from '@/usecases/getPlan';
+import { Repository } from '@/repositories/types';
+import { Plan } from '@/entities/plan';
 
 const stubPlan = {
   date: '2024-11-26',
