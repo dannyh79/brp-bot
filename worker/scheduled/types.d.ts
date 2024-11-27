@@ -11,7 +11,7 @@ interface ScheduledEvent extends ScheduledController {
 }
 
 export interface Env {
-  LINE_RECIEPIENT_ID: string;
+  LINE_RECEIPIENT_ID: string;
   LINE_CHANNEL_ACCESS_TOKEN: string;
 }
 

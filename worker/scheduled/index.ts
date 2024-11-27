@@ -27,7 +27,7 @@ export const getPlan: ScheduledWorker = async (event, env) => {
 
   const lineClient = line.createClient(env.LINE_CHANNEL_ACCESS_TOKEN);
   const result = await lineClient.pushMessage({
-    to: env.LINE_RECIEPIENT_ID,
+    to: env.LINE_RECEIPIENT_ID,
     messages: [line.toBubbleMessage(data)],
   });
   console.log(result);
