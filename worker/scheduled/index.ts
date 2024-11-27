@@ -1,5 +1,6 @@
 import InMemoryPlanRepository from '../../src/repositories/inMemoryPlan';
 import getPlanUsecase from '../../src/usecases/getPlan';
+import * as line from './messageClient/line';
 import { ScheduledWorker } from './types';
 
 const repo = new InMemoryPlanRepository();
@@ -16,14 +17,20 @@ const formatter = new Intl.DateTimeFormat(locale, {
   timeZone,
 });
 
-export const getPlan: ScheduledWorker = async (event) => {
+export const getPlan: ScheduledWorker = async (event, env) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
-  console.log(data);
 
   if (!data) {
     return;
   }
+
+  const lineClient = line.createClient(env.LINE_CHANNEL_ACCESS_TOKEN);
+  const result = await lineClient.pushMessage({
+    to: env.LINE_RECIEPIENT_ID,
+    messages: [line.toBubbleMessage(data)],
+  });
+  console.log(result);
 };
 
 export default getPlan;

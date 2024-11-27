@@ -14,6 +14,8 @@ export const GetPlanOutputSchema = z.object({
   }),
 });
 
+export type GetPlanOutput = z.infer<typeof GetPlanOutputSchema>;
+
 export const getPlan = (repo: Repository<Plan>): ((args: GetPlanArgs) => Promise<Plan | null>) => {
   return async ({ date }: GetPlanArgs) => {
     const plan = await repo.findById(date);
