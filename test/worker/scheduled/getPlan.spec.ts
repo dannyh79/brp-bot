@@ -11,7 +11,8 @@ vi.mock('../../../worker/scheduled/messageClient/line', () => {
   };
 });
 
-const loggerSpy = vi.spyOn(console, 'log');
+// ** Mock implementation to aviod logging in test output */
+const loggerSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('getPlan()', () => {
   afterEach(() => {
