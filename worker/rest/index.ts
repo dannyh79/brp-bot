@@ -6,6 +6,13 @@ const app = new OpenAPIHono();
 
 // Setup Swagger UI
 app.get('/ui', swaggerUI({ url: '/doc' }));
+//#region Uncomment this to expose POST /callback endpoint (for retrieving recipient ID for LINE)
+// app.post('/callback', async (ctx) => {
+//   const res = await ctx.req.json();
+//   console.log(res);
+//   return ctx.json({}, 200);
+// });
+//#endregion
 
 // Register OpenAPI endpoints
 app.openapi(endpoints.getPlan, async (c) => {
