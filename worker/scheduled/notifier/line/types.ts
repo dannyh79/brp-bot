@@ -1,6 +1,6 @@
 import * as line from '@line/bot-sdk';
 
-export type LineMessagingApiClientArg = {
+export type LineNotifierArg = {
   channelAccessToken: string;
 };
 
