@@ -1,6 +1,7 @@
 import * as line from '@line/bot-sdk';
 
 export type LineNotifierArg = {
+  to: string;
   channelAccessToken: string;
 };
 

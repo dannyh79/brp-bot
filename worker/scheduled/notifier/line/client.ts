@@ -1,17 +1,21 @@
+import { GetPlanOutput } from '@/usecases/getPlan';
 import { Notifier } from '../types';
-import { LineMessage, LineMessageArg, LineNotifierArg } from './types';
+import { LineMessage, LineNotifierArg } from './types';
+import * as utils from './utils';
 
 /** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
-class LineNotifier implements Notifier<LineMessageArg, LineMessage[]> {
+class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   private channelAccessToken: string;
+  private to: string;
   /** LINE Messaging API base URL. */
   private baseUrl: string = 'https://api.line.me/v2/bot';
 
-  constructor({ channelAccessToken }: LineNotifierArg) {
+  constructor({ channelAccessToken, to }: LineNotifierArg) {
     this.channelAccessToken = channelAccessToken;
+    this.to = to;
   }
 
-  async pushMessage({ to, messages }: LineMessageArg): Promise<LineMessage[]> {
+  async pushMessage(message: GetPlanOutput): Promise<LineMessage[]> {
     const url = `${this.baseUrl}/message/push`;
     const response = await fetch(url, {
       method: 'POST',
@@ -20,8 +24,8 @@ class LineNotifier implements Notifier<LineMessageArg, LineMessage[]> {
         'Authorization': `Bearer ${this.channelAccessToken}`,
       },
       body: JSON.stringify({
-        to,
-        messages,
+        to: this.to,
+        messages: utils.toBubbleMessage(message),
       }),
     });
 
@@ -34,7 +38,6 @@ class LineNotifier implements Notifier<LineMessageArg, LineMessage[]> {
   }
 }
 
-export const createClient = (channelAccessToken: string) =>
-  new LineNotifier({ channelAccessToken });
+export const createClient = (arg: LineNotifierArg) => new LineNotifier(arg);
 
 export default createClient;
