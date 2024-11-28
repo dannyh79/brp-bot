@@ -15,7 +15,7 @@ const formatter = new Intl.DateTimeFormat(locale, {
   timeZone,
 });
 
-export const getPlan: ScheduledWorkerConstructor<
+export const getPlanThenNotify: ScheduledWorkerConstructor<
   Usecase<GetPlanArgs, GetPlanOutput>,
   NotifierConstructor<line.LineNotifierArg, GetPlanOutput, line.LineMessage[]>
 > = (usecase) => (Notifier) => async (event, env) => {
@@ -34,4 +34,4 @@ export const getPlan: ScheduledWorkerConstructor<
   console.log(result);
 };
 
-export default getPlan;
+export default getPlanThenNotify;
