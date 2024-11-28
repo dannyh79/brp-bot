@@ -4,7 +4,7 @@ import { LineMessage, LineNotifierArg } from './types';
 import * as utils from './utils';
 
 /** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
-class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
+export class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   private channelAccessToken: string;
   private to: string;
   /** LINE Messaging API base URL. */
@@ -38,6 +38,4 @@ class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   }
 }
 
-export const createClient = (arg: LineNotifierArg) => new LineNotifier(arg);
-
-export default createClient;
+export default LineNotifier;

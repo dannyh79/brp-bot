@@ -1,3 +1,2 @@
-export * from './client';
+export * from './notifier';
 export * from './types';
-export * from './utils';

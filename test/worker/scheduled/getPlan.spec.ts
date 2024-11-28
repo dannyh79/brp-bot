@@ -1,14 +1,12 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
+import { GetPlanOutput } from '@/usecases/getPlan';
 import { getPlan } from '@worker/scheduled';
+import { LineMessage, Notifier } from '@worker/scheduled/notifier';
 
-vi.mock('@worker/scheduled/notifier/line', () => {
-  return {
-    createClient: vi.fn(() => ({
-      pushMessage: vi.fn(() => Promise.resolve('Mocked pushMessage response')),
-    })),
-    toBubbleMessage: vi.fn((data) => data),
-  };
-});
+class MockLineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
+  constructor() {}
+  pushMessage = vi.fn(() => Promise.resolve([]));
+}
 
 // ** Mock implementation to aviod logging in test output */
 const loggerSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -24,7 +22,7 @@ describe('getPlan()', () => {
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
-    await getPlan(ctrl, env, ctx);
+    await getPlan(MockLineNotifier)(ctrl, env, ctx);
     expect(loggerSpy).toHaveBeenCalledOnce();
   });
 });

@@ -1,7 +1,8 @@
 import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
-import getPlanUsecase from '@/usecases/getPlan';
+import getPlanUsecase, { GetPlanOutput } from '@/usecases/getPlan';
 import * as line from './notifier/line';
 import { ScheduledWorker } from './types';
+import { NotifierConstructor } from './notifier';
 
 const repo = new InMemoryPlanRepository();
 const usecase = getPlanUsecase(repo);
@@ -17,7 +18,9 @@ const formatter = new Intl.DateTimeFormat(locale, {
   timeZone,
 });
 
-export const getPlan: ScheduledWorker = async (event, env) => {
+export const getPlan: (
+  Notifier: NotifierConstructor<line.LineNotifierArg, GetPlanOutput, line.LineMessage[]>,
+) => ScheduledWorker = (Notifier) => async (event, env) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
 
@@ -25,12 +28,12 @@ export const getPlan: ScheduledWorker = async (event, env) => {
     return;
   }
 
-  const lineClient = line.createClient({
+  const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
     to: env.LINE_RECEIPIENT_ID,
   });
-  const result = await lineClient.pushMessage(data);
+  const result = await notifier.pushMessage(data);
   console.log(result);
 };
 
-export default getPlan;
+export default getPlan(line.LineNotifier);
