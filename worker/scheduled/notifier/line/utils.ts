@@ -1,5 +1,5 @@
 import * as line from '@line/bot-sdk';
-import { GetPlanOutput } from '@/readingPlans/getPlan';
+import { GetPlanOutput } from '@/readingPlans';
 import { LineMessage } from './types';
 
 export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {

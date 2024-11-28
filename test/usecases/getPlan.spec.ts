@@ -1,5 +1,4 @@
-import getPlan from '@/readingPlans/getPlan';
-import { Plan } from '@/readingPlans/entities/plan';
+import { Plan, getPlan } from '@/readingPlans';
 
 const stubPlan = {
   date: '2024-11-26',

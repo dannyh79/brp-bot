@@ -1,4 +1,4 @@
-import { GetPlanOutput } from '@/readingPlans/getPlan';
+import { GetPlanOutput } from '@/readingPlans';
 import { Notifier } from '../types';
 import { LineMessage, LineNotifierArg } from './types';
 import * as utils from './utils';

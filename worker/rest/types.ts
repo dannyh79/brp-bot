@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import getPlan from '@/readingPlans/getPlan';
+import { getPlan } from '@/readingPlans';
 
 export type Vars = {
   getPlan: ReturnType<typeof getPlan>;

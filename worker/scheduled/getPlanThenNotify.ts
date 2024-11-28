@@ -1,4 +1,4 @@
-import { GetPlanArgs, GetPlanOutput } from '@/readingPlans/getPlan';
+import { GetPlanArgs, GetPlanOutput } from '@/readingPlans';
 import * as line from './notifier/line';
 import { NotifierConstructor } from './notifier';
 import { ScheduledWorkerConstructor } from './types';

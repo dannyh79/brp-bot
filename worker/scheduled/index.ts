@@ -1,9 +1,9 @@
-import usecase from '@/readingPlans/getPlan';
+import { getPlan } from '@/readingPlans';
 import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
 import * as line from './notifier/line';
 import getPlanThenNotify from './getPlanThenNotify';
 
 const repo = new InMemoryPlanRepository();
-const getPlanUsecase = usecase(repo);
+const getPlanUsecase = getPlan(repo);
 
 export default getPlanThenNotify(getPlanUsecase)(line.LineNotifier);

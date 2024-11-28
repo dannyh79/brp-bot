@@ -1,4 +1,4 @@
-import { Plan } from '@/readingPlans/entities/plan';
+import { Plan } from '@/readingPlans';
 
 export default class InMemoryPlanRepository implements Repository<Plan> {
   findById(date: string): Promise<Plan | null> {
