@@ -1,6 +1,6 @@
 import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
 import getPlanUsecase from '@/usecases/getPlan';
-import * as line from './messageClient/line';
+import * as line from './notifier/line';
 import { ScheduledWorker } from './types';
 
 const repo = new InMemoryPlanRepository();

@@ -1,8 +1,8 @@
-import { MessageClient } from '../types';
+import { Notifier } from '../types';
 import { LineMessage, LineMessageArg, LineMessagingApiClientArg } from './types';
 
 /** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
-class LineMessagingApiClient implements MessageClient<LineMessageArg, LineMessage[]> {
+class LineMessagingApiClient implements Notifier<LineMessageArg, LineMessage[]> {
   private channelAccessToken: string;
   /** LINE Messaging API base URL. */
   private baseUrl: string = 'https://api.line.me/v2/bot';
