@@ -1,7 +1,7 @@
 import app from './rest';
-import getPlanThenNotify from './scheduled';
+import getPlanThenNotifyLine from './scheduled';
 
 export default {
-  scheduled: getPlanThenNotify,
+  scheduled: getPlanThenNotifyLine,
   fetch: app.fetch,
 };
