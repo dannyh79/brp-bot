@@ -1,6 +1,6 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
 import { GetPlanOutput } from '@/usecases/getPlan';
-import { getPlan } from '@worker/scheduled';
+import { getPlan } from '@worker/scheduled/getPlan';
 import { LineMessage, Notifier } from '@worker/scheduled/notifier';
 
 class MockLineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
