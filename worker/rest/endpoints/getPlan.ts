@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { GetPlanOutputSchema } from '@/usecases/getPlan';
+import { GetPlanOutputSchema } from '@/readingPlans/getPlan';
 import { withUsecases } from '../middlewares';
 
 export const GetPlanQuery = z.object({

@@ -1,5 +1,5 @@
+import usecase from '@/readingPlans/getPlan';
 import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
-import usecase from '@/usecases/getPlan';
 import * as line from './notifier/line';
 import getPlanThenNotify from './getPlanThenNotify';
 

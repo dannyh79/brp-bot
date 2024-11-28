@@ -1,8 +1,7 @@
-import { Usecase } from '@/usecases/types';
-import { GetPlanArgs, GetPlanOutput } from '@/usecases/getPlan';
+import { GetPlanArgs, GetPlanOutput } from '@/readingPlans/getPlan';
 import * as line from './notifier/line';
-import { ScheduledWorkerConstructor } from './types';
 import { NotifierConstructor } from './notifier';
+import { ScheduledWorkerConstructor } from './types';
 
 /** The en-CA (Canadian English) locale outputs dates in YYYY-MM-DD format by default. */
 const locale = 'en-CA' as const;

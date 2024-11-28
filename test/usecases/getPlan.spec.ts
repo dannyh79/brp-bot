@@ -1,6 +1,5 @@
-import getPlan from '@/usecases/getPlan';
-import { Repository } from '@/repositories/types';
-import { Plan } from '@/entities/plan';
+import getPlan from '@/readingPlans/getPlan';
+import { Plan } from '@/readingPlans/entities/plan';
 
 const stubPlan = {
   date: '2024-11-26',

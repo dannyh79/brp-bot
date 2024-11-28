@@ -1,7 +1,5 @@
 import { z } from '@hono/zod-openapi';
-import { Plan } from '@/entities/plan';
-import { Repository } from '@/repositories/types';
-import { UsecaseConstructor } from './types';
+import { Plan } from './entities/plan';
 
 export type GetPlanArgs = {
   date: string;
