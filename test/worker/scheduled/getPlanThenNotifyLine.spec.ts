@@ -4,8 +4,9 @@ import getPlanThenNotifyLine from '@worker/scheduled/getPlanThenNotifyLine';
 
 const mockUsecase = vi.fn(() => Promise.resolve({} as GetPlanOutput));
 
+const mockPushMessage = vi.fn(() => Promise.resolve([]));
 const MockNotifier = vi.fn();
-MockNotifier.prototype.pushMessage = vi.fn(() => Promise.resolve([]));
+MockNotifier.prototype.pushMessage = mockPushMessage;
 
 // ** Mock implementation to aviod logging in test output */
 const loggerSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -15,13 +16,14 @@ describe('getPlanThenNotifyLine()', () => {
     loggerSpy.mockClear();
   });
 
-  it('logs the plan for the date', async () => {
+  it('pushes message then logs the result', async () => {
     const ctrl = createScheduledController({
       scheduledTime: new Date(Date.UTC(2024, 10, 25, 23)),
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
     await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
+    expect(mockPushMessage).toHaveBeenCalledOnce();
     expect(loggerSpy).toHaveBeenCalledOnce();
   });
 });
