@@ -3,6 +3,8 @@ import { GetPlanOutput } from '@/usecases/getPlan';
 import { getPlan } from '@worker/scheduled/getPlan';
 import { LineMessage, Notifier } from '@worker/scheduled/notifier';
 
+const mockUsecase = vi.fn(() => Promise.resolve({} as GetPlanOutput));
+
 class MockLineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   constructor() {}
   pushMessage = vi.fn(() => Promise.resolve([]));
@@ -22,7 +24,7 @@ describe('getPlan()', () => {
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
-    await getPlan(MockLineNotifier)(ctrl, env, ctx);
+    await getPlan(mockUsecase)(MockLineNotifier)(ctrl, env, ctx);
     expect(loggerSpy).toHaveBeenCalledOnce();
   });
 });

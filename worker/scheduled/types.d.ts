@@ -20,3 +20,7 @@ export type ScheduledWorker = (
   env: Env,
   ctx: ExecutionContext,
 ) => void | Promise<void>;
+
+export type ScheduledWorkerConstructor<Usecase, NotifierConstructor> = (
+  u: Usecase,
+) => (n: NotifierConstructor) => ScheduledWorker;
