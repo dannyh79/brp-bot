@@ -16,13 +16,18 @@ describe('getPlanThenNotifyLine()', () => {
     loggerSpy.mockClear();
   });
 
-  it('pushes message then logs the result', async () => {
+  it('pushes the message to target receipient then logs the result', async () => {
     const ctrl = createScheduledController({
       scheduledTime: new Date(Date.UTC(2024, 10, 25, 23)),
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
+    const targetReceipientId = env.LINE_RECEIPIENT_ID;
     await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
+    expect(MockNotifier).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ to: targetReceipientId }),
+    );
     expect(mockPushMessage).toHaveBeenCalledOnce();
     expect(loggerSpy).toHaveBeenCalledOnce();
   });
