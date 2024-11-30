@@ -10,11 +10,6 @@ interface ScheduledEvent extends ScheduledController {
   cron: string;
 }
 
-export interface Env {
-  LINE_RECEIPIENT_ID: string;
-  LINE_CHANNEL_ACCESS_TOKEN: string;
-}
-
 export type ScheduledWorker = (
   event: ScheduledEvent,
   env: Env,
