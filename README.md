@@ -25,6 +25,21 @@ pnpm dev --test-scheduled
 curl "http://localhost:8787/__scheduled?cron=0+0+*+*+*"
 ```
 
+## Deploying
+
+_[NEED TO USE MANUAL UPLOAD FROM CLOUDFLARE CONSOLE AT MOMENT](https://github.com/cloudflare/workers-sdk/issues/7287)._
+
+> Only Cloudflare Workers platform is supported at moment.
+
+```sh
+cp secrets.json.example secrets.json
+# Then update the values in secrets.json
+
+npx wrangler login
+pnpm run deploy
+npx wrangler secret bulk < secrets.json
+```
+
 ## Gotchas
 
 ### LINE
