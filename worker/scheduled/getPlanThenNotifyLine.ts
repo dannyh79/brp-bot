@@ -21,15 +21,17 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
 
-  if (!data) {
-    return;
-  }
+  const fallbackMessage: GetPlanOutput = {
+    date,
+    scope: 'No Plan Found',
+    content: [],
+  };
 
   const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-    to: env.LINE_RECEIPIENT_ID,
+    to: data ? env.LINE_RECEIPIENT_ID : env.LINE_ADMIN_RECEIPIENT_ID,
   });
-  const result = await notifier.pushMessage(data);
+  const result = await notifier.pushMessage(data ?? fallbackMessage);
   console.log(result);
 };
 

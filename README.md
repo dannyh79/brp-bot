@@ -56,3 +56,7 @@ Assume a LINE bot is already configured:
 
 6. Hide endpoint `POST /callback` by comment the code block in /worker/rest/index.ts and deploy again
 7. Disable "Use webhook" option from [LINE Developers console](https://developers.line.biz/console)
+
+#### How to Get env `LINE_ADMIN_RECEIPIENT_ID`
+
+Use "Your user ID" value, started from `U`, in "Basic settings" tab, from [LINE Developers console](https://developers.line.biz/console).
