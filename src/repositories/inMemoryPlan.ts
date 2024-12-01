@@ -1,8 +1,14 @@
 import { Plan } from '@/readingPlans';
 
 export default class InMemoryPlanRepository implements Repository<Plan> {
+  private db: Record<string, Plan>;
+
+  constructor(db = data) {
+    this.db = db;
+  }
+
   findById(date: string): Promise<Plan | null> {
-    return Promise.resolve(data[date] ?? null);
+    return Promise.resolve(this.db[date] ?? null);
   }
 }
 
