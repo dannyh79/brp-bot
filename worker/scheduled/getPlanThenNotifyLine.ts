@@ -24,7 +24,7 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
   const fallbackMessage: GetPlanOutput = {
     date,
     scope: 'No Plan Found',
-    content: [],
+    content: [''],
   };
 
   const notifier = new Notifier({
