@@ -6,3 +6,5 @@ export type LineNotifierArg = {
 };
 
 export type LineMessage = line.messagingApi.Message;
+
+export type LinePushMessageRequest = line.messagingApi.PushMessageRequest;
