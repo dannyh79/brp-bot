@@ -5,6 +5,11 @@ export type LineSingleNotifierArg = {
   channelAccessToken: string;
 };
 
+export type LineMultiNotifierArg = {
+  to: string[];
+  channelAccessToken: string;
+};
+
 export type LineMessage = line.messagingApi.Message;
 
 export type LinePushMessageRequest = line.messagingApi.PushMessageRequest;
