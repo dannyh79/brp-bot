@@ -25,12 +25,12 @@ describe('getPlanThenNotifyLine()', () => {
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
-    const targetReceipientId = env.LINE_RECEIPIENT_ID;
+    const targetReceipientIds = env.LINE_RECEIPIENT_IDS;
     await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
 
     expect(MockNotifier).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({ to: targetReceipientId }),
+      expect.objectContaining({ to: targetReceipientIds }),
     );
     expect(mockPushMessage).toHaveBeenCalledOnce();
     expect(loggerSpy).toHaveBeenCalledOnce();
@@ -49,7 +49,7 @@ describe('getPlanThenNotifyLine()', () => {
 
       expect(MockNotifier).toHaveBeenNthCalledWith(
         1,
-        expect.objectContaining({ to: adminReceipientId }),
+        expect.objectContaining({ to: [adminReceipientId] }),
       );
       expect(mockPushMessage).toHaveBeenCalledOnce();
       expect(loggerSpy).toHaveBeenCalledOnce();
