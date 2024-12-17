@@ -3,7 +3,11 @@ import { Notifier } from '../types';
 import { LineMessage, LinePushMessageRequest, LineSingleNotifierArg } from './types';
 import * as utils from './utils';
 
-/** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
+/**
+ * Implement line's MessagingApiClient, for "@line/bot-sdk" has worker incompatible dep "axios".
+ *
+ * @see {@link https://developers.line.biz/en/reference/messaging-api/#send-push-message} for API doc
+ */
 export class LineSingleNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   private channelAccessToken: string;
   private to: string;
