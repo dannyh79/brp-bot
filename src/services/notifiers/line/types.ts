@@ -1,7 +1,12 @@
 import * as line from '@line/bot-sdk';
 
-export type LineNotifierArg = {
+export type LineSingleNotifierArg = {
   to: string;
+  channelAccessToken: string;
+};
+
+export type LineMultiNotifierArg = {
+  to: string[];
   channelAccessToken: string;
 };
 

@@ -1,2 +1,3 @@
-export * from './notifier';
+export * from './singleNotifier';
+export * from './multiNotifier';
 export * from './types';

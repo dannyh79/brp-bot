@@ -1,5 +1,5 @@
 import { GetPlanArgs, GetPlanOutput } from '@/readingPlans';
-import { LineMessage, LineNotifierArg, NotifierConstructor } from '@/services/notifiers';
+import { LineMultiNotifierArg, NotifierConstructor } from '@/services/notifiers';
 import { ScheduledWorkerConstructor } from './types';
 
 /** The en-CA (Canadian English) locale outputs dates in YYYY-MM-DD format by default. */
@@ -15,7 +15,7 @@ const formatter = new Intl.DateTimeFormat(locale, {
 
 export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
   Usecase<GetPlanArgs, GetPlanOutput>,
-  NotifierConstructor<LineNotifierArg, GetPlanOutput, LineMessage[]>
+  NotifierConstructor<LineMultiNotifierArg, GetPlanOutput>
 > = (usecase) => (Notifier) => async (event, env) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
@@ -28,7 +28,7 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
 
   const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-    to: data ? env.LINE_RECEIPIENT_ID : env.LINE_ADMIN_RECEIPIENT_ID,
+    to: data ? env.LINE_RECEIPIENT_IDS : [env.LINE_ADMIN_RECEIPIENT_ID],
   });
   const result = await notifier.pushMessage(data ?? fallbackMessage);
   console.log(result);

@@ -1,16 +1,20 @@
 import { GetPlanOutput } from '@/readingPlans';
 import { Notifier } from '../types';
-import { LineMessage, LineNotifierArg, LinePushMessageRequest } from './types';
+import { LineMessage, LinePushMessageRequest, LineSingleNotifierArg } from './types';
 import * as utils from './utils';
 
-/** Implement line's MessagingApiClient, for @line/bot-sdk has worker incompatible dep "axios". */
-export class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
+/**
+ * Implement line's MessagingApiClient, for "@line/bot-sdk" has worker incompatible dep "axios".
+ *
+ * @see {@link https://developers.line.biz/en/reference/messaging-api/#send-push-message} for API doc
+ */
+export class LineSingleNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   private channelAccessToken: string;
   private to: string;
   /** LINE Messaging API base URL. */
   private baseUrl: string = 'https://api.line.me/v2/bot';
 
-  constructor({ channelAccessToken, to }: LineNotifierArg) {
+  constructor({ channelAccessToken, to }: LineSingleNotifierArg) {
     this.channelAccessToken = channelAccessToken;
     this.to = to;
   }
@@ -40,4 +44,4 @@ export class LineNotifier implements Notifier<GetPlanOutput, LineMessage[]> {
   }
 }
 
-export default LineNotifier;
+export default LineSingleNotifier;
