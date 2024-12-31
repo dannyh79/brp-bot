@@ -1,6 +1,6 @@
 import { z } from '@hono/zod-openapi';
 
-export const PlanSchema = z.object({
+export const OldPlanSchema = z.object({
   date: z.string().openapi({ example: '2024-11-26' }),
   scope: z.string().openapi({ example: '創世紀 23' }),
   content: z.array(z.string()).openapi({
@@ -8,4 +8,4 @@ export const PlanSchema = z.object({
   }),
 });
 
-export type Plan = z.infer<typeof PlanSchema>;
+export type OldPlan = z.infer<typeof OldPlanSchema>;

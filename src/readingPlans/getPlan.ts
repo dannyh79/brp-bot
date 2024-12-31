@@ -1,5 +1,5 @@
 import { z } from '@hono/zod-openapi';
-import { Plan } from './entities/plan';
+import { OldPlan } from './entities/plan';
 
 export type GetPlanArgs = {
   date: string;
@@ -15,7 +15,7 @@ export const GetPlanOutputSchema = z.object({
 
 export type GetPlanOutput = z.infer<typeof GetPlanOutputSchema>;
 
-export const getPlan: UsecaseConstructor<Repository<Plan>, GetPlanArgs, GetPlanOutput> =
+export const getPlan: UsecaseConstructor<Repository<OldPlan>, GetPlanArgs, GetPlanOutput> =
   (repo) => async (args) => {
     const { date } = args;
     const plan = await repo.findById(date);

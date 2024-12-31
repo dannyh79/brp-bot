@@ -1,18 +1,18 @@
-import { Plan } from '@/readingPlans';
+import { OldPlan } from '@/readingPlans';
 
-export default class InMemoryPlanRepository implements Repository<Plan> {
-  private db: Record<string, Plan>;
+export default class InMemoryPlanRepository implements Repository<OldPlan> {
+  private db: Record<string, OldPlan>;
 
   constructor(db = data) {
     this.db = db;
   }
 
-  findById(date: string): Promise<Plan | null> {
+  findById(date: string): Promise<OldPlan | null> {
     return Promise.resolve(this.db[date] ?? null);
   }
 }
 
-const data: Record<string, Plan> = {
+const data: Record<string, OldPlan> = {
   '2024-12-01': {
     date: '2024-12-01',
     scope: '創世紀 25:29-34',
