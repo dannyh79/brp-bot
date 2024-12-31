@@ -262,7 +262,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "flex": 8,
               "gravity": "center",
               "size": "sm",
-              "text": "出埃及記 第八章",
+              "text": " ",
               "type": "text",
             },
           ],
@@ -311,14 +311,26 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "width": "12px",
             },
             {
-              "color": "#8c8c8c",
-              "flex": 8,
-              "gravity": "center",
-              "size": "xs",
-              "text": "1. 你覺得神透過今天的經文對你說什麼呢?
+              "contents": [
+                {
+                  "gravity": "center",
+                  "size": "sm",
+                  "text": "出埃及記 第八章",
+                  "type": "text",
+                },
+                {
+                  "color": "#8c8c8c",
+                  "gravity": "center",
+                  "size": "xs",
+                  "text": "1. 你覺得神透過今天的經文對你說什麼呢?
 2. 有什麼你可以做出的行動或改變呢?",
-              "type": "text",
-              "wrap": true,
+                  "type": "text",
+                  "wrap": true,
+                },
+              ],
+              "flex": 8,
+              "layout": "vertical",
+              "type": "box",
             },
           ],
           "layout": "horizontal",

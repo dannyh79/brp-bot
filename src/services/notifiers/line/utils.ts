@@ -306,9 +306,10 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                 ],
                 flex: 0,
               },
+              // NOTE: Placeholder for layout
               {
                 type: 'text',
-                text: devotional.scope,
+                text: ' ',
                 gravity: 'center',
                 flex: 8,
                 size: 'sm',
@@ -359,13 +360,25 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                 width: '12px',
               },
               {
-                type: 'text',
-                text: devotional.content.join('\n'),
-                gravity: 'center',
+                type: 'box',
+                layout: 'vertical',
                 flex: 8,
-                size: 'xs',
-                color: '#8c8c8c',
-                wrap: true,
+                contents: [
+                  {
+                    type: 'text',
+                    text: devotional.scope,
+                    gravity: 'center',
+                    size: 'sm',
+                  },
+                  {
+                    type: 'text',
+                    text: devotional.content.join('\n'),
+                    gravity: 'center',
+                    size: 'xs',
+                    color: '#8c8c8c',
+                    wrap: true,
+                  },
+                ],
               },
             ],
             spacing: 'lg',
