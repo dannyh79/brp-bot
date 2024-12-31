@@ -1,6 +1,6 @@
-import { to2025BubbleMessage } from '@/services/notifiers/line/utils';
+import { toBubbleMessage } from '@/services/notifiers/line/utils';
 
-describe('to2025BubbleMessage()', () => {
+describe('toBubbleMessage()', () => {
   const data = {
     date: '2025-01-01',
     praise: {
@@ -18,6 +18,6 @@ describe('to2025BubbleMessage()', () => {
   };
 
   it('returns LINE bubble message payload', () => {
-    expect(to2025BubbleMessage(data)).toMatchSnapshot();
+    expect(toBubbleMessage(data)).toMatchSnapshot();
   });
 });

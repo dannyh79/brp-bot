@@ -24,7 +24,7 @@ export class LineMultiNotifier implements Notifier<GetPlanOutput> {
       const url = `${this.baseUrl}/message/push`;
       const payload: LinePushMessageRequest = {
         to,
-        messages: [utils.to2025BubbleMessage(message)],
+        messages: [utils.toBubbleMessage(message)],
       };
 
       const response = await fetch(url, {

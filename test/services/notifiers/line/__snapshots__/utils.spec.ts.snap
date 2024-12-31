@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`to2025BubbleMessage() > returns LINE bubble message payload 1`] = `
+exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
 {
   "altText": "Bible Reading Plan for 2025-01-01",
   "contents": {
