@@ -1,8 +1,8 @@
 import * as line from '@line/bot-sdk';
-import { GetPlanOutput } from '@/readingPlans';
+import { Get2024PlanOutput } from '@/readingPlans';
 import { LineMessage } from './types';
 
-export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
+export const toBubbleMessage = (arg: Get2024PlanOutput): LineMessage => {
   const { date, scope, content } = arg;
 
   const toParagraph = (text: string): line.messagingApi.FlexComponent => ({

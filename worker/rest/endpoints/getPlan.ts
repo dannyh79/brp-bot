@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { GetPlanOutputSchema } from '@/readingPlans';
+import { Get2024PlanOutputSchema } from '@/readingPlans';
 import { withUsecases } from '../middlewares';
 
 export const GetPlanQuery = z.object({
@@ -20,7 +20,7 @@ export const getPlan = createRoute({
       description: 'Returns reading plan for the date',
       content: {
         'application/json': {
-          schema: GetPlanOutputSchema,
+          schema: Get2024PlanOutputSchema,
         },
       },
     },

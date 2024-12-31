@@ -1,4 +1,4 @@
-import { GetPlanArgs, GetPlanOutput } from '@/readingPlans';
+import { GetPlanArgs, Get2024PlanOutput } from '@/readingPlans';
 import { LineMultiNotifierArg, NotifierConstructor } from '@/services/notifiers';
 import { ScheduledWorkerConstructor } from './types';
 
@@ -14,13 +14,13 @@ const formatter = new Intl.DateTimeFormat(locale, {
 });
 
 export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
-  Usecase<GetPlanArgs, GetPlanOutput>,
-  NotifierConstructor<LineMultiNotifierArg, GetPlanOutput>
+  Usecase<GetPlanArgs, Get2024PlanOutput>,
+  NotifierConstructor<LineMultiNotifierArg, Get2024PlanOutput>
 > = (usecase) => (Notifier) => async (event, env) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
 
-  const fallbackMessage: GetPlanOutput = {
+  const fallbackMessage: Get2024PlanOutput = {
     date,
     scope: 'No Plan Found',
     content: [''],

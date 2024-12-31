@@ -5,7 +5,7 @@ export type GetPlanArgs = {
   date: string;
 };
 
-export const GetPlanOutputSchema = z.object({
+export const Get2024PlanOutputSchema = z.object({
   date: z.string().openapi({ example: '2024-11-26' }),
   scope: z.string().openapi({ example: '創世紀 23' }),
   content: z.array(z.string()).openapi({
@@ -13,9 +13,9 @@ export const GetPlanOutputSchema = z.object({
   }),
 });
 
-export type GetPlanOutput = z.infer<typeof GetPlanOutputSchema>;
+export type Get2024PlanOutput = z.infer<typeof Get2024PlanOutputSchema>;
 
-export const getPlan: UsecaseConstructor<Repository<OldPlan>, GetPlanArgs, GetPlanOutput> =
+export const get2024Plan: UsecaseConstructor<Repository<OldPlan>, GetPlanArgs, Get2024PlanOutput> =
   (repo) => async (args) => {
     const { date } = args;
     const plan = await repo.findById(date);
@@ -27,4 +27,4 @@ export const getPlan: UsecaseConstructor<Repository<OldPlan>, GetPlanArgs, GetPl
     return plan;
   };
 
-export default getPlan;
+export default get2024Plan;

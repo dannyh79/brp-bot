@@ -1,8 +1,8 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
-import { GetPlanOutput } from '@/readingPlans';
+import { Get2024PlanOutput } from '@/readingPlans';
 import getPlanThenNotifyLine from '@worker/scheduled/getPlanThenNotifyLine';
 
-const mockUsecase = vi.fn(() => Promise.resolve({} as GetPlanOutput | null));
+const mockUsecase = vi.fn(() => Promise.resolve({} as Get2024PlanOutput | null));
 
 const mockPushMessage = vi.fn(() => Promise.resolve([]));
 const MockNotifier = vi.fn();

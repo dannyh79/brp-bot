@@ -1,4 +1,4 @@
-import { getPlan } from '@/readingPlans';
+import { get2024Plan as getPlan } from '@/readingPlans';
 import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
 import { LineMultiNotifier } from '@/services/notifiers';
 import getPlanThenNotifyLine from './getPlanThenNotifyLine';
