@@ -1,6 +1,8 @@
-import InMemory2024Plan, { InMemory2025PlanRepository } from '@/repositories/inMemoryPlan';
+import InMemoryPlanRepository, {
+  InMemoryPlanRepository as InMemory2024PlanRepository,
+} from '@/repositories/inMemoryPlan';
 
-describe('InMemoryPlanRepository', () => {
+describe('InMemory2024PlanRepository', () => {
   const db = {
     '2024-11-26': {
       date: '2024-11-26',
@@ -12,7 +14,7 @@ describe('InMemoryPlanRepository', () => {
     },
   };
 
-  const repo = new InMemory2024Plan(db);
+  const repo = new InMemory2024PlanRepository(db);
 
   describe('findById()', () => {
     it('returns plan object', async () => {
@@ -32,7 +34,7 @@ describe('InMemoryPlanRepository', () => {
   });
 });
 
-describe('InMemory2025PlanRepository', () => {
+describe('InMemoryPlanRepository', () => {
   const db = {
     '2025-01-01': {
       date: '2025-01-01',
@@ -46,7 +48,7 @@ describe('InMemory2025PlanRepository', () => {
     },
   };
 
-  const repo = new InMemory2025PlanRepository(db);
+  const repo = new InMemoryPlanRepository(db);
 
   describe('findById()', () => {
     it('returns plan object', async () => {

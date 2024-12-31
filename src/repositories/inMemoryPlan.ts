@@ -1,6 +1,6 @@
 import { OldPlan, Plan, PlanSchema } from '@/readingPlans';
 
-export default class InMemoryPlanRepository implements Repository<OldPlan> {
+export class InMemoryPlanRepository implements Repository<OldPlan> {
   private db: Record<string, OldPlan>;
 
   constructor(db = data) {
@@ -273,7 +273,7 @@ type Data = {
   };
 };
 
-export class InMemory2025PlanRepository implements Repository<Plan> {
+export default class InMemory2025PlanRepository implements Repository<Plan> {
   private db: Record<string, Data>;
 
   constructor(db = data2025) {
