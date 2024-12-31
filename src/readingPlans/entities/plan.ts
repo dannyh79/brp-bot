@@ -1,15 +1,5 @@
 import { z } from '@hono/zod-openapi';
 
-export const OldPlanSchema = z.object({
-  date: z.string().openapi({ example: '2024-11-26' }),
-  scope: z.string().openapi({ example: '創世紀 23' }),
-  content: z.array(z.string()).openapi({
-    example: ['1. 從亞伯拉罕與赫人和以弗倫的對話中你可以看見他是一位怎麼樣的人呢?為什麼?'],
-  }),
-});
-
-export type OldPlan = z.infer<typeof OldPlanSchema>;
-
 const defaultValues = {
   repentence:
     '上帝啊，求你按你的慈愛恩待我！\n按你極大的憐憫除去我 ___ 的過犯！\n求你洗淨我的罪過，清除我的罪惡。求你讓我重新享受蒙你拯救的喜樂，賜我一個樂意順服你的心靈。',
