@@ -1,0 +1,469 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`to2025BubbleMessage() > returns LINE bubble message payload 1`] = `
+{
+  "altText": "Bible Reading Plan for 2025-01-01",
+  "contents": {
+    "body": {
+      "contents": [
+        {
+          "color": "#b7b7b7",
+          "size": "xs",
+          "text": "1/1 星期三",
+          "type": "text",
+        },
+        {
+          "contents": [
+            {
+              "gravity": "center",
+              "size": "sm",
+              "text": "讚美",
+              "type": "text",
+            },
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+                {
+                  "borderColor": "#6486E3",
+                  "borderWidth": "2px",
+                  "contents": [],
+                  "cornerRadius": "30px",
+                  "height": "12px",
+                  "layout": "vertical",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 0,
+              "layout": "vertical",
+              "type": "box",
+            },
+            {
+              "flex": 8,
+              "gravity": "center",
+              "size": "sm",
+              "text": " ",
+              "type": "text",
+            },
+          ],
+          "cornerRadius": "30px",
+          "layout": "horizontal",
+          "margin": "xl",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 1,
+              "layout": "baseline",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "contents": [
+                    {
+                      "type": "filler",
+                    },
+                    {
+                      "backgroundColor": "#6486E3",
+                      "contents": [],
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "2px",
+                    },
+                    {
+                      "type": "filler",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "horizontal",
+                  "type": "box",
+                },
+              ],
+              "layout": "vertical",
+              "type": "box",
+              "width": "12px",
+            },
+            {
+              "color": "#8c8c8c",
+              "flex": 8,
+              "gravity": "center",
+              "size": "xs",
+              "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存! (歷代志上 16:34 CCB)",
+              "type": "text",
+              "wrap": true,
+            },
+          ],
+          "layout": "horizontal",
+          "paddingBottom": "md",
+          "paddingTop": "sm",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "gravity": "center",
+                  "size": "sm",
+                  "text": "悔改",
+                  "type": "text",
+                },
+              ],
+              "flex": 1,
+              "layout": "horizontal",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+                {
+                  "borderColor": "#6486E3",
+                  "borderWidth": "2px",
+                  "contents": [],
+                  "cornerRadius": "30px",
+                  "height": "12px",
+                  "layout": "vertical",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 0,
+              "layout": "vertical",
+              "type": "box",
+            },
+            {
+              "flex": 8,
+              "gravity": "center",
+              "size": "sm",
+              "text": " ",
+              "type": "text",
+            },
+          ],
+          "cornerRadius": "30px",
+          "layout": "horizontal",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 1,
+              "layout": "baseline",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "contents": [
+                    {
+                      "type": "filler",
+                    },
+                    {
+                      "backgroundColor": "#6486E3",
+                      "contents": [],
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "2px",
+                    },
+                    {
+                      "type": "filler",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "horizontal",
+                  "type": "box",
+                },
+              ],
+              "layout": "vertical",
+              "type": "box",
+              "width": "12px",
+            },
+            {
+              "color": "#8c8c8c",
+              "flex": 8,
+              "gravity": "center",
+              "size": "xs",
+              "text": "上帝啊，求你按你的慈愛恩待我！
+按你極大的憐憫除去我 ___ 的過犯！
+求你洗淨我的罪過，清除我的罪惡。求你讓我重新享受蒙你拯救的喜樂，賜我一個樂意順服你的心靈。",
+              "type": "text",
+              "wrap": true,
+            },
+          ],
+          "layout": "horizontal",
+          "paddingBottom": "md",
+          "paddingTop": "sm",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "gravity": "center",
+                  "size": "sm",
+                  "text": "反思",
+                  "type": "text",
+                },
+              ],
+              "flex": 1,
+              "layout": "horizontal",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+                {
+                  "borderColor": "#6486E3",
+                  "borderWidth": "2px",
+                  "contents": [],
+                  "cornerRadius": "30px",
+                  "height": "12px",
+                  "layout": "vertical",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 0,
+              "layout": "vertical",
+              "type": "box",
+            },
+            {
+              "flex": 8,
+              "gravity": "center",
+              "size": "sm",
+              "text": "出埃及記 第八章",
+              "type": "text",
+            },
+          ],
+          "cornerRadius": "30px",
+          "layout": "horizontal",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 1,
+              "layout": "baseline",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "contents": [
+                    {
+                      "type": "filler",
+                    },
+                    {
+                      "backgroundColor": "#6486E3",
+                      "contents": [],
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "2px",
+                    },
+                    {
+                      "type": "filler",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "horizontal",
+                  "type": "box",
+                },
+              ],
+              "layout": "vertical",
+              "type": "box",
+              "width": "12px",
+            },
+            {
+              "color": "#8c8c8c",
+              "flex": 8,
+              "gravity": "center",
+              "size": "xs",
+              "text": "1. 你覺得神透過今天的經文對你說什麼呢?
+2. 有什麼你可以做出的行動或改變呢?",
+              "type": "text",
+              "wrap": true,
+            },
+          ],
+          "layout": "horizontal",
+          "paddingBottom": "md",
+          "paddingTop": "sm",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "gravity": "center",
+                  "size": "sm",
+                  "text": "祈求",
+                  "type": "text",
+                },
+              ],
+              "flex": 1,
+              "layout": "horizontal",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+                {
+                  "borderColor": "#6486E3",
+                  "borderWidth": "2px",
+                  "contents": [],
+                  "cornerRadius": "30px",
+                  "height": "12px",
+                  "layout": "vertical",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 0,
+              "layout": "vertical",
+              "type": "box",
+            },
+            {
+              "flex": 8,
+              "gravity": "center",
+              "size": "sm",
+              "text": " ",
+              "type": "text",
+            },
+          ],
+          "cornerRadius": "30px",
+          "layout": "horizontal",
+          "spacing": "lg",
+          "type": "box",
+        },
+        {
+          "contents": [
+            {
+              "contents": [
+                {
+                  "type": "filler",
+                },
+              ],
+              "flex": 1,
+              "layout": "baseline",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "contents": [
+                    {
+                      "type": "filler",
+                    },
+                    {
+                      "backgroundColor": "#6486E3",
+                      "contents": [],
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "2px",
+                    },
+                    {
+                      "type": "filler",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "horizontal",
+                  "type": "box",
+                },
+              ],
+              "layout": "vertical",
+              "type": "box",
+              "width": "12px",
+            },
+            {
+              "color": "#8c8c8c",
+              "flex": 8,
+              "gravity": "center",
+              "size": "xs",
+              "text": "”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。
+『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
+              "type": "text",
+              "wrap": true,
+            },
+          ],
+          "layout": "horizontal",
+          "paddingTop": "sm",
+          "spacing": "lg",
+          "type": "box",
+        },
+      ],
+      "layout": "vertical",
+      "type": "box",
+    },
+    "header": {
+      "backgroundColor": "#FFCC32",
+      "contents": [
+        {
+          "contents": [
+            {
+              "color": "#1D292E",
+              "flex": 4,
+              "size": "xl",
+              "text": "好好靈修",
+              "type": "text",
+              "weight": "regular",
+            },
+          ],
+          "layout": "vertical",
+          "type": "box",
+        },
+      ],
+      "layout": "vertical",
+      "paddingAll": "20px",
+      "paddingTop": "22px",
+      "spacing": "md",
+      "type": "box",
+    },
+    "size": "giga",
+    "type": "bubble",
+  },
+  "type": "flex",
+}
+`;
