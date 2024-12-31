@@ -1,4 +1,4 @@
-import { Get2024PlanOutput } from '@/readingPlans';
+import { GetPlanOutput } from '@/readingPlans';
 import { Notifier } from '../types';
 import { LineMultiNotifierArg, LinePushMessageRequest } from './types';
 import * as utils from './utils';
@@ -8,7 +8,7 @@ import * as utils from './utils';
  *
  * @see {@link https://developers.line.biz/en/reference/messaging-api/#send-push-message} for API doc
  */
-export class LineMultiNotifier implements Notifier<Get2024PlanOutput> {
+export class LineMultiNotifier implements Notifier<GetPlanOutput> {
   private channelAccessToken: string;
   private to: string[];
   /** LINE Messaging API base URL. */
@@ -19,12 +19,12 @@ export class LineMultiNotifier implements Notifier<Get2024PlanOutput> {
     this.to = to;
   }
 
-  async pushMessage(message: Get2024PlanOutput) {
+  async pushMessage(message: GetPlanOutput) {
     const reqs = this.to.map(async (to) => {
       const url = `${this.baseUrl}/message/push`;
       const payload: LinePushMessageRequest = {
         to,
-        messages: [utils.toBubbleMessage(message)],
+        messages: [utils.to2025BubbleMessage(message)],
       };
 
       const response = await fetch(url, {
