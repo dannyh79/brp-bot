@@ -28,7 +28,7 @@ const data: Record<string, Data> = {
     date: '2025-01-01',
     praise: {
       scope: '歷代志上 16:34 CCB',
-      content: '你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!',
+      content: '你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！',
     },
     devotional: {
       scope: '出埃及記 第八章',
