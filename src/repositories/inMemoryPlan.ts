@@ -1,4 +1,4 @@
-import { OldPlan } from '@/readingPlans';
+import { OldPlan, Plan, PlanSchema } from '@/readingPlans';
 
 export default class InMemoryPlanRepository implements Repository<OldPlan> {
   private db: Record<string, OldPlan>;
@@ -259,5 +259,41 @@ const data: Record<string, OldPlan> = {
       '1. 摩西和亞倫再一次去見法老王,過程中上帝透過哪些事情幫助他們與他們同在呢?',
       '2. 法老又是如何回應摩西和亞倫呢?',
     ],
+  },
+};
+
+type Data = {
+  date: string;
+  praise: {
+    scope: string;
+    content: string;
+  };
+  devotional: {
+    scope: string;
+  };
+};
+
+export class InMemory2025PlanRepository implements Repository<Plan> {
+  private db: Record<string, Data>;
+
+  constructor(db = data2025) {
+    this.db = db;
+  }
+
+  findById(date: string): Promise<Plan | null> {
+    return Promise.resolve(this.db[date] ? PlanSchema.parse(this.db[date]) : null);
+  }
+}
+
+const data2025: Record<string, Data> = {
+  '2025-01-01': {
+    date: '2025-01-01',
+    praise: {
+      scope: '歷代志上 16:34 CCB',
+      content: '你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!',
+    },
+    devotional: {
+      scope: '出埃及記 第八章',
+    },
   },
 };
