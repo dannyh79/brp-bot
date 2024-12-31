@@ -27,8 +27,6 @@ export const get2024Plan: UsecaseConstructor<Repository<OldPlan>, GetPlanArgs, G
     return plan;
   };
 
-export default get2024Plan;
-
 export const GetPlanOutputSchema = z.object({
   date: z.string().openapi({ example: '2025-01-01' }),
   praise: z.object({
@@ -64,3 +62,5 @@ export const getPlan: UsecaseConstructor<Repository<Plan>, GetPlanArgs, GetPlanO
 
     return plan;
   };
+
+export default getPlan;

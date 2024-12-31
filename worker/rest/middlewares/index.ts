@@ -1,6 +1,6 @@
 import { Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
-import getPlan from '@/readingPlans/getPlan';
+import { get2024Plan as getPlan } from '@/readingPlans/getPlan';
 import { InMemoryPlanRepository } from '@/repositories/inMemoryPlan';
 import { AppContext, Vars } from '@worker/rest/types';
 
