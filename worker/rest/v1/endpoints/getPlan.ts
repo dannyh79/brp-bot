@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { GetPlanOutputSchema } from '@/readingPlans';
-import { withUsecases } from '../middlewares';
+import { withUsecases } from '../../middlewares';
 
 export const GetPlanQuery = z.object({
   date: z.string().openapi({ example: '2025-01-01' }),
@@ -8,7 +8,7 @@ export const GetPlanQuery = z.object({
 
 export const getPlan = createRoute({
   method: 'get',
-  path: '/plan',
+  path: '/api/v1/plan',
   tags: ['Plans'],
   summary: `Returns a plan`,
   request: {

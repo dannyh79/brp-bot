@@ -2,10 +2,10 @@ import { SELF } from 'cloudflare:test';
 
 const stubDomain = 'https://brp-bot.pages.dev';
 
-describe('/plan', () => {
+describe('/api/v1/plan', () => {
   // FIXME: Test against stub data
   it('responds 200 with plan for the date', async () => {
-    const response = await SELF.fetch(`${stubDomain}/plan?date=2025-01-01`);
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       date: '2025-01-01',

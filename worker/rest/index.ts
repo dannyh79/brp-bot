@@ -1,13 +1,13 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
-import * as endpoints from './endpoints/getPlan';
+import * as endpoints from './v1/endpoints/getPlan';
 
 const app = new OpenAPIHono();
 
 // Setup Swagger UI
-app.get('/ui', swaggerUI({ url: '/doc' }));
+app.get('/api/v1/ui', swaggerUI({ url: '/api/v1/doc' }));
 //#region Uncomment this to expose POST /callback endpoint (for retrieving recipient ID for LINE)
-// app.post('/callback', async (ctx) => {
+// app.post('/api/v1/callback', async (ctx) => {
 //   const res = await ctx.req.json();
 //   console.log(res);
 //   return ctx.json({}, 200);
@@ -28,7 +28,7 @@ app.openapi(endpoints.getPlan, async (c) => {
 });
 
 // Setup OpenAPI registry
-app.doc('/doc', {
+app.doc('/api/v1/doc', {
   openapi: '3.0.0',
   info: {
     version: '1.0.0',
