@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { GetPlanOutputSchema } from '@/readingPlans';
-import { withUsecases } from '../../middlewares';
+import { withUsecases } from '@worker/rest/middlewares';
 
 export const GetPlanQuery = z.object({
   date: z.string().openapi({ example: '2025-01-01' }),
