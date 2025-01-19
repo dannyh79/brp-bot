@@ -4,8 +4,6 @@ import * as endpoints from './v1/endpoints/getPlan';
 
 const app = new OpenAPIHono();
 
-// Setup Swagger UI
-app.get('/api/v1/ui', swaggerUI({ url: '/api/v1/doc' }));
 //#region Uncomment this to expose POST /callback endpoint (for retrieving recipient ID for LINE)
 // app.post('/api/v1/callback', async (ctx) => {
 //   const res = await ctx.req.json();
@@ -35,5 +33,8 @@ app.doc('/api/v1/doc', {
     title: 'API',
   },
 });
+
+// Setup Swagger UI
+app.get('/api/v1/ui', swaggerUI({ url: '/api/v1/doc' }));
 
 export default app;
