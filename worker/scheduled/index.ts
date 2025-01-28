@@ -1,9 +1,11 @@
 import { getPlan } from '@/readingPlans';
-import InMemoryPlanRepository from '@/repositories/inMemoryPlan';
 import { LineMultiNotifier } from '@/services/notifiers';
 import getPlanThenNotifyLine from './getPlanThenNotifyLine';
+import D1PlanRepository from '@/repositories/d1Plan';
 
-const repo = new InMemoryPlanRepository();
-const getPlanUsecase = getPlan(repo);
-
-export default getPlanThenNotifyLine(getPlanUsecase)(LineMultiNotifier);
+export default {
+  async scheduled(_event: ScheduledEvent, env: Env) {
+    const repo = new D1PlanRepository(env.DB);
+    getPlanThenNotifyLine(getPlan(repo))(LineMultiNotifier);
+  },
+};
