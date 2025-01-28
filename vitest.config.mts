@@ -7,6 +7,7 @@ const migrations = await readD1Migrations(migrationsPath);
 export default defineWorkersConfig({
   test: {
     globals: true,
+    setupFiles: ['./test/setups/applyMigrations.ts'],
     poolOptions: {
       workers: {
         wrangler: { configPath: './wrangler.toml' },
