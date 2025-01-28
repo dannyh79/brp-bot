@@ -44,13 +44,18 @@ npx wrangler secret bulk < secrets.json
 
 ## Development
 
-### Create Migration and Apply Them
+### Interacting with D1 Database
 
 ```sh
+# Create migration
 pnpm db:migrate:create {{ migration_file_name }}
-# Then edith the file in /migrations
+# Then edit the file in /migrations
 
+# Apply migrations
 pnpm db:migrate
+
+# Access local database; requires sqlite client `sqlite3`
+sqlite3 .wrangler/state/v3/d1/miniflare-D1DatabaseObject/{{ some_version }}.sqlite
 ```
 
 ## Gotchas
