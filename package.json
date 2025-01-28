@@ -10,6 +10,7 @@
     "lint:fix": "eslint . --fix",
     "deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply DB --local",
+    "db:migrate:create": "wrangler d1 migrations create DB",
     "dev": "wrangler dev",
     "start": "wrangler dev",
     "test": "vitest",

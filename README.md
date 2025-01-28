@@ -42,6 +42,17 @@ pnpm run deploy
 npx wrangler secret bulk < secrets.json
 ```
 
+## Development
+
+### Create Migration and Apply Them
+
+```sh
+pnpm db:migrate:create {{ migration_file_name }}
+# Then edith the file in /migrations
+
+pnpm db:migrate
+```
+
 ## Gotchas
 
 ### LINE
