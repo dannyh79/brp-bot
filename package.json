@@ -11,6 +11,7 @@
     "deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply DB --local",
     "db:migrate:create": "wrangler d1 migrations create DB",
+    "db:seed": "wrangler d1 execute DB --local --file='./worker/d1/seed.sql'",
     "dev": "wrangler dev",
     "start": "wrangler dev",
     "test": "vitest",
