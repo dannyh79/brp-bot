@@ -17,6 +17,8 @@ pnpm dev
 cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars
 
+pnpm db:migrate
+
 # To test scheduled tasks
 # See: https://developers.cloudflare.com/workers/examples/cron-trigger/#test-cron-triggers-using-wrangler
 pnpm dev --test-scheduled
