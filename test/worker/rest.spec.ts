@@ -1,9 +1,30 @@
-import { SELF } from 'cloudflare:test';
+import { SELF, env } from 'cloudflare:test';
+
+const data = {
+  date: '2025-01-01',
+  praise: {
+    scope: '歷代志上 16:34 CCB',
+    content: '你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！',
+  },
+  devotional: {
+    scope: '出埃及記 第八章',
+  },
+};
+
+beforeEach(async () => {
+  await env.DB.prepare(
+    `
+    INSERT INTO plans (date, praise_scope, praise_content, devotional_scope)
+    VALUES (?1, ?2, ?3, ?4)
+    `,
+  )
+    .bind(data.date, data.praise.scope, data.praise.content, data.devotional.scope)
+    .run();
+});
 
 const stubDomain = 'https://brp-bot.pages.dev';
 
 describe('/api/v1/plan', () => {
-  // FIXME: Test against stub data
   it('responds 200 with plan for the date', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
     expect(response.status).toBe(200);
