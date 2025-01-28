@@ -5,4 +5,5 @@ interface Env {
   LINE_RECEIPIENT_ID: string;
   LINE_ADMIN_RECEIPIENT_ID: string;
   LINE_CHANNEL_ACCESS_TOKEN: string;
+  DB: D1Database;
 }
