@@ -171,3 +171,7 @@ dist
 .dev.vars
 .wrangler/
 secrets.json
+
+# scripts
+
+**/service-account.json
