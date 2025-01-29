@@ -11,4 +11,4 @@ export default {
     await getPlanThenNotifyLine(getPlan(repo))(LineMultiNotifier)(event, env, ctx);
   },
   fetch: app.fetch,
-};
+} satisfies ExportedHandler<Env>;
