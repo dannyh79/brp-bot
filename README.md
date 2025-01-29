@@ -10,7 +10,7 @@
 asdf install
 
 cp .dev.vars.example .dev.vars
-# Then update the values in .dev.vars
+# Then update the values in .dev.vars to your needs
 
 pnpm db:migrate
 pnpm db:seed
