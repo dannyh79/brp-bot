@@ -17,6 +17,9 @@ pnpm dev
 cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars
 
+pnpm db:migrate
+pnpm db:seed
+
 # To test scheduled tasks
 # See: https://developers.cloudflare.com/workers/examples/cron-trigger/#test-cron-triggers-using-wrangler
 pnpm dev --test-scheduled
@@ -38,6 +41,22 @@ cp secrets.json.example secrets.json
 npx wrangler login
 pnpm run deploy
 npx wrangler secret bulk < secrets.json
+```
+
+## Development
+
+### Interacting with D1 Database
+
+```sh
+# Create migration
+pnpm db:migrate:create {{ migration_file_name }}
+# Then edit the file in /migrations
+
+# Apply migrations
+pnpm db:migrate
+
+# Access local database; requires sqlite client `sqlite3`
+sqlite3 .wrangler/state/v3/d1/miniflare-D1DatabaseObject/{{ some_version }}.sqlite
 ```
 
 ## Gotchas

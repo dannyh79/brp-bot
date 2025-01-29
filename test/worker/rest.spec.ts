@@ -1,9 +1,13 @@
 import { SELF } from 'cloudflare:test';
+import { insertPlanRecord } from 'test/helpers/d1';
+
+beforeEach(async () => {
+  await insertPlanRecord();
+});
 
 const stubDomain = 'https://brp-bot.pages.dev';
 
 describe('/api/v1/plan', () => {
-  // FIXME: Test against stub data
   it('responds 200 with plan for the date', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
     expect(response.status).toBe(200);
