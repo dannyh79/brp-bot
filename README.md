@@ -9,11 +9,6 @@
 ```sh
 asdf install
 
-pnpm dev
-
-# OpenAPI available at http://localhost:8787/doc
-# SwaggerUI available at http://localhost:8787/ui
-
 cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars
 
@@ -23,6 +18,9 @@ pnpm db:seed
 # To test scheduled tasks
 # See: https://developers.cloudflare.com/workers/examples/cron-trigger/#test-cron-triggers-using-wrangler
 pnpm dev --test-scheduled
+
+# OpenAPI available at http://localhost:8787/api/v1/doc
+# SwaggerUI available at http://localhost:8787/api/v1/ui
 
 # Use cron query value by desired schedule
 curl "http://localhost:8787/__scheduled?cron=0+0+*+*+*"
