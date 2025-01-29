@@ -53,6 +53,12 @@ pnpm db:migrate:create {{ migration_file_name }}
 # Apply migrations
 pnpm db:migrate
 
+# Write data from GoogleSheets spreadsheet to D1 database
+# Prereqs:
+# - GoogleSheets sheet (Sheet schema: TODO)
+# - GCP service account that has access to the sheet
+SPREADSHEET_ID={{ GoogleSheets spreadsheet ID }} SHEET_NAME={{ GoogleSheets sheet name }} KEY_FILE_PATH={{ /path/to/your/gcp-service-account.json }} pnpm db:write
+
 # Access local database; requires sqlite client `sqlite3`
 sqlite3 .wrangler/state/v3/d1/miniflare-D1DatabaseObject/{{ some_version }}.sqlite
 ```
