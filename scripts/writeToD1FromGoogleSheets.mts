@@ -77,8 +77,10 @@ const toChinesePunctuation = (input: string): string => {
     '~': '～',
   };
 
-  return input.replace(/[,.:;!?()[\]{}"'<>-_~]/g, (match) => halfToFullMap[match] || match);
+  return input.replace(/[,.:;!?()[\]{}"'<>-_~]\s?/g, (match) => halfToFullMap[match.trimEnd()] || match);
 };
+
+const toTrimmed = (input: string): string => input.trim();
 
 const formatRows = (rows: string[][]): PlanDataRow[] => {
   const headers = rows[0];
@@ -86,7 +88,7 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
   return dataRows.map((row: string[]) =>
     row.reduce((object, cell, index) => {
       const field = headers[index];
-      object[field] = field === 'praise_content' ? toChinesePunctuation(cell) : cell;
+      object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
       return object;
     }, {} as PlanDataRow),
   );
