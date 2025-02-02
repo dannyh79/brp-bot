@@ -37,7 +37,7 @@ type PlanDataRow = {
   devotional_scope: string;
 };
 
-const fetchSheetData = async (): Promise<PlanDataRow[]> => {
+const fetchSheetData = async (): Promise<string[][]> => {
   const auth = await authenticate();
   const sheets = google.sheets({ version: 'v4', auth });
 
@@ -51,12 +51,44 @@ const fetchSheetData = async (): Promise<PlanDataRow[]> => {
     throw new Error('No data found or only headers present in data.');
   }
 
+  return rows;
+};
+
+const toChinesePunctuation = (input: string): string => {
+  const halfToFullMap: { [key: string]: string } = {
+    ',': '，',
+    '.': '。',
+    ':': '：',
+    ';': '；',
+    '!': '！',
+    '?': '？',
+    '(': '（',
+    ')': '）',
+    '[': '【',
+    ']': '】',
+    '{': '｛',
+    '}': '｝',
+    '"': '“',
+    "'": '‘',
+    '<': '《',
+    '>': '》',
+    '-': '－',
+    '_': '＿',
+    '~': '～',
+  };
+
+  return input.replace(/[,.:;!?()[\]{}"'<>-_~]\s?/g, (match) => halfToFullMap[match.trimEnd()] || match);
+};
+
+const toTrimmed = (input: string): string => input.trim();
+
+const formatRows = (rows: string[][]): PlanDataRow[] => {
   const headers = rows[0];
   const dataRows = rows.slice(1);
-
   return dataRows.map((row: string[]) =>
     row.reduce((object, cell, index) => {
-      object[headers[index]] = cell;
+      const field = headers[index];
+      object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
       return object;
     }, {} as PlanDataRow),
   );
@@ -86,7 +118,7 @@ const writeToD1 = (rows: PlanDataRow[]) => {
 };
 
 if (SPREADSHEET_ID) {
-  await fetchSheetData().then(writeToD1);
+  await fetchSheetData().then(formatRows).then(writeToD1);
 } else {
   console.warn(helpMsg);
 }
