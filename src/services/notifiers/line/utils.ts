@@ -1,7 +1,7 @@
 import { GetPlanOutput } from '@/readingPlans';
 import { LineMessage } from './types';
 
-const formatDateString = (str: string): string => {
+const formatDateString = (str: string): { date: string; dayOfWeek: string } => {
   const date = new Date(str);
   if (isNaN(date.getTime())) {
     throw new Error(`Invalid date string: ${str}`);
@@ -12,15 +12,19 @@ const formatDateString = (str: string): string => {
 
   const month = date.getMonth() + 1; // Months are 0-based
   const day = date.getDate();
-  return `${month}/${day} ${dayOfWeek}`;
+  return {
+    date: `${month}/${day}`,
+    dayOfWeek,
+  };
 };
 
 export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
-  const { date, praise, repentence, devotional, prayer } = arg;
+  const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
+  const { date, dayOfWeek } = formatDateString(dateFromData);
 
   return {
     type: 'flex',
-    altText: `Bible Reading Plan for ${date}`,
+    altText: `Bible Reading Plan for ${dateFromData}`,
     contents: {
       type: 'bubble',
       size: 'giga',
@@ -46,7 +50,7 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
               },
               {
                 type: 'text',
-                text: formatDateString(date).split(' ')[0],
+                text: date,
                 margin: 'none',
                 align: 'start',
                 offsetBottom: '15%',
@@ -54,7 +58,7 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
               },
               {
                 type: 'text',
-                text: formatDateString(date).split(' ')[1],
+                text: dayOfWeek,
                 offsetBottom: '9%',
                 align: 'start',
                 offsetStart: 'lg',
