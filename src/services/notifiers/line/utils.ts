@@ -1,7 +1,7 @@
 import { GetPlanOutput } from '@/readingPlans';
 import { LineMessage } from './types';
 
-const formatDateString = (str: string): string => {
+const formatDateString = (str: string): { date: string; dayOfWeek: string } => {
   const date = new Date(str);
   if (isNaN(date.getTime())) {
     throw new Error(`Invalid date string: ${str}`);
@@ -12,19 +12,86 @@ const formatDateString = (str: string): string => {
 
   const month = date.getMonth() + 1; // Months are 0-based
   const day = date.getDate();
-  return `${month}/${day} ${dayOfWeek}`;
+  return {
+    date: `${month}/${day}`,
+    dayOfWeek,
+  };
 };
 
 export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
-  const { date, praise, repentence, devotional, prayer } = arg;
+  const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
+  const { date, dayOfWeek } = formatDateString(dateFromData);
+  const [personalPrayer, ...mainPrayer] = prayer.split('\n');
 
   return {
     type: 'flex',
-    altText: `Bible Reading Plan for ${date}`,
+    altText: `Bible Reading Plan for ${dateFromData}`,
     contents: {
       type: 'bubble',
       size: 'giga',
       header: {
+        type: 'box',
+        layout: 'horizontal',
+        contents: [
+          {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: date,
+              },
+              {
+                type: 'text',
+                text: dayOfWeek,
+              },
+            ],
+            flex: 2,
+            alignItems: 'center',
+          },
+          {
+            type: 'box',
+            layout: 'horizontal',
+            contents: [
+              {
+                type: 'text',
+                text: '好好靈修',
+                color: '#1D292E',
+                size: 'xl',
+                flex: 2,
+                align: 'end',
+              },
+              {
+                type: 'text',
+                text: 'X',
+                size: 'md',
+                align: 'center',
+              },
+              {
+                type: 'box',
+                layout: 'vertical',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'DAILY',
+                  },
+                  {
+                    type: 'text',
+                    text: 'DEVOTION',
+                  },
+                ],
+                flex: 3,
+              },
+            ],
+            flex: 10,
+            alignItems: 'center',
+          },
+        ],
+        paddingAll: '20px',
+        backgroundColor: '#FFCC32',
+        spacing: 'md',
+      },
+      body: {
         type: 'box',
         layout: 'vertical',
         contents: [
@@ -33,463 +100,282 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
             layout: 'vertical',
             contents: [
               {
-                type: 'text',
-                text: '好好靈修',
-                color: '#1D292E',
-                size: 'xl',
-                flex: 4,
-                weight: 'regular',
-              },
-            ],
-          },
-        ],
-        paddingAll: '20px',
-        backgroundColor: '#FFCC32',
-        spacing: 'md',
-        paddingTop: '22px',
-      },
-      body: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'text',
-            text: formatDateString(date),
-            color: '#b7b7b7',
-            size: 'xs',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
-                type: 'text',
-                text: '讚美',
-                size: 'sm',
-                gravity: 'center',
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                  {
-                    type: 'box',
-                    layout: 'vertical',
-                    contents: [],
-                    cornerRadius: '30px',
-                    height: '12px',
-                    width: '12px',
-                    borderColor: '#6486E3',
-                    borderWidth: '2px',
-                  },
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 0,
-              },
-              // NOTE: Placeholder for layout
-              {
-                type: 'text',
-                text: ' ',
-                gravity: 'center',
-                flex: 8,
-                size: 'sm',
-              },
-            ],
-            spacing: 'lg',
-            cornerRadius: '30px',
-            margin: 'xl',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
-                type: 'box',
-                layout: 'baseline',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'box',
-                    layout: 'horizontal',
-                    contents: [
-                      {
-                        type: 'filler',
-                      },
-                      {
-                        type: 'box',
-                        layout: 'vertical',
-                        contents: [],
-                        width: '2px',
-                        backgroundColor: '#6486E3',
-                      },
-                      {
-                        type: 'filler',
-                      },
-                    ],
-                    flex: 1,
-                  },
-                ],
-                width: '12px',
-              },
-              {
-                type: 'text',
-                text: `${praise.content} (${praise.scope})`,
-                gravity: 'center',
-                flex: 8,
-                size: 'xs',
-                color: '#8c8c8c',
-                wrap: true,
-              },
-            ],
-            spacing: 'lg',
-            paddingBottom: 'md',
-            paddingTop: 'sm',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
                 type: 'box',
                 layout: 'horizontal',
                 contents: [
                   {
-                    type: 'text',
-                    text: '悔改',
-                    gravity: 'center',
-                    size: 'sm',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                  {
                     type: 'box',
                     layout: 'vertical',
-                    contents: [],
-                    cornerRadius: '30px',
-                    width: '12px',
-                    height: '12px',
-                    borderWidth: '2px',
-                    borderColor: '#6486E3',
-                  },
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 0,
-              },
-              // NOTE: Placeholder for layout
-              {
-                type: 'text',
-                text: ' ',
-                gravity: 'center',
-                flex: 8,
-                size: 'sm',
-              },
-            ],
-            spacing: 'lg',
-            cornerRadius: '30px',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
-                type: 'box',
-                layout: 'baseline',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'box',
-                    layout: 'horizontal',
                     contents: [
                       {
-                        type: 'filler',
+                        type: 'text',
+                        text: '讚',
+                        size: 'lg',
                       },
                       {
-                        type: 'box',
-                        layout: 'vertical',
-                        contents: [],
-                        width: '2px',
-                        backgroundColor: '#6486E3',
-                      },
-                      {
-                        type: 'filler',
+                        type: 'text',
+                        text: '美',
+                        size: 'lg',
                       },
                     ],
+                    spacing: 'xl',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     flex: 1,
                   },
-                ],
-                width: '12px',
-              },
-              {
-                type: 'text',
-                text: repentence,
-                gravity: 'center',
-                flex: 8,
-                size: 'xs',
-                color: '#8c8c8c',
-                wrap: true,
-              },
-            ],
-            spacing: 'lg',
-            paddingTop: 'sm',
-            paddingBottom: 'md',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
-                type: 'box',
-                layout: 'horizontal',
-                contents: [
                   {
                     type: 'text',
-                    text: '反思',
-                    gravity: 'center',
-                    size: 'sm',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                  {
-                    type: 'box',
-                    layout: 'vertical',
-                    contents: [],
-                    cornerRadius: '30px',
-                    width: '12px',
-                    height: '12px',
-                    borderWidth: '2px',
-                    borderColor: '#6486E3',
-                  },
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 0,
-              },
-              // NOTE: Placeholder for layout
-              {
-                type: 'text',
-                text: ' ',
-                gravity: 'center',
-                flex: 8,
-                size: 'sm',
-              },
-            ],
-            spacing: 'lg',
-            cornerRadius: '30px',
-          },
-          {
-            type: 'box',
-            layout: 'horizontal',
-            contents: [
-              {
-                type: 'box',
-                layout: 'baseline',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'box',
-                    layout: 'horizontal',
-                    contents: [
-                      {
-                        type: 'filler',
-                      },
-                      {
-                        type: 'box',
-                        layout: 'vertical',
-                        contents: [],
-                        width: '2px',
-                        backgroundColor: '#6486E3',
-                      },
-                      {
-                        type: 'filler',
-                      },
-                    ],
-                    flex: 1,
-                  },
-                ],
-                width: '12px',
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
-                flex: 8,
-                contents: [
-                  {
-                    type: 'text',
-                    text: devotional.scope,
-                    gravity: 'center',
-                    size: 'sm',
-                  },
-                  {
-                    type: 'text',
-                    text: devotional.content.join('\n'),
-                    gravity: 'center',
+                    text: `${praise.content}\n(${praise.scope})`,
+                    flex: 11,
                     size: 'xs',
-                    color: '#8c8c8c',
+                    color: '#1C1C1D',
                     wrap: true,
                   },
                 ],
+                paddingStart: 'md',
+                paddingEnd: 'md',
+                spacing: 'lg',
+              },
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [],
+                backgroundColor: '#FFFFFFAA',
+                borderWidth: 'light',
+                width: '95%',
+                offsetStart: '5%',
+                offsetEnd: '5%',
               },
             ],
             spacing: 'lg',
-            paddingTop: 'sm',
+            cornerRadius: 'md',
+            backgroundColor: '#C7CADA',
+            paddingTop: 'lg',
             paddingBottom: 'md',
           },
           {
             type: 'box',
-            layout: 'horizontal',
+            layout: 'vertical',
             contents: [
               {
                 type: 'box',
                 layout: 'horizontal',
                 contents: [
                   {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: '悔',
+                        size: 'lg',
+                      },
+                      {
+                        type: 'text',
+                        text: '改',
+                        size: 'lg',
+                      },
+                    ],
+                    flex: 1,
+                    spacing: 'xl',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
+                  {
                     type: 'text',
-                    text: '祈求',
-                    gravity: 'center',
-                    size: 'sm',
+                    text: repentence,
+                    flex: 11,
+                    size: 'xs',
+                    color: '#1C1C1D',
+                    wrap: true,
                   },
                 ],
-                flex: 1,
+                spacing: 'lg',
+                paddingStart: 'md',
+                paddingEnd: 'md',
               },
               {
                 type: 'box',
-                layout: 'vertical',
+                layout: 'horizontal',
+                contents: [],
+                backgroundColor: '#C7CADAAA',
+                borderWidth: 'light',
+                width: '95%',
+                offsetStart: '5%',
+                offsetEnd: '5%',
+              },
+            ],
+            spacing: 'lg',
+            paddingBottom: 'md',
+            paddingTop: 'lg',
+            backgroundColor: '#FFFFFF',
+          },
+          {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'box',
+                layout: 'horizontal',
                 contents: [
                   {
-                    type: 'filler',
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: '反',
+                        size: 'lg',
+                      },
+                      {
+                        type: 'text',
+                        text: '思',
+                        size: 'lg',
+                        align: 'start',
+                      },
+                    ],
+                    flex: 1,
+                    spacing: 'xl',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   },
                   {
                     type: 'box',
                     layout: 'vertical',
-                    contents: [],
-                    cornerRadius: '30px',
-                    width: '12px',
-                    height: '12px',
-                    borderWidth: '2px',
-                    borderColor: '#6486E3',
-                  },
-                  {
-                    type: 'filler',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: devotional.scope,
+                        size: 'sm',
+                        wrap: true,
+                      },
+                      {
+                        type: 'text',
+                        text: devotional.content.join('\n'),
+                        size: 'xs',
+                        color: '#1C1C1D',
+                        wrap: true,
+                        flex: 9,
+                      },
+                    ],
+                    flex: 11,
+                    paddingTop: 'none',
+                    spacing: 'md',
                   },
                 ],
-                flex: 0,
+                paddingStart: 'md',
+                paddingEnd: 'md',
+                spacing: 'lg',
               },
-              // NOTE: Placeholder for layout
               {
-                type: 'text',
-                text: ' ',
-                gravity: 'center',
-                flex: 8,
-                size: 'sm',
+                type: 'box',
+                layout: 'horizontal',
+                contents: [],
+                backgroundColor: '#FFFFFFAA',
+                borderWidth: 'light',
+                width: '95%',
+                offsetStart: '5%',
+                offsetEnd: '5%',
               },
             ],
             spacing: 'lg',
-            cornerRadius: '30px',
+            cornerRadius: 'md',
+            backgroundColor: '#C7CADA',
+            paddingTop: 'lg',
+            paddingBottom: 'md',
           },
           {
             type: 'box',
-            layout: 'horizontal',
+            layout: 'vertical',
             contents: [
               {
                 type: 'box',
-                layout: 'baseline',
-                contents: [
-                  {
-                    type: 'filler',
-                  },
-                ],
-                flex: 1,
-              },
-              {
-                type: 'box',
-                layout: 'vertical',
+                layout: 'horizontal',
                 contents: [
                   {
                     type: 'box',
-                    layout: 'horizontal',
+                    layout: 'vertical',
                     contents: [
                       {
-                        type: 'filler',
+                        type: 'text',
+                        text: '祈',
+                        size: 'lg',
+                      },
+                      {
+                        type: 'text',
+                        text: '求',
+                        size: 'lg',
+                      },
+                    ],
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flex: 1,
+                    spacing: 'xl',
+                  },
+                  {
+                    type: 'box',
+                    layout: 'vertical',
+                    flex: 11,
+                    contents: [
+                      {
+                        type: 'text',
+                        text: personalPrayer,
+                        size: 'xs',
+                        color: '#1C1C1D',
+                        wrap: true,
                       },
                       {
                         type: 'box',
-                        layout: 'vertical',
-                        contents: [],
-                        width: '2px',
-                        backgroundColor: '#6486E3',
-                      },
-                      {
-                        type: 'filler',
+                        layout: 'horizontal',
+                        contents: [
+                          {
+                            type: 'box',
+                            layout: 'horizontal',
+                            contents: [
+                              {
+                                type: 'box',
+                                layout: 'vertical',
+                                contents: [],
+                                borderWidth: 'light',
+                                borderColor: '#E2E2E299',
+                                width: '1px',
+                              },
+                            ],
+                            flex: 1,
+                          },
+                          {
+                            type: 'text',
+                            text: mainPrayer.join('\n'),
+                            size: 'xs',
+                            color: '#1C1C1DAA',
+                            wrap: true,
+                            flex: 24,
+                          },
+                        ],
                       },
                     ],
-                    flex: 1,
+                    spacing: 'md',
                   },
                 ],
-                width: '12px',
+                paddingStart: 'md',
+                paddingEnd: 'md',
+                spacing: 'sm',
               },
               {
-                type: 'text',
-                text: prayer,
-                gravity: 'center',
-                flex: 8,
-                size: 'xs',
-                color: '#8c8c8c',
-                wrap: true,
+                type: 'box',
+                layout: 'horizontal',
+                contents: [],
+                backgroundColor: '#C7CADAAA',
+                borderWidth: 'light',
+                width: '95%',
+                offsetStart: '5%',
+                offsetEnd: '5%',
               },
             ],
             spacing: 'lg',
-            paddingTop: 'sm',
+            backgroundColor: '#FFFFFF',
+            paddingTop: 'lg',
+            paddingBottom: 'md',
           },
         ],
       },
