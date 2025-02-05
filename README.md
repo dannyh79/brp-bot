@@ -9,6 +9,9 @@
 ```sh
 asdf install
 
+cp wrangler.toml.example wrangler.toml
+# Then update the values in wrangler.toml to your needs
+
 cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars to your needs
 
