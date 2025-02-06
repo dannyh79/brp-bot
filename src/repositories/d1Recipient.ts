@@ -18,7 +18,8 @@ export default class D1RecipientRepository implements Repository<Recipient> {
   constructor(private readonly db: D1Database) {}
 
   async all() {
-    return Promise.resolve([]);
+    const { results } = await this.db.prepare('SELECT * FROM recipients').all<Record>();
+    return results.map((r) => RecipientSchema.parse(toParsable(r)));
   }
 
   async findById(id: string): Promise<Recipient | null> {
