@@ -6,11 +6,7 @@ const recipient = recipientRecordFixture;
 class StubRepository implements Repository<Recipient> {
   data = recipient;
   save(entity: Recipient) {
-    if (entity.id !== this.data.id) {
-      return Promise.reject();
-    }
-
-    return Promise.resolve();
+    return entity.id === this.data.id ? Promise.reject() : Promise.resolve();
   }
 
   findById() {
@@ -22,12 +18,14 @@ describe('saveRecipient()', () => {
   const repo = new StubRepository();
 
   it('returns recipient object', async () => {
-    expect(await saveRecipient(repo)({ id: 'C5678f49365c6b492b337189e3343a9d9' })).toMatchObject({
+    const result = await saveRecipient(repo)({ id: 'C5678f49365c6b492b337189e3343a9d9' });
+    expect(result).toMatchObject({
       id: 'C5678f49365c6b492b337189e3343a9d9',
     });
   });
 
   it('returns null', async () => {
-    expect(await saveRecipient(repo)({ id: 'C1234f49365c6b492b337189e3343a9d9' })).toBeNull();
+    const result = await saveRecipient(repo)(recipient);
+    expect(result).toBeNull();
   });
 });

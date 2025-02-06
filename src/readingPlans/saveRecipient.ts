@@ -13,12 +13,14 @@ export const saveRecipient: UsecaseConstructor<
   Repository<Recipient>,
   SaveRecipientInput,
   SaveRecipientOutput
-> = () => async (args) => {
-  const { id } = args;
-  if (id === 'C1234f49365c6b492b337189e3343a9d9') {
+> = (repo) => async (args) => {
+  const recipient = NewRecipient(args);
+  try {
+    await repo.save(recipient);
+    return recipient;
+  } catch {
     return null;
   }
-  return NewRecipient({ id });
 };
 
 export default saveRecipient;
