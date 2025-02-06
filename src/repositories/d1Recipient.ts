@@ -27,4 +27,6 @@ export default class D1RecipientRepository implements Repository<Recipient> {
 
     return RecipientSchema.parse(toParsable(result));
   }
+
+  async save() {}
 }
