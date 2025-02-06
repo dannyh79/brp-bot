@@ -17,6 +17,10 @@ class StubRepository implements Repository<Plan> {
   findById(date: string): Promise<Plan | null> {
     return Promise.resolve(date === stubData.date ? parsedStubData : null);
   }
+
+  save() {
+    return Promise.resolve();
+  }
 }
 
 describe('getPlan()', () => {
