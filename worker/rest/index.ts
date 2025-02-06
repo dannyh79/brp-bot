@@ -27,9 +27,9 @@ app.openapi(endpoints.getPlan, async (c) => {
 
 app.openapi(endpoints.saveReceipient, async (c) => {
   const body = c.req.valid('json');
-
-  // TODO: impl
-  return c.body(null, body.id === 'C1234f49365c6b492b337189e3343a9d9' ? 304 : 204);
+  const usecase = c.get('saveRecipient');
+  const result = await usecase(body);
+  return c.body(null, result ? 204 : 304);
 });
 
 // Setup OpenAPI registry
