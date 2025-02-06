@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import { getPlan } from '@/readingPlans';
+import { getPlan, saveRecipient } from '@/readingPlans';
 
 export type Bindings = {
   DB: D1Database;
@@ -7,6 +7,7 @@ export type Bindings = {
 
 export type Vars = {
   getPlan: ReturnType<typeof getPlan>;
+  saveRecipient: ReturnType<typeof saveRecipient>;
 };
 
 export type AppContext = Context<{

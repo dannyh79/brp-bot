@@ -1,6 +1,6 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
-import * as endpoints from './v1/endpoints/getPlan';
+import * as endpoints from './v1/endpoints';
 
 const app = new OpenAPIHono();
 
@@ -23,6 +23,13 @@ app.openapi(endpoints.getPlan, async (c) => {
   } else {
     return c.json(data, 200);
   }
+});
+
+app.openapi(endpoints.saveReceipient, async (c) => {
+  const body = c.req.valid('json');
+  const usecase = c.get('saveRecipient');
+  const result = await usecase(body);
+  return c.body(null, result ? 204 : 304);
 });
 
 // Setup OpenAPI registry
