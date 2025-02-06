@@ -18,6 +18,10 @@ class StubRepository implements Repository<Plan> {
     return Promise.resolve(date === stubData.date ? parsedStubData : null);
   }
 
+  all() {
+    return Promise.resolve([]);
+  }
+
   save() {
     return Promise.resolve();
   }

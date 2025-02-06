@@ -32,5 +32,8 @@ export default class D1PlanRepository implements Repository<Plan> {
     return PlanSchema.parse(toParsable(result));
   }
 
+  async all() {
+    return Promise.resolve([]);
+  }
   async save() {}
 }

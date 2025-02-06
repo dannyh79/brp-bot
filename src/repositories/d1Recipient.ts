@@ -17,6 +17,10 @@ const toParsable = (r: Record) => ({
 export default class D1RecipientRepository implements Repository<Recipient> {
   constructor(private readonly db: D1Database) {}
 
+  async all() {
+    return Promise.resolve([]);
+  }
+
   async findById(id: string): Promise<Recipient | null> {
     const stmt = this.db.prepare('SELECT * FROM recipients WHERE id = ?');
 
