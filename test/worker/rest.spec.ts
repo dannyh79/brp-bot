@@ -1,8 +1,8 @@
 import { SELF } from 'cloudflare:test';
-import { insertPlanRecord } from 'test/helpers/d1';
+import * as helper from 'test/helpers/d1';
 
 beforeEach(async () => {
-  await insertPlanRecord();
+  await helper.insertPlanRecord();
 });
 
 const stubDomain = 'https://brp-bot.pages.dev';
@@ -31,5 +31,33 @@ describe('GET /api/v1/plan', () => {
   it('responds 404', async () => {
     const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
+  });
+});
+
+describe('POST /api/v1/recipients', () => {
+  const recipient = helper.recipientRecordFixture;
+
+  beforeEach(async () => {
+    await helper.insertRecipientRecord();
+  });
+
+  it('responds 204 when saves a recipient', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: 'C5678f49365c6b492b337189e3343a9d9' }),
+    });
+    expect(response.status).toBe(204);
+    expect(await response.text()).toBe('');
+  });
+
+  it('responds 304', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: recipient.id }),
+    });
+    expect(response.status).toBe(304);
+    expect(await response.text()).toBe('');
   });
 });
