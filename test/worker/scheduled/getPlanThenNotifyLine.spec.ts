@@ -1,6 +1,7 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
 import { GetPlanOutput } from '@/readingPlans';
 import getPlanThenNotifyLine from '@worker/scheduled/getPlanThenNotifyLine';
+import * as helper from 'test/helpers/d1';
 
 const mockUsecase = vi.fn(() => Promise.resolve({} as GetPlanOutput | null));
 
@@ -12,6 +13,12 @@ MockNotifier.prototype.pushMessage = mockPushMessage;
 const loggerSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('getPlanThenNotifyLine()', () => {
+  const recipient = helper.recipientRecordFixture;
+
+  beforeEach(async () => {
+    await helper.insertRecipientRecord(recipient);
+  });
+
   afterEach(() => {
     mockUsecase.mockRestore();
     mockPushMessage.mockRestore();
@@ -25,7 +32,7 @@ describe('getPlanThenNotifyLine()', () => {
       cron: '0 0 * * *',
     });
     const ctx = createExecutionContext();
-    const targetReceipientIds = env.LINE_RECEIPIENT_IDS;
+    const targetReceipientIds = [recipient.id];
     await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
 
     expect(MockNotifier).toHaveBeenNthCalledWith(

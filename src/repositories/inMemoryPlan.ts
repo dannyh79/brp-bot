@@ -22,6 +22,9 @@ export default class InMemoryPlanRepository implements Repository<Plan> {
     return Promise.resolve(this.db[date] ? PlanSchema.parse(this.db[date]) : null);
   }
 
+  async all() {
+    return Promise.resolve([]);
+  }
   async save() {}
 }
 

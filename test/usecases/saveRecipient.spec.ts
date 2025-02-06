@@ -9,6 +9,10 @@ class StubRepository implements Repository<Recipient> {
     return entity.id === this.data.id ? Promise.reject() : Promise.resolve();
   }
 
+  all() {
+    return Promise.resolve([]);
+  }
+
   findById() {
     return Promise.resolve(null);
   }

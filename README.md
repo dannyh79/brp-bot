@@ -13,6 +13,9 @@ cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars to your needs
 
 pnpm db:migrate
+
+# Update worker/d1/seed.sql YOUR-LINE-GROUP-ID to your LINE group ID
+# See: Gotchas section for more info
 pnpm db:seed
 
 # To test scheduled tasks
@@ -67,15 +70,11 @@ sqlite3 .wrangler/state/v3/d1/miniflare-D1DatabaseObject/{{ some_version }}.sqli
 
 ### LINE
 
-#### Only One Receipient
-
-Scheduled notification is designated to send to only one LINE contact, `LINE_RECEIPIENT_ID`, for now.
-
-#### How to Get env `LINE_RECEIPIENT_ID`
+#### How to Get Your LINE Group's Group ID for Live Testing
 
 Assume a LINE bot is already configured:
 
-1. Expose endpoint `POST /callback` by uncomment the code block in /worker/rest/index.ts
+1. Expose endpoint `POST /api/v1/callback` by uncomment the code block in /worker/rest/index.ts
 2. Deploy to Cloudflare via `npx wrangler deploy`
 3. Set Webhook URL in "Messaging API" tab, from [LINE Developers console](https://developers.line.biz/console)
 4. Confirm "Use webhook" option is enabled; cURL response should include `"active":true`
@@ -85,15 +84,18 @@ Assume a LINE bot is already configured:
    -H 'Authorization: Bearer YOUR_LINE_CHANNEL_ACCESS_TOKEN' \
    -H 'Content-Type:application/json' \
    https://api.line.me/v2/bot/channel/webhook/endpoint
-   # {"endpoint":"https://example.workers.dev/callback","active":true}
+   # {"endpoint":"https://example.workers.dev/api/v1/callback","active":true}
    ```
 
-5. Monitor logs on Cloudflare to retrieve desired value from payload's `["events"][0]["source"]` field
+5. Invite your LINE bot into the LINE group
+
+6. Monitor logs on Cloudflare to retrieve `groupId` value from payload's `["events"][0]["source"]` field
 
    > https://developers.cloudflare.com/workers/observability/logs/ > https://developers.line.biz/en/docs/messaging-api/group-chats/#receiving-webhook-events
 
-6. Hide endpoint `POST /callback` by comment the code block in /worker/rest/index.ts and deploy again
-7. Disable "Use webhook" option from [LINE Developers console](https://developers.line.biz/console)
+7. Once retrieved the `groupId` Hide endpoint `POST /api/v1/callback` by comment the code block in /worker/rest/index.ts and deploy again
+8. Disable "Use webhook" option from [LINE Developers console](https://developers.line.biz/console)
+9. Replace /worker/d1/seed.sql `YOUR-LINE-GROUP-ID` value by the `groupId`, then run `pnpm db:seed`
 
 #### How to Get env `LINE_ADMIN_RECEIPIENT_ID`
 
