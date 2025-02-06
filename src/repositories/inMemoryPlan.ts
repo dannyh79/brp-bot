@@ -21,6 +21,8 @@ export default class InMemoryPlanRepository implements Repository<Plan> {
   findById(date: string): Promise<Plan | null> {
     return Promise.resolve(this.db[date] ? PlanSchema.parse(this.db[date]) : null);
   }
+
+  async save() {}
 }
 
 const data: Record<string, Data> = {
