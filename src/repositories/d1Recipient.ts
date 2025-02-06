@@ -1,6 +1,6 @@
 import { Recipient, RecipientSchema } from '@/readingPlans';
 
-type Record = {
+export type Record = {
   id: string;
   /** datetime in string. */
   created_at: string;
@@ -28,5 +28,19 @@ export default class D1RecipientRepository implements Repository<Recipient> {
     return RecipientSchema.parse(toParsable(result));
   }
 
-  async save() {}
+  async save(receipient: Recipient) {
+    await this.db
+      .prepare(
+        `
+    INSERT INTO recipients (id, created_at, deleted_at)
+    VALUES (?1, ?2, ?3)
+    `,
+      )
+      .bind(
+        receipient.id,
+        receipient.createdAt.toISOString(),
+        receipient.deletedAt ? receipient.deletedAt.toISOString() : null,
+      )
+      .run();
+  }
 }
