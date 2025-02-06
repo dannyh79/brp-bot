@@ -64,6 +64,14 @@ npx wrangler secret bulk < secrets.json
 ### Interacting with D1 Database
 
 ```sh
+# For first time only:
+# 1. Create a local D1 database
+pnpm db:migrate
+# 2. Update  worker/d1/seed.sql YOUR-LINE-GROUP-ID to your LINE group ID
+# See: Gotchas section for more info
+# 3. Seed the local D1 database
+pnpm db:seed
+
 # Create migration
 pnpm db:migrate:create {{ migration_file_name }}
 # Then edit the file in /migrations
