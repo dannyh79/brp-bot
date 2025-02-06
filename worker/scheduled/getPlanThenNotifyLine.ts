@@ -1,5 +1,6 @@
 import { GetPlanArgs, GetPlanOutput } from '@/readingPlans';
 import { LineMultiNotifierArg, NotifierConstructor } from '@/services/notifiers';
+import D1RecipientRepository from '@/repositories/d1Recipient';
 import { ScheduledWorkerConstructor } from './types';
 
 /** The en-CA (Canadian English) locale outputs dates in YYYY-MM-DD format by default. */
@@ -29,9 +30,13 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
     prayer: ' ',
   };
 
+  // FIXME: Inject recipientRepo instead of hardcoding it here.
+  const recipientRepo = new D1RecipientRepository(env.DB);
+  const recipientIds = (await recipientRepo.all()).map((r) => r.id);
+
   const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-    to: data ? env.LINE_RECEIPIENT_IDS : [env.LINE_ADMIN_RECEIPIENT_ID],
+    to: data ? recipientIds : [env.LINE_ADMIN_RECEIPIENT_ID],
   });
   const result = await notifier.pushMessage(data ?? fallbackMessage);
   console.log(result);
