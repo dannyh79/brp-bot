@@ -48,4 +48,6 @@ export default class D1RecipientRepository implements Repository<Recipient> {
       )
       .run();
   }
+
+  async destroy() {}
 }

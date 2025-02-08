@@ -25,6 +25,10 @@ class StubRepository implements Repository<Plan> {
   save() {
     return Promise.resolve();
   }
+
+  destroy() {
+    return Promise.resolve();
+  }
 }
 
 describe('getPlan()', () => {

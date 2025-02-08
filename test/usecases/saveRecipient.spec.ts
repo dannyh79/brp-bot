@@ -16,6 +16,10 @@ class StubRepository implements Repository<Recipient> {
   findById() {
     return Promise.resolve(null);
   }
+
+  destroy() {
+    return Promise.resolve();
+  }
 }
 
 describe('saveRecipient()', () => {
