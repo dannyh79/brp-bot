@@ -1,21 +1,13 @@
 import { Plan, PlanSchema, getPlan } from '@/readingPlans';
+import * as helper from 'test/helpers/d1';
 
-const stubData = {
-  date: '2025-01-01',
-  praise: {
-    scope: '歷代志上 16:34 CCB',
-    content: '你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!',
-  },
-  devotional: {
-    scope: '出埃及記 第八章',
-  },
-};
-
-const parsedStubData = PlanSchema.parse(stubData);
+const plan = PlanSchema.parse(helper.planRecordFixture);
 
 class StubRepository implements Repository<Plan> {
+  data = plan;
+
   findById(date: string): Promise<Plan | null> {
-    return Promise.resolve(date === stubData.date ? parsedStubData : null);
+    return Promise.resolve(date === this.data.date ? this.data : null);
   }
 
   all() {
@@ -35,10 +27,11 @@ describe('getPlan()', () => {
   const repo = new StubRepository();
 
   it('returns plan object', async () => {
-    expect(await getPlan(repo)({ date: '2025-01-01' })).toMatchObject(parsedStubData);
+    expect(await getPlan(repo)(plan)).toMatchObject(plan);
   });
 
   it('returns null', async () => {
-    expect(await getPlan(repo)({ date: '2024-12-31' })).toBeNull();
+    const nonExistentPlan = { ...plan, date: '2024-12-31' };
+    expect(await getPlan(repo)(nonExistentPlan)).toBeNull();
   });
 });
