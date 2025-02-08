@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:test';
 import D1RecipientRepository, { Record } from '@/repositories/d1Recipient';
+import { ErrorRecordNotFound } from '@/repositories/errors';
 import { insertRecipientRecord, recipientRecordFixture } from 'test/helpers/d1';
 
 const recipient1 = recipientRecordFixture;
@@ -49,6 +50,26 @@ describe('D1PlanRepository', () => {
     it('Throws error when trying to save a recipient by the same ID', async () => {
       await repo.save(recipient1);
       await expect(repo.save(recipient1)).rejects.toThrowError();
+    });
+  });
+
+  describe('destroy()', () => {
+    beforeEach(async () => {
+      await env.DB.prepare('DELETE FROM recipients').run();
+      await insertRecipientRecord(recipient1);
+    });
+
+    it('deletes a recipient record', async () => {
+      await repo.destroy(recipient1);
+
+      const result = await env.DB.prepare('SELECT * FROM recipients WHERE id = ?')
+        .bind(recipient1.id)
+        .first<Record>();
+      expect(result).toBeNull();
+    });
+
+    it('throws error when trying to destroy a non-existent recipient', async () => {
+      await expect(repo.destroy(recipient2)).rejects.toThrowError(ErrorRecordNotFound);
     });
   });
 });

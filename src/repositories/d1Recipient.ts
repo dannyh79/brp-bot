@@ -1,4 +1,5 @@
 import { Recipient, RecipientSchema } from '@/readingPlans';
+import { ErrorRecordNotFound } from './errors';
 
 export type Record = {
   id: string;
@@ -49,5 +50,11 @@ export default class D1RecipientRepository implements Repository<Recipient> {
       .run();
   }
 
-  async destroy() {}
+  async destroy({ id }: Recipient) {
+    const stmt = this.db.prepare('DELETE FROM recipients WHERE id = ?');
+    const result = await stmt.bind(id).run<Record>();
+    if (result.meta.rows_read === 0) {
+      throw ErrorRecordNotFound;
+    }
+  }
 }
