@@ -7,6 +7,7 @@ declare global {
     all(): Promise<T[]>;
     findById(id: string): Promise<T | null>;
     save(entity: T): Promise<void>;
+    destroy(entity: T): Promise<void>;
   }
 }
 

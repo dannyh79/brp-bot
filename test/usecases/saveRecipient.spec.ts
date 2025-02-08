@@ -1,10 +1,11 @@
-import { Recipient, saveRecipient } from '@/readingPlans';
-import { recipientRecordFixture } from 'test/helpers/d1';
+import { Recipient, RecipientSchema, saveRecipient } from '@/readingPlans';
+import * as helper from 'test/helpers/d1';
 
-const recipient = recipientRecordFixture;
+const recipient = RecipientSchema.parse(helper.recipientRecordFixture);
 
 class StubRepository implements Repository<Recipient> {
   data = recipient;
+
   save(entity: Recipient) {
     return entity.id === this.data.id ? Promise.reject() : Promise.resolve();
   }
@@ -16,16 +17,22 @@ class StubRepository implements Repository<Recipient> {
   findById() {
     return Promise.resolve(null);
   }
+
+  destroy() {
+    return Promise.resolve();
+  }
 }
 
 describe('saveRecipient()', () => {
   const repo = new StubRepository();
 
   it('returns recipient object', async () => {
-    const result = await saveRecipient(repo)({ id: 'C5678f49365c6b492b337189e3343a9d9' });
-    expect(result).toMatchObject({
+    const nonExistentRecipient = {
+      ...helper.recipientRecordFixture,
       id: 'C5678f49365c6b492b337189e3343a9d9',
-    });
+    };
+    const result = await saveRecipient(repo)(nonExistentRecipient);
+    expect(result).toMatchObject(nonExistentRecipient);
   });
 
   it('returns null', async () => {

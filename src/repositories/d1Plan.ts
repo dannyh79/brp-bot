@@ -36,4 +36,5 @@ export default class D1PlanRepository implements Repository<Plan> {
     return Promise.resolve([]);
   }
   async save() {}
+  async destroy() {}
 }

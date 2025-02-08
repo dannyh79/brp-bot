@@ -1,4 +1,5 @@
 import { Recipient, RecipientSchema } from '@/readingPlans';
+import { ErrorRecordNotFound } from './errors';
 
 export type Record = {
   id: string;
@@ -47,5 +48,15 @@ export default class D1RecipientRepository implements Repository<Recipient> {
         receipient.deletedAt ? receipient.deletedAt.toISOString() : null,
       )
       .run();
+  }
+
+  async destroy({ id }: Recipient) {
+    // FIXME: Use ORM instead of raw query
+    // Limit to one record only to prevent malformed raw query from wiping out the whole table
+    const stmt = this.db.prepare('DELETE FROM recipients WHERE id = ? LIMIT 1');
+    const result = await stmt.bind(id).run<Record>();
+    if (!result.meta.changed_db) {
+      throw ErrorRecordNotFound;
+    }
   }
 }

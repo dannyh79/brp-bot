@@ -26,6 +26,7 @@ export default class InMemoryPlanRepository implements Repository<Plan> {
     return Promise.resolve([]);
   }
   async save() {}
+  async destroy() {}
 }
 
 const data: Record<string, Data> = {

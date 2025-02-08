@@ -32,6 +32,13 @@ app.openapi(endpoints.saveReceipient, async (c) => {
   return c.body(null, result ? 204 : 304);
 });
 
+app.openapi(endpoints.destroyReceipient, async (c) => {
+  const param = c.req.valid('param');
+  const usecase = c.get('destroyRecipient');
+  const result = await usecase(param);
+  return c.body(null, result ? 204 : 404);
+});
+
 // Setup OpenAPI registry
 app.doc('/api/v1/doc', {
   openapi: '3.0.0',
