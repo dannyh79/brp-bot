@@ -47,7 +47,7 @@ describe('D1PlanRepository', () => {
       expect(result?.id).toEqual(recipient1.id);
     });
 
-    it('Throws error when trying to save a recipient by the same ID', async () => {
+    it('throws error when trying to save a recipient by the same ID', async () => {
       await repo.save(recipient1);
       await expect(repo.save(recipient1)).rejects.toThrowError();
     });
