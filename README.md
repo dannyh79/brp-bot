@@ -9,6 +9,9 @@
 ```sh
 asdf install
 
+cp wrangler.toml.example wrangler.toml
+# Then update the values in wrangler.toml to your needs
+
 cp .dev.vars.example .dev.vars
 # Then update the values in .dev.vars to your needs
 
@@ -31,8 +34,6 @@ curl "http://localhost:8787/__scheduled?cron=0+0+*+*+*"
 
 ## Deploying
 
-_[NEED TO USE MANUAL UPLOAD FROM CLOUDFLARE CONSOLE AT MOMENT](https://github.com/cloudflare/workers-sdk/issues/7287)._
-
 > Only Cloudflare Workers platform is supported at moment.
 
 ```sh
@@ -40,6 +41,20 @@ cp secrets.json.example secrets.json
 # Then update the values in secrets.json
 
 npx wrangler login
+
+# For first time only:
+# 1. Create DB; modify `your-database-name` and `apac` to your needs
+npx wrangler d1 create your-database-name --location apac
+# ✅ Successfully created DB 'your-database-name' in region APAC
+# Created your new D1 database.
+#
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "your-database-name"
+# database_id = "1abcdefg-1234-5678-9012-12abcdefghij"
+
+# 2. Update the above in wrangler.toml
+
 pnpm run deploy
 npx wrangler secret bulk < secrets.json
 ```
@@ -49,6 +64,14 @@ npx wrangler secret bulk < secrets.json
 ### Interacting with D1 Database
 
 ```sh
+# For first time only:
+# 1. Create a local D1 database
+pnpm db:migrate
+# 2. Update  worker/d1/seed.sql YOUR-LINE-GROUP-ID to your LINE group ID
+# See: Gotchas section for more info
+# 3. Seed the local D1 database
+pnpm db:seed
+
 # Create migration
 pnpm db:migrate:create {{ migration_file_name }}
 # Then edit the file in /migrations

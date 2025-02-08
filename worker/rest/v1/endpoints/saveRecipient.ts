@@ -8,7 +8,7 @@ export const SaveReceipientInput = z.object({
 export const saveReceipient = createRoute({
   method: 'post',
   path: '/api/v1/recipients',
-  tags: ['Plans'],
+  tags: ['Recipients'],
   summary: `Saves a recipient`,
   request: {
     body: {
