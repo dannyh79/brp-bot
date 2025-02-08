@@ -51,9 +51,11 @@ export default class D1RecipientRepository implements Repository<Recipient> {
   }
 
   async destroy({ id }: Recipient) {
-    const stmt = this.db.prepare('DELETE FROM recipients WHERE id = ?');
+    // FIXME: Use ORM instead of raw query
+    // Limit to one record only to prevent malformed raw query from wiping out the whole table
+    const stmt = this.db.prepare('DELETE FROM recipients WHERE id = ? LIMIT 1');
     const result = await stmt.bind(id).run<Record>();
-    if (result.meta.rows_read === 0) {
+    if (!result.meta.changed_db) {
       throw ErrorRecordNotFound;
     }
   }
