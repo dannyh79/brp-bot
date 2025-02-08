@@ -61,3 +61,30 @@ describe('POST /api/v1/recipients', () => {
     expect(await response.text()).toBe('');
   });
 });
+
+describe('DELETE /api/v1/recipients/:id', () => {
+  const recipient = helper.recipientRecordFixture;
+
+  beforeEach(async () => {
+    await helper.insertRecipientRecord();
+  });
+
+  it('responds 204 when deletes a recipient', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
+      method: 'DELETE',
+    });
+    expect(response.status).toBe(204);
+    expect(await response.text()).toBe('');
+  });
+
+  it('responds 404 when recipient not found', async () => {
+    const response = await SELF.fetch(
+      `${stubDomain}/api/v1/recipients/C5678f49365c6b492b337189e3343a9d9`,
+      {
+        method: 'DELETE',
+      },
+    );
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe('');
+  });
+});
