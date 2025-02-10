@@ -15,3 +15,10 @@ export const withUsecases = createMiddleware<{ Variables: Vars; Bindings: Bindin
     await next();
   },
 );
+
+export const withAuth = createMiddleware(async (c: AppContext, next: Next) => {
+  if (c.req.header('Authorization') !== `Bearer ${c.env.API_TOKEN}`) {
+    return c.text('Unauthorized', 401);
+  }
+  await next();
+});

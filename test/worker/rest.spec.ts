@@ -1,4 +1,4 @@
-import { SELF } from 'cloudflare:test';
+import { SELF, env } from 'cloudflare:test';
 import * as helper from 'test/helpers/d1';
 
 const stubDomain = 'https://brp-bot.pages.dev';
@@ -41,10 +41,19 @@ describe('POST /api/v1/recipients', () => {
     await helper.insertRecipientRecord();
   });
 
-  it('responds 204 when saves a recipient', async () => {
+  it('responds 401 when not authorized', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: 'C5678f49365c6b492b337189e3343a9d9' }),
+    });
+    expect(response.status).toBe(401);
+  });
+
+  it('responds 204 when saves a recipient', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${env.API_TOKEN}` },
       body: JSON.stringify({ id: 'C5678f49365c6b492b337189e3343a9d9' }),
     });
     expect(response.status).toBe(204);
@@ -54,7 +63,7 @@ describe('POST /api/v1/recipients', () => {
   it('responds 304', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${env.API_TOKEN}` },
       body: JSON.stringify({ id: recipient.id }),
     });
     expect(response.status).toBe(304);
@@ -69,9 +78,17 @@ describe('DELETE /api/v1/recipients/:id', () => {
     await helper.insertRecipientRecord();
   });
 
+  it('responds 401 when not authorized', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
+      method: 'DELETE',
+    });
+    expect(response.status).toBe(401);
+  });
+
   it('responds 204 when deletes a recipient', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
       method: 'DELETE',
+      headers: { Authorization: `Bearer ${env.API_TOKEN}` },
     });
     expect(response.status).toBe(204);
     expect(await response.text()).toBe('');
@@ -82,6 +99,7 @@ describe('DELETE /api/v1/recipients/:id', () => {
       `${stubDomain}/api/v1/recipients/C5678f49365c6b492b337189e3343a9d9`,
       {
         method: 'DELETE',
+        headers: { Authorization: `Bearer ${env.API_TOKEN}` },
       },
     );
     expect(response.status).toBe(404);
