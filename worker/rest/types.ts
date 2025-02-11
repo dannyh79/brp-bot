@@ -3,6 +3,7 @@ import * as readingPlan from '@/readingPlans';
 
 export type Bindings = {
   DB: D1Database;
+  API_TOKEN: string;
 };
 
 export type Vars = {

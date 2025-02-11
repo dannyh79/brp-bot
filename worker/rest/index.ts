@@ -1,5 +1,6 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
 
 const app = new OpenAPIHono();
@@ -24,6 +25,8 @@ app.openapi(endpoints.getPlan, async (c) => {
     return c.json(data, 200);
   }
 });
+
+registerAuthComponent(app);
 
 app.openapi(endpoints.saveReceipient, async (c) => {
   const body = c.req.valid('json');

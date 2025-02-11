@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { withUsecases } from '@worker/rest/middlewares';
+import * as m from '@worker/rest/middlewares';
 
 export const DestroyRecipientParamsSchema = z.object({
   id: z.string().openapi({
@@ -16,13 +16,15 @@ export const destroyReceipient = createRoute({
   path: '/api/v1/recipients/{id}',
   tags: ['Recipients'],
   summary: `Destroys a recipient`,
+  security: [{ Bearer: [] }],
   request: {
     params: DestroyRecipientParamsSchema,
   },
-  middleware: [withUsecases] as const,
+  middleware: [m.withAuth, m.withUsecases] as const,
   responses: {
     '204': { description: 'The Recipient is destroyed' },
     '404': { description: 'Recipient not found by id' },
+    '401': { description: 'Not authorized' },
   },
 });
 
