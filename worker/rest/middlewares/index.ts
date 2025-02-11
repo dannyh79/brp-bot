@@ -1,3 +1,4 @@
+import { OpenAPIHono } from '@hono/zod-openapi';
 import { Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
 import * as readingPlan from '@/readingPlans';
@@ -22,3 +23,14 @@ export const withAuth = createMiddleware(async (c: AppContext, next: Next) => {
   }
   await next();
 });
+
+/**
+ * Registers authorization component in OpenAPI.
+ * @see {@link https://github.com/honojs/middleware/blob/main/packages/zod-openapi/README.md#how-to-setup-authorization|@hono/zod-openapi doc}
+ */
+export const registerAuthComponent = (app: OpenAPIHono) => {
+  app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+    type: 'http',
+    scheme: 'bearer',
+  });
+};
