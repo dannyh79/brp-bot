@@ -1,3 +1,3 @@
-LINE_ADMIN_RECIPIENT_ID = "your-personal-LINE-id"
-LINE_CHANNEL_ACCESS_TOKEN = "your-LINE-channel-access-token"
-API_TOKEN=SOME_VERY_SECRETIVE_TOKEN
+LINE_ADMIN_RECIPIENT_ID=your-personal-LINE-id
+LINE_CHANNEL_ACCESS_TOKEN=your-LINE-channel-access-token
+API_TOKEN=some-very-secretive-token
