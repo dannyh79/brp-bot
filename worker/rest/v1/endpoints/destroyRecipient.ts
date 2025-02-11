@@ -11,7 +11,7 @@ export const DestroyRecipientParamsSchema = z.object({
   }),
 });
 
-export const destroyReceipient = createRoute({
+export const destroyRecipient = createRoute({
   method: 'delete',
   path: '/api/v1/recipients/{id}',
   tags: ['Recipients'],
@@ -28,4 +28,4 @@ export const destroyReceipient = createRoute({
   },
 });
 
-export default destroyReceipient;
+export default destroyRecipient;

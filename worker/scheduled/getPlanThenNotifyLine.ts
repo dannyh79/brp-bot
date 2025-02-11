@@ -36,7 +36,7 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
 
   const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-    to: data ? recipientIds : [env.LINE_ADMIN_RECEIPIENT_ID],
+    to: data ? recipientIds : [env.LINE_ADMIN_RECIPIENT_ID],
   });
   const result = await notifier.pushMessage(data ?? fallbackMessage);
   console.log(result);

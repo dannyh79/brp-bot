@@ -6,7 +6,7 @@ import { insertRecipientRecord, recipientRecordFixture } from 'test/helpers/d1';
 const recipient1 = recipientRecordFixture;
 const recipient2 = { ...recipientRecordFixture, id: 'C5678f49365c6b492b337189e3343a9d9' };
 
-describe('D1PlanRepository', () => {
+describe('D1RecipientRepository', () => {
   const repo = new D1RecipientRepository(env.DB);
 
   describe('all()', () => {
@@ -14,7 +14,7 @@ describe('D1PlanRepository', () => {
       await Promise.all([recipient1, recipient2].map(insertRecipientRecord));
     });
 
-    it('returns all receipients', async () => {
+    it('returns all recipients', async () => {
       expect(await repo.all()).toMatchObject([recipient1, recipient2]);
     });
   });
@@ -24,7 +24,7 @@ describe('D1PlanRepository', () => {
       await insertRecipientRecord(recipient1);
     });
 
-    it('returns receipient object', async () => {
+    it('returns recipient object', async () => {
       expect(await repo.findById(recipient1.id)).toMatchObject(recipient1);
     });
 

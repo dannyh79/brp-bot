@@ -34,7 +34,7 @@ export default class D1RecipientRepository implements Repository<Recipient> {
     return RecipientSchema.parse(toParsable(result));
   }
 
-  async save(receipient: Recipient) {
+  async save(recipient: Recipient) {
     await this.db
       .prepare(
         `
@@ -43,9 +43,9 @@ export default class D1RecipientRepository implements Repository<Recipient> {
     `,
       )
       .bind(
-        receipient.id,
-        receipient.createdAt.toISOString(),
-        receipient.deletedAt ? receipient.deletedAt.toISOString() : null,
+        recipient.id,
+        recipient.createdAt.toISOString(),
+        recipient.deletedAt ? recipient.deletedAt.toISOString() : null,
       )
       .run();
   }

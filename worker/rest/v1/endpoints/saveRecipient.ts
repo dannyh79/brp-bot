@@ -1,11 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import * as m from '@worker/rest/middlewares';
 
-export const SaveReceipientInput = z.object({
+export const SaveRecipientInput = z.object({
   id: z.string().openapi({ example: 'C1234f49365c6b492b337189e3343a9d9' }),
 });
 
-export const saveReceipient = createRoute({
+export const saveRecipient = createRoute({
   method: 'post',
   path: '/api/v1/recipients',
   tags: ['Recipients'],
@@ -15,7 +15,7 @@ export const saveReceipient = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: SaveReceipientInput,
+          schema: SaveRecipientInput,
         },
       },
     },
@@ -28,4 +28,4 @@ export const saveReceipient = createRoute({
   },
 });
 
-export default saveReceipient;
+export default saveRecipient;

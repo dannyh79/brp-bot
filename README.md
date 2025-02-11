@@ -120,6 +120,6 @@ Assume a LINE bot is already configured:
 8. Disable "Use webhook" option from [LINE Developers console](https://developers.line.biz/console)
 9. Replace /worker/d1/seed.sql `YOUR-LINE-GROUP-ID` value by the `groupId`, then run `pnpm db:seed`
 
-#### How to Get env `LINE_ADMIN_RECEIPIENT_ID`
+#### How to Get env `LINE_ADMIN_RECIPIENT_ID`
 
 Use "Your user ID" value, started from `U`, in "Basic settings" tab, from [LINE Developers console](https://developers.line.biz/console).

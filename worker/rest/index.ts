@@ -28,14 +28,14 @@ app.openapi(endpoints.getPlan, async (c) => {
 
 registerAuthComponent(app);
 
-app.openapi(endpoints.saveReceipient, async (c) => {
+app.openapi(endpoints.saveRecipient, async (c) => {
   const body = c.req.valid('json');
   const usecase = c.get('saveRecipient');
   const result = await usecase(body);
   return c.body(null, result ? 204 : 304);
 });
 
-app.openapi(endpoints.destroyReceipient, async (c) => {
+app.openapi(endpoints.destroyRecipient, async (c) => {
   const param = c.req.valid('param');
   const usecase = c.get('destroyRecipient');
   const result = await usecase(param);
