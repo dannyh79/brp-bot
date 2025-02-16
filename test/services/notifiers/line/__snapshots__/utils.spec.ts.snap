@@ -42,6 +42,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "color": "#FFFFFF",
                   "flex": 11,
+                  "lineSpacing": "10px",
                   "size": "xs",
                   "style": "italic",
                   "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!(歷代志上 16:34 CCB)",
@@ -92,6 +93,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "color": "#1D292E",
                   "flex": 11,
+                  "lineSpacing": "10px",
                   "size": "xs",
                   "text": "上帝啊，求你按你的慈愛恩待我！
 按你極大的憐憫除去我 ___ 的過犯！
@@ -153,6 +155,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                     {
                       "color": "#FFFFFF",
                       "flex": 9,
+                      "lineSpacing": "10px",
                       "size": "xs",
                       "text": "1. 你覺得神透過今天的經文對你說什麼呢?
 2. 有什麼你可以做出的行動或改變呢?",
@@ -212,6 +215,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "contents": [
                     {
                       "color": "#1D292E",
+                      "lineSpacing": "10px",
                       "size": "xs",
                       "text": "”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。",
                       "type": "text",
@@ -220,6 +224,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                     {
                       "color": "#3C5464",
                       "flex": 24,
+                      "lineSpacing": "10px",
                       "size": "xs",
                       "style": "italic",
                       "text": "『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
@@ -229,7 +234,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   ],
                   "flex": 11,
                   "layout": "vertical",
-                  "spacing": "md",
+                  "spacing": "lg",
                   "type": "box",
                 },
               ],
