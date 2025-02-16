@@ -16,28 +16,27 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#3C5C64",
           "contents": [
             {
-              "alignItems": "center",
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
                       "color": "#FFFFFF",
                       "size": "lg",
                       "text": "讚",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
                       "color": "#FFFFFF",
                       "size": "lg",
                       "text": "美",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
@@ -66,28 +65,27 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
         {
           "contents": [
             {
-              "alignItems": "center",
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
                       "color": "#1D292E",
                       "size": "lg",
                       "text": "悔",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
                       "color": "#1D292E",
                       "size": "lg",
                       "text": "改",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
@@ -118,28 +116,27 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#3C5464",
           "contents": [
             {
-              "alignItems": "center",
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
                       "color": "#FFFFFF",
                       "size": "lg",
                       "text": "反",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
                       "color": "#FFFFFF",
                       "size": "lg",
                       "text": "思",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
@@ -187,28 +184,27 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#FFFFFF",
           "contents": [
             {
-              "alignItems": "center",
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
                       "color": "#1D292E",
                       "size": "lg",
                       "text": "祈",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
                       "color": "#1D292E",
                       "size": "lg",
                       "text": "求",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
@@ -259,7 +255,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "layout": "horizontal",
               "paddingEnd": "md",
               "paddingStart": "md",
-              "spacing": "sm",
+              "spacing": "lg",
               "type": "box",
             },
           ],
