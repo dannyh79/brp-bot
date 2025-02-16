@@ -15,6 +15,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#C7CADA",
           "contents": [
             {
+              "alignItems": "center",
               "contents": [
                 {
                   "alignItems": "center",
@@ -63,6 +64,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#FFFFFF",
           "contents": [
             {
+              "alignItems": "center",
               "contents": [
                 {
                   "alignItems": "center",
@@ -112,6 +114,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#C7CADA",
           "contents": [
             {
+              "alignItems": "center",
               "contents": [
                 {
                   "alignItems": "center",
@@ -178,6 +181,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "backgroundColor": "#FFFFFF",
           "contents": [
             {
+              "alignItems": "center",
               "contents": [
                 {
                   "alignItems": "center",
