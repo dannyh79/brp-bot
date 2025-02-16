@@ -7,36 +7,45 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
     "body": {
       "contents": [
         {
-          "backgroundColor": "#C7CADA",
+          "color": "#3C5464",
+          "offsetBottom": "md",
+          "text": "1/1 星期三",
+          "type": "text",
+        },
+        {
+          "backgroundColor": "#3C5C64",
           "contents": [
             {
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "讚",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "美",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
-                  "color": "#1C1C1D",
+                  "color": "#FFFFFF",
                   "flex": 11,
+                  "lineSpacing": "10px",
                   "size": "xs",
-                  "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
-(歷代志上 16:34 CCB)",
+                  "style": "italic",
+                  "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!(歷代志上 16:34 CCB)",
                   "type": "text",
                   "wrap": true,
                 },
@@ -47,16 +56,6 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "spacing": "lg",
               "type": "box",
             },
-            {
-              "backgroundColor": "#FFFFFFAA",
-              "borderWidth": "light",
-              "contents": [],
-              "layout": "horizontal",
-              "offsetEnd": "5%",
-              "offsetStart": "5%",
-              "type": "box",
-              "width": "95%",
-            },
           ],
           "cornerRadius": "md",
           "layout": "vertical",
@@ -66,33 +65,35 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "type": "box",
         },
         {
-          "backgroundColor": "#FFFFFF",
           "contents": [
             {
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "悔",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "改",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
-                  "color": "#1C1C1D",
+                  "color": "#1D292E",
                   "flex": 11,
+                  "lineSpacing": "10px",
                   "size": "xs",
                   "text": "上帝啊，求你按你的慈愛恩待我！
 按你極大的憐憫除去我 ___ 的過犯！
@@ -107,16 +108,6 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "spacing": "lg",
               "type": "box",
             },
-            {
-              "backgroundColor": "#C7CADAAA",
-              "borderWidth": "light",
-              "contents": [],
-              "layout": "horizontal",
-              "offsetEnd": "5%",
-              "offsetStart": "5%",
-              "type": "box",
-              "width": "95%",
-            },
           ],
           "layout": "vertical",
           "paddingBottom": "md",
@@ -125,42 +116,46 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "type": "box",
         },
         {
-          "backgroundColor": "#C7CADA",
+          "backgroundColor": "#3C5464",
           "contents": [
             {
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "反",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
-                      "align": "start",
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "思",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
                   "contents": [
                     {
-                      "size": "sm",
+                      "color": "#FFFFFF",
+                      "size": "lg",
                       "text": "出埃及記 第八章",
                       "type": "text",
+                      "weight": "bold",
                       "wrap": true,
                     },
                     {
-                      "color": "#1C1C1D",
+                      "color": "#FFFFFF",
                       "flex": 9,
+                      "lineSpacing": "10px",
                       "size": "xs",
                       "text": "1. 你覺得神透過今天的經文對你說什麼呢?
 2. 有什麼你可以做出的行動或改變呢?",
@@ -181,16 +176,6 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
               "spacing": "lg",
               "type": "box",
             },
-            {
-              "backgroundColor": "#FFFFFFAA",
-              "borderWidth": "light",
-              "contents": [],
-              "layout": "horizontal",
-              "offsetEnd": "5%",
-              "offsetStart": "5%",
-              "type": "box",
-              "width": "95%",
-            },
           ],
           "cornerRadius": "md",
           "layout": "vertical",
@@ -205,85 +190,59 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
             {
               "contents": [
                 {
-                  "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "祈",
                       "type": "text",
+                      "weight": "bold",
                     },
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "求",
                       "type": "text",
+                      "weight": "bold",
                     },
                   ],
                   "flex": 1,
-                  "justifyContent": "center",
                   "layout": "vertical",
-                  "spacing": "xl",
+                  "spacing": "sm",
                   "type": "box",
                 },
                 {
                   "contents": [
                     {
-                      "color": "#1C1C1D",
+                      "color": "#1D292E",
+                      "lineSpacing": "10px",
                       "size": "xs",
                       "text": "”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。",
                       "type": "text",
                       "wrap": true,
                     },
                     {
-                      "contents": [
-                        {
-                          "contents": [
-                            {
-                              "borderColor": "#E2E2E299",
-                              "borderWidth": "light",
-                              "contents": [],
-                              "layout": "vertical",
-                              "type": "box",
-                              "width": "1px",
-                            },
-                          ],
-                          "flex": 1,
-                          "layout": "horizontal",
-                          "type": "box",
-                        },
-                        {
-                          "color": "#1C1C1DAA",
-                          "flex": 24,
-                          "size": "xs",
-                          "text": "『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
-                          "type": "text",
-                          "wrap": true,
-                        },
-                      ],
-                      "layout": "horizontal",
-                      "type": "box",
+                      "color": "#3C5464",
+                      "flex": 24,
+                      "lineSpacing": "10px",
+                      "size": "xs",
+                      "style": "italic",
+                      "text": "『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
+                      "type": "text",
+                      "wrap": true,
                     },
                   ],
                   "flex": 11,
                   "layout": "vertical",
-                  "spacing": "md",
+                  "spacing": "lg",
                   "type": "box",
                 },
               ],
               "layout": "horizontal",
               "paddingEnd": "md",
               "paddingStart": "md",
-              "spacing": "sm",
+              "spacing": "lg",
               "type": "box",
-            },
-            {
-              "backgroundColor": "#C7CADAAA",
-              "borderWidth": "light",
-              "contents": [],
-              "layout": "horizontal",
-              "offsetEnd": "5%",
-              "offsetStart": "5%",
-              "type": "box",
-              "width": "95%",
             },
           ],
           "layout": "vertical",
@@ -303,31 +262,17 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "alignItems": "center",
           "contents": [
             {
-              "text": "1/1",
-              "type": "text",
-            },
-            {
-              "text": "星期三",
-              "type": "text",
-            },
-          ],
-          "flex": 2,
-          "layout": "vertical",
-          "type": "box",
-        },
-        {
-          "alignItems": "center",
-          "contents": [
-            {
               "align": "end",
-              "color": "#1D292E",
-              "flex": 2,
-              "size": "xl",
+              "color": "#FFFFFF",
+              "flex": 3,
+              "size": "xxl",
               "text": "好好靈修",
               "type": "text",
+              "weight": "bold",
             },
             {
               "align": "center",
+              "color": "#FFFFFF",
               "size": "md",
               "text": "X",
               "type": "text",
@@ -335,27 +280,29 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
             {
               "contents": [
                 {
+                  "color": "#FFFFFF",
                   "text": "DAILY",
                   "type": "text",
+                  "weight": "bold",
                 },
                 {
+                  "color": "#FFFFFF",
                   "text": "DEVOTION",
                   "type": "text",
+                  "weight": "bold",
                 },
               ],
-              "flex": 3,
+              "flex": 5,
               "layout": "vertical",
               "type": "box",
             },
           ],
-          "flex": 10,
           "layout": "horizontal",
           "type": "box",
         },
       ],
       "layout": "horizontal",
-      "paddingAll": "20px",
-      "spacing": "md",
+      "paddingAll": "xl",
       "type": "box",
     },
     "size": "giga",
