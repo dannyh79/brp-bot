@@ -73,9 +73,8 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
             alignItems: 'center',
           },
         ],
-        paddingAll: '20px',
+        paddingAll: 'xl',
         backgroundColor: '#FFCC32',
-        spacing: 'md',
       },
       body: {
         type: 'box',
