@@ -158,9 +158,10 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "contents": [
                     {
-                      "size": "sm",
+                      "size": "lg",
                       "text": "出埃及記 第八章",
                       "type": "text",
+                      "weight": "bold",
                       "wrap": true,
                     },
                     {

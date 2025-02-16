@@ -237,7 +237,8 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                       {
                         type: 'text',
                         text: devotional.scope,
-                        size: 'sm',
+                        size: 'lg',
+                        weight: 'bold',
                         wrap: true,
                       },
                       {
