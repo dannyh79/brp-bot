@@ -40,8 +40,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "color": "#1C1C1D",
                   "flex": 11,
                   "size": "xs",
-                  "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
-(歷代志上 16:34 CCB)",
+                  "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!(歷代志上 16:34 CCB)",
                   "type": "text",
                   "wrap": true,
                 },

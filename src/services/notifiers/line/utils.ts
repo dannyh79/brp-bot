@@ -115,7 +115,7 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                   },
                   {
                     type: 'text',
-                    text: `${praise.content}\n(${praise.scope})`,
+                    text: `${praise.content}(${praise.scope})`,
                     flex: 11,
                     size: 'xs',
                     color: '#1C1C1D',
