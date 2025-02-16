@@ -7,12 +7,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
     "body": {
       "contents": [
         {
+          "color": "#3C5464",
           "offsetBottom": "md",
           "text": "1/1 星期三",
           "type": "text",
         },
         {
-          "backgroundColor": "#C7CADA",
+          "backgroundColor": "#3C5C64",
           "contents": [
             {
               "alignItems": "center",
@@ -21,11 +22,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "讚",
                       "type": "text",
                     },
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "美",
                       "type": "text",
@@ -38,7 +41,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "type": "box",
                 },
                 {
-                  "color": "#1C1C1D",
+                  "color": "#FFFFFF",
                   "flex": 11,
                   "size": "xs",
                   "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!(歷代志上 16:34 CCB)",
@@ -61,7 +64,6 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "type": "box",
         },
         {
-          "backgroundColor": "#FFFFFF",
           "contents": [
             {
               "alignItems": "center",
@@ -70,11 +72,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "悔",
                       "type": "text",
                     },
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "改",
                       "type": "text",
@@ -87,7 +91,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "type": "box",
                 },
                 {
-                  "color": "#1C1C1D",
+                  "color": "#1D292E",
                   "flex": 11,
                   "size": "xs",
                   "text": "上帝啊，求你按你的慈愛恩待我！
@@ -111,7 +115,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "type": "box",
         },
         {
-          "backgroundColor": "#C7CADA",
+          "backgroundColor": "#3C5464",
           "contents": [
             {
               "alignItems": "center",
@@ -120,12 +124,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "反",
                       "type": "text",
                     },
                     {
-                      "align": "start",
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "思",
                       "type": "text",
@@ -140,6 +145,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "contents": [
                     {
+                      "color": "#FFFFFF",
                       "size": "lg",
                       "text": "出埃及記 第八章",
                       "type": "text",
@@ -147,7 +153,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                       "wrap": true,
                     },
                     {
-                      "color": "#1C1C1D",
+                      "color": "#FFFFFF",
                       "flex": 9,
                       "size": "xs",
                       "text": "1. 你覺得神透過今天的經文對你說什麼呢?
@@ -187,11 +193,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                   "alignItems": "center",
                   "contents": [
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "祈",
                       "type": "text",
                     },
                     {
+                      "color": "#1D292E",
                       "size": "lg",
                       "text": "求",
                       "type": "text",
@@ -206,7 +214,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "contents": [
                     {
-                      "color": "#1C1C1D",
+                      "color": "#1D292E",
                       "size": "xs",
                       "text": "”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。",
                       "type": "text",
@@ -217,7 +225,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                         {
                           "contents": [
                             {
-                              "borderColor": "#E2E2E299",
+                              "borderColor": "#3C546455",
                               "borderWidth": "light",
                               "contents": [],
                               "layout": "vertical",
@@ -230,7 +238,7 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                           "type": "box",
                         },
                         {
-                          "color": "#1C1C1DAA",
+                          "color": "#3C5464",
                           "flex": 24,
                           "size": "xs",
                           "text": "『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
@@ -273,15 +281,16 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
           "contents": [
             {
               "align": "end",
-              "color": "#1D292E",
-              "flex": 2,
-              "size": "xl",
+              "color": "#FFFFFF",
+              "flex": 3,
+              "size": "xxl",
               "text": "好好靈修",
               "type": "text",
               "weight": "bold",
             },
             {
               "align": "center",
+              "color": "#FFFFFF",
               "size": "md",
               "text": "X",
               "type": "text",
@@ -289,11 +298,13 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
             {
               "contents": [
                 {
+                  "color": "#FFFFFF",
                   "text": "DAILY",
                   "type": "text",
                   "weight": "bold",
                 },
                 {
+                  "color": "#FFFFFF",
                   "text": "DEVOTION",
                   "type": "text",
                   "weight": "bold",
