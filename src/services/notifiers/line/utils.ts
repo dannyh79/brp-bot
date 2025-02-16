@@ -35,22 +35,6 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
         contents: [
           {
             type: 'box',
-            layout: 'vertical',
-            contents: [
-              {
-                type: 'text',
-                text: date,
-              },
-              {
-                type: 'text',
-                text: dayOfWeek,
-              },
-            ],
-            flex: 2,
-            alignItems: 'center',
-          },
-          {
-            type: 'box',
             layout: 'horizontal',
             contents: [
               {
@@ -95,6 +79,11 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
         type: 'box',
         layout: 'vertical',
         contents: [
+          {
+            type: 'text',
+            text: `${date} ${dayOfWeek}`,
+            offsetBottom: 'md',
+          },
           {
             type: 'box',
             layout: 'vertical',

@@ -7,6 +7,11 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
     "body": {
       "contents": [
         {
+          "offsetBottom": "md",
+          "text": "1/1 星期三",
+          "type": "text",
+        },
+        {
           "backgroundColor": "#C7CADA",
           "contents": [
             {
@@ -299,22 +304,6 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
     "header": {
       "backgroundColor": "#FFCC32",
       "contents": [
-        {
-          "alignItems": "center",
-          "contents": [
-            {
-              "text": "1/1",
-              "type": "text",
-            },
-            {
-              "text": "星期三",
-              "type": "text",
-            },
-          ],
-          "flex": 2,
-          "layout": "vertical",
-          "type": "box",
-        },
         {
           "alignItems": "center",
           "contents": [
