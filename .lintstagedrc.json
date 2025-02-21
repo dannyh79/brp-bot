@@ -1,4 +1,4 @@
 {
-  "*.{cjs,mjs,ts}": "eslint --fix",
-  "*.{cjs,json,md,mjs,ts}": "prettier -w"
+  "*.{cjs,mjs,mts,ts}": "eslint --fix",
+  "*.{cjs,json,md,mjs,mts,ts}": "prettier -w"
 }
