@@ -46,6 +46,12 @@ export default defineWorkersConfig({
 
       // NOTE: Run node tests separately from not extending defineWorkersConfig
       {
+        resolve: {
+          // NOTE: Ensure alias matches tsconfig.json
+          alias: {
+            '@root': __dirname,
+          },
+        },
         test: {
           globals: true,
           include: ['./test/scripts/**/*.spec.ts'],
