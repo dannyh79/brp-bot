@@ -5,6 +5,14 @@ const migrationsPath = path.resolve(__dirname, 'migrations');
 const migrations = await readD1Migrations(migrationsPath);
 
 export default defineWorkersConfig({
+  resolve: {
+    // NOTE: Ensure alias matches tsconfig.json
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@worker': path.resolve(__dirname, './worker'),
+    },
+  },
+
   test: {
     globals: true,
     setupFiles: ['./test/setups/applyMigrations.ts'],
@@ -14,7 +22,7 @@ export default defineWorkersConfig({
         miniflare: {
           bindings: {
             TEST_MIGRATIONS: migrations,
-          }
+          },
         },
       },
     },
@@ -26,30 +34,25 @@ export default defineWorkersConfig({
           include: ['./test/**/*.spec.ts'],
           exclude: ['./test/scripts/**/*.spec.ts', './test/worker/**/*.spec.ts'],
           name: 'brp',
-        }
+        },
       },
       {
         extends: true,
         test: {
           include: ['./test/worker/**/*.spec.ts'],
           name: 'cf', // cloudflare
-        }
+        },
       },
+
+      // NOTE: Run node tests separately from not extending defineWorkersConfig
       {
-        extends: true,
         test: {
+          globals: true,
           include: ['./test/scripts/**/*.spec.ts'],
           name: 'scripts',
           environment: 'node',
-        }
+        },
       },
     ],
-  },
-
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'), // Ensure alias matches tsconfig.json
-      '@worker': path.resolve(__dirname, './worker'),
-    },
   },
 });
