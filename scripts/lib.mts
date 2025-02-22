@@ -1,36 +1,63 @@
 import { execSync } from 'node:child_process';
-import { google } from 'googleapis';
+import { GoogleApis } from 'googleapis';
 import { JWT } from 'google-auth-library';
 
-const authenticate = (keyFile: string): Promise<JWT> => {
-  return new google.auth.GoogleAuth({
-    keyFile,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-  }).getClient() as Promise<JWT>;
+export interface Service<T> {
+  execute(): Promise<T>;
+}
+
+export type ServiceArgs = {
+  google: GoogleApis;
+  sheetId: string;
+  sheetName: string;
+  keyFilePath: string;
 };
+
+export class GoogleSheetsService implements Service<string[][]> {
+  #sheetId: string;
+  #sheetName: string;
+  #keyFilePath: string;
+  #google: GoogleApis;
+  #jwt!: JWT;
+
+  constructor(args: ServiceArgs) {
+    this.#google = args.google;
+    this.#sheetId = args.sheetId;
+    this.#sheetName = args.sheetName;
+    this.#keyFilePath = args.keyFilePath;
+  }
+
+  async execute(): Promise<string[][]> {
+    await this.#authenticate();
+
+    const response = await this.#google
+      .sheets({ version: 'v4', auth: this.#jwt })
+      .spreadsheets.values.get({
+        spreadsheetId: this.#sheetId,
+        range: `${this.#sheetName}!A1:Z`,
+      });
+
+    const rows: string[][] | null | undefined = response.data.values;
+    if (!rows || rows.length < 2) {
+      throw new Error('No data found or only headers present in data.');
+    }
+
+    return rows;
+  }
+
+  async #authenticate(): Promise<void> {
+    this.#jwt = await (new this.#google.auth.GoogleAuth({
+      keyFile: this.#keyFilePath,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    }).getClient() as Promise<JWT>);
+  }
+}
 
 type PlanDataRow = {
   date: string;
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
-};
-
-const fetchSheetData = async (config: Config): Promise<string[][]> => {
-  const auth = await authenticate(config.keyFilePath);
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: config.sheetId,
-    range: `${config.sheetName}!A1:Z`,
-  });
-
-  const rows: string[][] | null | undefined = response.data.values;
-  if (!rows || rows.length < 2) {
-    throw new Error('No data found or only headers present in data.');
-  }
-
-  return rows;
 };
 
 const toChinesePunctuation = (input: string): string => {
@@ -99,13 +126,14 @@ const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
   execSync(command, { stdio: 'inherit' });
 };
 
-export type Config = {
-  sheetId: string;
-  sheetName: string;
-  keyFilePath: string;
+export type WriteToD1FromGoogleSheetsOptions = {
   isRemote: boolean;
 };
 
-export const writeToD1FromGoogleSheets = async (config: Config): Promise<void> => {
-  await fetchSheetData(config).then(formatRows).then(writeToD1(config.isRemote));
+export const writeToD1FromGoogleSheets = async (
+  service: Service<string[][]>,
+  { isRemote }: WriteToD1FromGoogleSheetsOptions,
+): Promise<void> => {
+  const rows = await service.execute();
+  writeToD1(isRemote)(formatRows(rows));
 };

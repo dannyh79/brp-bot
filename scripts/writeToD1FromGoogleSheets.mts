@@ -1,5 +1,6 @@
 import { exit } from 'node:process';
-import { Config, writeToD1FromGoogleSheets } from './lib.mts';
+import { google } from 'googleapis';
+import { GoogleSheetsService, type ServiceArgs, writeToD1FromGoogleSheets } from './lib.mts';
 
 const helpMsg = `
 Usage:
@@ -27,5 +28,6 @@ if (!sheetId) {
   exit(1);
 }
 
-const config: Config = { sheetId, sheetName, keyFilePath, isRemote };
-writeToD1FromGoogleSheets(config);
+const serviceArgs: ServiceArgs = { google, sheetId, sheetName, keyFilePath };
+const service = new GoogleSheetsService(serviceArgs);
+writeToD1FromGoogleSheets(service, { isRemote });
