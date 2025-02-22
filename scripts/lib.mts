@@ -127,13 +127,13 @@ const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
 };
 
 export type WriteToD1FromGoogleSheetsOptions = {
-  isRemote: boolean;
+  isRemote?: boolean;
 };
 
 export const writeToD1FromGoogleSheets = async (
   service: Service<string[][]>,
-  { isRemote }: WriteToD1FromGoogleSheetsOptions,
+  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
 ): Promise<void> => {
   const rows = await service.execute();
-  writeToD1(isRemote)(formatRows(rows));
+  writeToD1(!!isRemote)(formatRows(rows));
 };
