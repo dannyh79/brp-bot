@@ -1,5 +1,3 @@
-import { writeToD1FromGoogleSheets } from '@root/scripts/lib.mts';
-
 // const stubGoogleSheetsData = [
 //   ['date', 'praise_scope', 'praise_content', 'devotional_scope'],
 //   [
@@ -21,10 +19,14 @@ import { writeToD1FromGoogleSheets } from '@root/scripts/lib.mts';
 describe('script writeToD1FromGoogleSheets', () => {
   it('prints help message when missing env SPREADSHEET_ID', async () => {
     const logger = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    await writeToD1FromGoogleSheets();
+    await expect(
+      async () => await import('@root/scripts/writeToD1FromGoogleSheets.mts'),
+    ).rejects.toThrowError();
     expect(logger).toHaveBeenCalledOnce();
   });
+});
 
+describe('function writeToD1FromGoogleSheets', () => {
   it.todo('throws when authentication fails');
   it.todo('reads data from GoogleSheets');
   it.todo('NO extra spaces or line breaks in row data');
