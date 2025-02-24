@@ -1,14 +1,14 @@
-import { getPlan } from '@/readingPlans';
-import D1PlanRepository from '@/repositories/d1Plan';
-import { LineMultiNotifier } from '@/services/notifiers';
+import { newRepositories, newServices, newUsecases } from './scheduled';
 import getPlanThenNotifyLine from './scheduled/getPlanThenNotifyLine';
 
 import app from './rest';
 
 export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    const repo = new D1PlanRepository(env.DB);
-    await getPlanThenNotifyLine(getPlan(repo))(LineMultiNotifier)(event, env, ctx);
+    const usecases = newUsecases(newRepositories(env));
+    const services = newServices(env);
+
+    await getPlanThenNotifyLine({ usecases, services })(event, env, ctx);
   },
   fetch: app.fetch,
 } satisfies ExportedHandler<Env>;

@@ -1,7 +1,5 @@
-import { GetPlanArgs, GetPlanOutput } from '@/readingPlans';
-import { LineMultiNotifierArg, NotifierConstructor } from '@/services/notifiers';
-import D1RecipientRepository from '@/repositories/d1Recipient';
-import { ScheduledWorkerConstructor } from './types';
+import { GetPlanOutput } from '@/readingPlans';
+import { AppContext, ScheduledWorker } from './types';
 
 /** The en-CA (Canadian English) locale outputs dates in YYYY-MM-DD format by default. */
 const locale = 'en-CA' as const;
@@ -14,34 +12,29 @@ const formatter = new Intl.DateTimeFormat(locale, {
   timeZone,
 });
 
-export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
-  Usecase<GetPlanArgs, GetPlanOutput>,
-  NotifierConstructor<LineMultiNotifierArg, string[], GetPlanOutput>
-> = (usecase) => (Notifier) => async (event, env) => {
-  const date = formatter.format(new Date(event.scheduledTime));
-  const data = await usecase({ date });
+export const getPlanThenNotifyLine =
+  (ctx: AppContext): ScheduledWorker =>
+  async (event, env) => {
+    const { usecases: u, services: s } = ctx;
+    const date = formatter.format(new Date(event.scheduledTime));
+    const data = await u.getPlan({ date });
 
-  /** Empty space used in placeholder values to not break LINE API contract. */
-  const fallbackMessage: GetPlanOutput = {
-    date,
-    praise: { scope: ' ', content: 'No Plan Found' },
-    repentence: ' ',
-    devotional: { scope: ' ', content: [' '] },
-    prayer: ' ',
+    /** Empty space used in placeholder values to not break LINE API contract. */
+    const fallbackMessage: GetPlanOutput = {
+      date,
+      praise: { scope: ' ', content: 'No Plan Found' },
+      repentence: ' ',
+      devotional: { scope: ' ', content: [' '] },
+      prayer: ' ',
+    };
+
+    const recipientIds = ((await u.listRecipients()) ?? []).map((r) => r.id);
+
+    const result = await s.notifier.pushMessage(
+      data ? recipientIds : [env.LINE_ADMIN_RECIPIENT_ID],
+      data ?? fallbackMessage,
+    );
+    console.log(result);
   };
-
-  // FIXME: Inject recipientRepo instead of hardcoding it here.
-  const recipientRepo = new D1RecipientRepository(env.DB);
-  const recipientIds = (await recipientRepo.all()).map((r) => r.id);
-
-  const notifier = new Notifier({
-    channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-  });
-  const result = await notifier.pushMessage(
-    data ? recipientIds : [env.LINE_ADMIN_RECIPIENT_ID],
-    data ?? fallbackMessage,
-  );
-  console.log(result);
-};
 
 export default getPlanThenNotifyLine;
