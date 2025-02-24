@@ -6,7 +6,6 @@ export type LineSingleNotifierArg = {
 };
 
 export type LineMultiNotifierArg = {
-  to: string[];
   channelAccessToken: string;
 };
 

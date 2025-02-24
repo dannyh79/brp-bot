@@ -8,19 +8,17 @@ import * as utils from './utils';
  *
  * @see {@link https://developers.line.biz/en/reference/messaging-api/#send-push-message} for API doc
  */
-export class LineMultiNotifier implements Notifier<GetPlanOutput> {
+export class LineMultiNotifier implements Notifier<string[], GetPlanOutput> {
   private channelAccessToken: string;
-  private to: string[];
   /** LINE Messaging API base URL. */
   private baseUrl: string = 'https://api.line.me/v2/bot';
 
-  constructor({ channelAccessToken, to }: LineMultiNotifierArg) {
+  constructor({ channelAccessToken }: LineMultiNotifierArg) {
     this.channelAccessToken = channelAccessToken;
-    this.to = to;
   }
 
-  async pushMessage(message: GetPlanOutput) {
-    const reqs = this.to.map(async (to) => {
+  async pushMessage(recipients: string[], message: GetPlanOutput) {
+    const reqs = recipients.map(async (to) => {
       const url = `${this.baseUrl}/message/push`;
       const payload: LinePushMessageRequest = {
         to,

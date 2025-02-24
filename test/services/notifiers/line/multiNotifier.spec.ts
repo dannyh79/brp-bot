@@ -20,7 +20,10 @@ describe('LineMultiNotifier', () => {
       json: vi.fn(),
     });
 
-    await new LineMultiNotifier(stubNotifierArg).pushMessage(stubMessage);
+    await new LineMultiNotifier(stubNotifierArg).pushMessage(
+      pushMessageArg['to'],
+      pushMessageArg['message'],
+    );
 
     expect(mockFetch).toHaveBeenNthCalledWith(1, 'https://api.line.me/v2/bot/message/push', {
       method: 'POST',
@@ -60,4 +63,9 @@ const stubMessage = {
   },
   prayer:
     '”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。\n『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”',
+};
+
+const pushMessageArg = {
+  to: ['some-group-id1', 'some-group-id2'],
+  message: stubMessage,
 };

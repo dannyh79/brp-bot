@@ -35,11 +35,7 @@ describe('getPlanThenNotifyLine()', () => {
     const targetRecipientIds = [recipient.id];
     await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
 
-    expect(MockNotifier).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ to: targetRecipientIds }),
-    );
-    expect(mockPushMessage).toHaveBeenCalledOnce();
+    expect(mockPushMessage).toHaveBeenNthCalledWith(1, targetRecipientIds, expect.any(Object));
     expect(loggerSpy).toHaveBeenCalledOnce();
   });
 
@@ -54,11 +50,7 @@ describe('getPlanThenNotifyLine()', () => {
       const adminRecipientId = env.LINE_ADMIN_RECIPIENT_ID;
       await getPlanThenNotifyLine(mockUsecase)(MockNotifier)(ctrl, env, ctx);
 
-      expect(MockNotifier).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({ to: [adminRecipientId] }),
-      );
-      expect(mockPushMessage).toHaveBeenCalledOnce();
+      expect(mockPushMessage).toHaveBeenNthCalledWith(1, [adminRecipientId], expect.any(Object));
       expect(loggerSpy).toHaveBeenCalledOnce();
     });
   });

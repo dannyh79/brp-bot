@@ -16,7 +16,7 @@ const formatter = new Intl.DateTimeFormat(locale, {
 
 export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
   Usecase<GetPlanArgs, GetPlanOutput>,
-  NotifierConstructor<LineMultiNotifierArg, GetPlanOutput>
+  NotifierConstructor<LineMultiNotifierArg, string[], GetPlanOutput>
 > = (usecase) => (Notifier) => async (event, env) => {
   const date = formatter.format(new Date(event.scheduledTime));
   const data = await usecase({ date });
@@ -36,9 +36,11 @@ export const getPlanThenNotifyLine: ScheduledWorkerConstructor<
 
   const notifier = new Notifier({
     channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-    to: data ? recipientIds : [env.LINE_ADMIN_RECIPIENT_ID],
   });
-  const result = await notifier.pushMessage(data ?? fallbackMessage);
+  const result = await notifier.pushMessage(
+    data ? recipientIds : [env.LINE_ADMIN_RECIPIENT_ID],
+    data ?? fallbackMessage,
+  );
   console.log(result);
 };
 
