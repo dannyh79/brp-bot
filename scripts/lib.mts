@@ -53,43 +53,24 @@ export class GoogleSheetsService implements Service<string[][]> {
   }
 }
 
+export type WriteToD1FromGoogleSheetsOptions = {
+  isRemote?: boolean;
+};
+
+export const writeToD1FromGoogleSheets = async (
+  service: Service<string[][]>,
+  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
+): Promise<void> => {
+  const rows = await service.execute();
+  writeToD1(!!isRemote)(formatRows(rows));
+};
+
 type PlanDataRow = {
   date: string;
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
 };
-
-const toChinesePunctuation = (input: string): string => {
-  const halfToFullMap: { [key: string]: string } = {
-    ',': '，',
-    '.': '。',
-    ':': '：',
-    ';': '；',
-    '!': '！',
-    '?': '？',
-    '(': '（',
-    ')': '）',
-    '[': '【',
-    ']': '】',
-    '{': '｛',
-    '}': '｝',
-    '"': '“',
-    "'": '‘',
-    '<': '《',
-    '>': '》',
-    '-': '－',
-    '_': '＿',
-    '~': '～',
-  };
-
-  return input.replace(
-    /[,.:;!?()[\]{}"'<>-_~]\s?/g,
-    (match) => halfToFullMap[match.trimEnd()] || match,
-  );
-};
-
-const toTrimmed = (input: string): string => input.trim();
 
 const formatRows = (rows: string[][]): PlanDataRow[] => {
   const headers = rows[0];
@@ -126,14 +107,33 @@ const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
   execSync(command, { stdio: 'inherit' });
 };
 
-export type WriteToD1FromGoogleSheetsOptions = {
-  isRemote?: boolean;
+const toChinesePunctuation = (input: string): string => {
+  const halfToFullMap: { [key: string]: string } = {
+    ',': '，',
+    '.': '。',
+    ':': '：',
+    ';': '；',
+    '!': '！',
+    '?': '？',
+    '(': '（',
+    ')': '）',
+    '[': '【',
+    ']': '】',
+    '{': '｛',
+    '}': '｝',
+    '"': '“',
+    "'": '‘',
+    '<': '《',
+    '>': '》',
+    '-': '－',
+    '_': '＿',
+    '~': '～',
+  };
+
+  return input.replace(
+    /[,.:;!?()[\]{}"'<>-_~]\s?/g,
+    (match) => halfToFullMap[match.trimEnd()] || match,
+  );
 };
 
-export const writeToD1FromGoogleSheets = async (
-  service: Service<string[][]>,
-  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
-): Promise<void> => {
-  const rows = await service.execute();
-  writeToD1(!!isRemote)(formatRows(rows));
-};
+const toTrimmed = (input: string): string => input.trim();
