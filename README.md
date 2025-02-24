@@ -81,7 +81,8 @@ pnpm db:migrate
 
 # Write data from GoogleSheets spreadsheet to D1 database
 # Prereqs:
-# - GoogleSheets sheet (Sheet schema: TODO)
+# - GoogleSheets sheet
+#   > In CSV format, with headers `date` (in "yyyy-mm-dd" format), `praise_scope`, `praise_content`, `devotional_scope`
 # - GCP service account that has access to the sheet
 SPREADSHEET_ID={{ GoogleSheets spreadsheet ID }} SHEET_NAME={{ GoogleSheets sheet name }} KEY_FILE_PATH={{ /path/to/your/gcp-service-account.json }} pnpm db:write
 

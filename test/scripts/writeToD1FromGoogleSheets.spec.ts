@@ -57,15 +57,18 @@ describe('function writeToD1FromGoogleSheets', async () => {
 });
 
 const stubData = [
-  ['date', 'praise_scope', 'praise_content', 'devotional_scope'],
+  // BRP data column heads with random columns
+  ['date', 'some-random-column', 'praise_scope', 'praise_content', 'devotional_scope'],
   [
     '2025-02-01',
+    'some-random-column-cell',
     '詩篇 100:4-5 CCB',
     '要懷著感恩的心進入祂的門，唱著讚美的歌進入祂的院宇；\n要感謝祂，稱頌祂的名。因為耶和華是美善的，\n祂的慈愛永遠長存，祂的信實千古不變。',
     '出埃及記 第三十六章',
   ],
   [
     '2025-02-02',
+    'some-random-column-cell',
     // Cell with excess line-breaks or spaces at both ends
     '\n詩篇 145:1-3 CCB ',
     // Cell with excess line-breaks or spaces at both ends and a space after non-Chinese punctuation marks.

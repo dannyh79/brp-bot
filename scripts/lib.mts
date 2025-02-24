@@ -53,11 +53,59 @@ export class GoogleSheetsService implements Service<string[][]> {
   }
 }
 
+export type WriteToD1FromGoogleSheetsOptions = {
+  isRemote?: boolean;
+};
+
+export const writeToD1FromGoogleSheets = async (
+  service: Service<string[][]>,
+  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
+): Promise<void> => {
+  const rows = await service.execute();
+  writeToD1(!!isRemote)(formatRows(rows));
+};
+
 type PlanDataRow = {
   date: string;
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
+};
+
+type DataRow = PlanDataRow & Record<string, unknown>;
+
+const formatRows = (rows: string[][]): PlanDataRow[] => {
+  const headers = rows[0];
+  const dataRows = rows.slice(1);
+  return dataRows.map((row: string[]) =>
+    row.reduce((object, cell, index) => {
+      const field = headers[index] as keyof PlanDataRow;
+      object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
+      return object;
+    }, {} as DataRow),
+  );
+};
+
+const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
+  const query = `
+  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope) VALUES
+    ${rows
+      .map(
+        (r) => `('${r.date}', '${r.praise_scope}', '${r.praise_content}', '${r.devotional_scope}')`,
+      )
+      .join(',\n')}
+    ON CONFLICT (date) DO UPDATE SET
+      praise_scope = excluded.praise_scope,
+      praise_content = excluded.praise_content,
+      devotional_scope = excluded.devotional_scope;
+  `;
+
+  const command = [
+    'npx wrangler d1 execute DB',
+    isRemote ? '--remote' : '',
+    `--command="${query}"`,
+  ].join(' ');
+  execSync(command, { stdio: 'inherit' });
 };
 
 const toChinesePunctuation = (input: string): string => {
@@ -90,50 +138,3 @@ const toChinesePunctuation = (input: string): string => {
 };
 
 const toTrimmed = (input: string): string => input.trim();
-
-const formatRows = (rows: string[][]): PlanDataRow[] => {
-  const headers = rows[0];
-  const dataRows = rows.slice(1);
-  return dataRows.map((row: string[]) =>
-    row.reduce((object, cell, index) => {
-      // FIXME: Remove type assertion
-      const field = headers[index] as keyof PlanDataRow;
-      object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
-      return object;
-    }, {} as PlanDataRow),
-  );
-};
-
-const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
-  const query = `
-  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope) VALUES
-    ${rows
-      .map(
-        (r) => `('${r.date}', '${r.praise_scope}', '${r.praise_content}', '${r.devotional_scope}')`,
-      )
-      .join(',\n')}
-    ON CONFLICT (date) DO UPDATE SET
-      praise_scope = excluded.praise_scope,
-      praise_content = excluded.praise_content,
-      devotional_scope = excluded.devotional_scope;
-  `;
-
-  const command = [
-    'npx wrangler d1 execute DB',
-    isRemote ? '--remote' : '',
-    `--command="${query}"`,
-  ].join(' ');
-  execSync(command, { stdio: 'inherit' });
-};
-
-export type WriteToD1FromGoogleSheetsOptions = {
-  isRemote?: boolean;
-};
-
-export const writeToD1FromGoogleSheets = async (
-  service: Service<string[][]>,
-  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
-): Promise<void> => {
-  const rows = await service.execute();
-  writeToD1(!!isRemote)(formatRows(rows));
-};
