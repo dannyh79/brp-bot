@@ -72,16 +72,17 @@ type PlanDataRow = {
   devotional_scope: string;
 };
 
+type DataRow = PlanDataRow & Record<string, unknown>;
+
 const formatRows = (rows: string[][]): PlanDataRow[] => {
   const headers = rows[0];
   const dataRows = rows.slice(1);
   return dataRows.map((row: string[]) =>
     row.reduce((object, cell, index) => {
-      // FIXME: Remove type assertion
       const field = headers[index] as keyof PlanDataRow;
       object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
       return object;
-    }, {} as PlanDataRow),
+    }, {} as DataRow),
   );
 };
 
