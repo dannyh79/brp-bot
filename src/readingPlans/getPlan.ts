@@ -18,7 +18,7 @@ export const GetPlanOutputSchema = z.object({
       '上帝啊，求你按你的慈愛恩待我！\n按你極大的憐憫除去我 ___ 的過犯！\n求祢洗淨我的罪過，清除我的罪惡。\n求祢讓我重新享受蒙祢拯救的喜樂，賜我一個樂意順服祢的心靈，並開始以 ___ 的行動做出改變。',
   }),
   devotional: z.object({
-    scope: z.string().openapi({ example: '出埃及記 第八章' }),
+    scope: z.string().openapi({ example: '出埃及記 第 8 章' }),
     content: z.array(z.string()).openapi({
       example: ['1. 你覺得神透過今天的經文對你說什麼呢?', '2. 有什麼你可以做出的行動或改變呢?'],
     }),

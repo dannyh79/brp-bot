@@ -8,7 +8,7 @@ export const planRecordFixture = {
     content: '你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！',
   },
   devotional: {
-    scope: '出埃及記 第八章',
+    scope: '出埃及記 第 8 章',
   },
 };
 
