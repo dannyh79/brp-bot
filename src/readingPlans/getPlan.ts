@@ -19,6 +19,7 @@ export const GetPlanOutputSchema = z.object({
   }),
   devotional: z.object({
     scope: z.string().openapi({ example: '出埃及記 第 8 章' }),
+    link: z.string().openapi({ example: 'https://www.bible.com/bible/1392/EXO.8' }),
     content: z.array(z.string()).openapi({
       example: ['1. 你覺得神透過今天的經文對你說什麼呢?', '2. 有什麼你可以做出的行動或改變呢?'],
     }),
