@@ -331,15 +331,45 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                     layout: 'vertical',
                     contents: [
                       {
-                        type: 'text',
-                        text: devotional.scope,
-                        gravity: 'center',
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: devotional.scope,
+                            size: 'lg',
+                            color: '#5D5D5D',
+                            wrap: true,
+                            lineSpacing: '10px',
+                            weight: 'bold',
+                            gravity: 'center',
+                          },
+                          {
+                            type: 'box',
+                            layout: 'horizontal',
+                            contents: [
+                              {
+                                type: 'button',
+                                action: {
+                                  type: 'uri',
+                                  label: 'YouVersion 連結',
+                                  uri: devotional.link,
+                                },
+                                adjustMode: 'shrink-to-fit',
+                                style: 'link',
+                                height: 'sm',
+                                flex: 1,
+                              },
+                              {
+                                type: 'filler',
+                                flex: 1,
+                              },
+                            ],
+                            flex: 1,
+                            offsetEnd: 'lg',
+                          },
+                        ],
                         flex: 8,
-                        size: 'lg',
-                        color: '#5D5D5D',
-                        wrap: true,
-                        lineSpacing: '10px',
-                        weight: 'bold',
                       },
                       {
                         type: 'box',
