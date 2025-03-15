@@ -1,5 +1,7 @@
 # BRP Bot
 
+[![Tests](https://github.com/dannyh79/brp-bot/actions/workflows/test.yml/badge.svg)](https://github.com/dannyh79/brp-bot/actions/workflows/test.yml)
+
 ## Prereqs
 
 - asdf
