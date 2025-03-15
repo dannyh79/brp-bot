@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { defineWorkersConfig, readD1Migrations } from '@cloudflare/vitest-pool-workers/config';
+import { coverageConfigDefaults } from 'vitest/config';
 
 const migrationsPath = path.resolve(__dirname, 'migrations');
 const migrations = await readD1Migrations(migrationsPath);
@@ -25,6 +26,15 @@ export default defineWorkersConfig({
           },
         },
       },
+    },
+
+    coverage: {
+      provider: 'istanbul',
+      exclude: [
+        'worker/index.ts', // entrypoint of Cloudflare Workers
+        '**/types.ts', // type definitions
+        ...coverageConfigDefaults.exclude,
+      ],
     },
 
     workspace: [
