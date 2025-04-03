@@ -2,6 +2,7 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
+import { FC } from 'hono/jsx';
 
 const app = new OpenAPIHono();
 
@@ -14,15 +15,53 @@ const app = new OpenAPIHono();
 //#endregion
 
 // Register OpenAPI endpoints
+
+const Layout: FC = (props) => {
+  return (
+    <html>
+      <body>{props.children}</body>
+    </html>
+  );
+};
+
 app.openapi(endpoints.getPlan, async (c) => {
-  const query = c.req.valid('query');
+  const locale = 'en-CA' as const;
+  const timeZone = 'Asia/Taipei' as const;
+
+  const formatter = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    timeZone,
+  });
+
+  const { date, format } = c.req.valid('query');
 
   const usecase = c.get('getPlan');
-  const data = await usecase(query);
+  const data = await usecase({ date: date || formatter.format(new Date()) });
+
   if (!data) {
     return c.notFound();
-  } else {
-    return c.json(data, 200);
+  }
+
+  switch (format) {
+    case 'html':
+      return c.html(
+        <Layout>
+          <main>
+            <h1>{data.date}</h1>
+            <p>
+              {data.praise.content} ({data.praise.scope})
+            </p>
+            <p>{data.repentence}</p>
+            <p>{data.devotional.scope}</p>
+            <p>{data.prayer}</p>
+          </main>
+        </Layout>,
+      );
+    case 'json':
+    default:
+      return c.json(data, 200);
   }
 });
 

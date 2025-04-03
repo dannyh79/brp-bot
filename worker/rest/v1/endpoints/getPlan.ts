@@ -4,6 +4,7 @@ import { withUsecases } from '@worker/rest/middlewares';
 
 export const GetPlanQuery = z.object({
   date: z.string().openapi({ example: '2025-01-01' }),
+  format: z.enum(['html', 'json']).optional().openapi({ example: 'html' }),
 });
 
 export const getPlan = createRoute({
@@ -21,6 +22,9 @@ export const getPlan = createRoute({
       content: {
         'application/json': {
           schema: GetPlanOutputSchema,
+        },
+        'text/html': {
+          schema: {},
         },
       },
     },

@@ -28,6 +28,12 @@ describe('GET /api/v1/plan', () => {
     });
   });
 
+  it('responds 200 with plan in HTML', async () => {
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
+    expect(response.status).toBe(200);
+    expect(await response.text()).toMatchSnapshot();
+  });
+
   it('responds 404', async () => {
     const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
