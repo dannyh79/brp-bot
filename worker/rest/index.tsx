@@ -29,7 +29,8 @@ app.openapi(endpoints.getPlan, async (c) => {
   const { date, format } = c.req.valid('query');
 
   const usecase = c.get('getPlan');
-  const data = await usecase({ date: date || toDateString(new Date()) });
+  const defaultDate = c.env.MOCK_DATE === undefined ? new Date() : c.get('mockDate');
+  const data = await usecase({ date: date || toDateString(defaultDate) });
 
   if (!data) {
     return c.notFound();
