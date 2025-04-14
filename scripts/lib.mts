@@ -70,6 +70,7 @@ type PlanDataRow = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
+  devotional_content: string | undefined;
 };
 
 type DataRow = PlanDataRow & Record<string, unknown>;
@@ -80,7 +81,13 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
   return dataRows.map((row: string[]) =>
     row.reduce((object, cell, index) => {
       const field = headers[index] as keyof PlanDataRow;
-      object[field] = toTrimmed(field === 'praise_content' ? toChinesePunctuation(cell) : cell);
+      object[field] = toTrimmed(
+        ['praise_content', 'devotional_content'].includes(field)
+          ? cell === undefined
+            ? cell
+            : toChinesePunctuation(cell)
+          : cell,
+      );
       return object;
     }, {} as DataRow),
   );
@@ -88,16 +95,18 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
 
 const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
   const query = `
-  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope) VALUES
+  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_content) VALUES
     ${rows
       .map(
-        (r) => `('${r.date}', '${r.praise_scope}', '${r.praise_content}', '${r.devotional_scope}')`,
+        (r) =>
+          `('${r.date}', '${r.praise_scope}', '${r.praise_content}', '${r.devotional_scope}', ${r.devotional_content === undefined ? 'NULL' : [`'`, r.devotional_content, `'`].join('')})`,
       )
       .join(',\n')}
     ON CONFLICT (date) DO UPDATE SET
       praise_scope = excluded.praise_scope,
       praise_content = excluded.praise_content,
-      devotional_scope = excluded.devotional_scope;
+      devotional_scope = excluded.devotional_scope,
+      devotional_content = excluded.devotional_content;
   `;
 
   const command = [

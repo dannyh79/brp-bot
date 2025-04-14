@@ -74,7 +74,8 @@ describe('GoogleSheetsService', () => {
 });
 
 const stubSheetData = [
-  ['date', 'praise_scope', 'praise_content', 'devotional_scope'],
+  ['date', 'praise_scope', 'praise_content', 'devotional_scope', 'devotional_content'],
+  // missing devotional_content value to simulate actual response
   ['2025-02-01', '詩篇 23 章', 'The Lord is my shepherd.', '創世紀 1 章'],
 ];
 

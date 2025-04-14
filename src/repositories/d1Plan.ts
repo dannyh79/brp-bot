@@ -5,6 +5,7 @@ type Record = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
+  devotional_content: string | undefined;
 };
 
 const toParsable = (r: Record) => ({
@@ -15,6 +16,7 @@ const toParsable = (r: Record) => ({
   },
   devotional: {
     scope: r.devotional_scope,
+    content: r.devotional_content?.split('\n'),
   },
 });
 
