@@ -1,27 +1,39 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`GET /api/v1/plan > responds 200 with plan in HTML 1`] = `
-"<html><body><main><h1>2025-01-01</h1><p>你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！ (歷代志上 16:34 CCB)</p><p>上帝啊，求你按你的慈愛恩待我！
-按你極大的憐憫除去我 ___ 的過犯！
-求祢洗淨我的罪過，清除我的罪惡。
-求祢讓我重新享受蒙祢拯救的喜樂，賜我一個樂意順服祢的心靈，並開始以 ___ 的行動做出改變。</p><p>出埃及記 第 8 章</p><p>神啊！我將我的 ___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。
-我們在天上的父：願人都尊你的名為聖。
-願你的國降臨；願你的旨意行在地上，如同行在天上。
-我們日用的飲食，今日賜給我們。
-免我們的債，如同我們免了人的債。
-不叫我們陷入試探；救我們脫離那惡者。
-因為國度、權柄、榮耀，全是你的，直到永遠。阿們！</p></main></body></html>"
+"<!DOCTYPE html>
+    <html lang="zh-Hant">
+      <head>
+        <title>好好靈修 Daily Devotion - 2025-01-01</title>
+        <meta
+          name="description"
+          content="[非官方] The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
+        />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script defer src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+      </head>
+      <body>
+        <main class="max-w-md mx-2 md:mx-auto p-4 bg-[#FEFEFE] rounded-xl shadow-md text-[#5D5D5D]"><h1 class="bg-[#FFCC32] font-bold text-[#1D292E] text-2xl pl-4 py-4 rounded-lg mb-3">好好靈修 Daily Devotion</h1><article class="space-y-6 text-md leading-8"><div class="bg-[#EEF0F4] rounded-lg px-4 py-4"><h2 class="text-lg mb-4">1/1 星期三</h2><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">讚美</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="pb-2 pl-6 w-full font-bold"><p>你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！</p><p>歷代志上 16:34 CCB</p></div></section><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">悔改</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><div class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2"><p>聖靈懇求祢在今天光照我在生命中，有沒有什麼是祢要我去做，但我沒有去做的事？</p><p>又有什麼是祢不喜悅我去做，但我卻行的事？</p></div><div class="pb-2 pl-6"><p>上帝啊，求你按你的慈愛恩待我！</p><p>按你極大的憐憫除去我 ___ 的過犯！</p><p>求祢洗淨我的罪過，清除我的罪惡。</p><p>求祢讓我重新享受蒙祢拯救的喜樂，賜我一個樂意順服祢的心靈，並開始以 ___ 的行動做出改變。</p></div></div></section><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">反思</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><div class="pl-2"><p class="font-bold text-xl">出埃及記 第 8 章</p><a href="https://www.bible.com/bible/1392/EXO.8" class="text-blue-500 hover:underline text-md block my-2" target="_blank" rel="noopener noreferrer">YouVersion 連結</a></div><div class="rounded-2xl bg-[#1D292E] text-white ml-2 mb-2 px-4 py-2"><p>1. 你覺得神透過今天的經文對你說什麼呢？</p><p>2. 有什麼你可以做出的行動或改變呢？</p></div></div></section><section class="flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">祈禱</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><p class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">神啊！我將我的 ___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。</p><div class="pb-2 pl-6"><p>我們在天上的父：願人都尊你的名為聖。</p><p>願你的國降臨；願你的旨意行在地上，如同行在天上。</p><p>我們日用的飲食，今日賜給我們。</p><p>免我們的債，如同我們免了人的債。</p><p>不叫我們陷入試探；救我們脫離那惡者。</p><p>因為國度、權柄、榮耀，全是你的，直到永遠。阿們！</p></div></div></section></div></article></main>
+      </body>
+    </html>"
 `;
 
 exports[`GET /api/v1/plan > without date params > responds 200 with plan in HTML 1`] = `
-"<html><body><main><h1>2025-01-01</h1><p>你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！ (歷代志上 16:34 CCB)</p><p>上帝啊，求你按你的慈愛恩待我！
-按你極大的憐憫除去我 ___ 的過犯！
-求祢洗淨我的罪過，清除我的罪惡。
-求祢讓我重新享受蒙祢拯救的喜樂，賜我一個樂意順服祢的心靈，並開始以 ___ 的行動做出改變。</p><p>出埃及記 第 8 章</p><p>神啊！我將我的 ___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。
-我們在天上的父：願人都尊你的名為聖。
-願你的國降臨；願你的旨意行在地上，如同行在天上。
-我們日用的飲食，今日賜給我們。
-免我們的債，如同我們免了人的債。
-不叫我們陷入試探；救我們脫離那惡者。
-因為國度、權柄、榮耀，全是你的，直到永遠。阿們！</p></main></body></html>"
+"<!DOCTYPE html>
+    <html lang="zh-Hant">
+      <head>
+        <title>好好靈修 Daily Devotion - 2025-01-01</title>
+        <meta
+          name="description"
+          content="[非官方] The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
+        />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script defer src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+      </head>
+      <body>
+        <main class="max-w-md mx-2 md:mx-auto p-4 bg-[#FEFEFE] rounded-xl shadow-md text-[#5D5D5D]"><h1 class="bg-[#FFCC32] font-bold text-[#1D292E] text-2xl pl-4 py-4 rounded-lg mb-3">好好靈修 Daily Devotion</h1><article class="space-y-6 text-md leading-8"><div class="bg-[#EEF0F4] rounded-lg px-4 py-4"><h2 class="text-lg mb-4">1/1 星期三</h2><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">讚美</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="pb-2 pl-6 w-full font-bold"><p>你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！</p><p>歷代志上 16:34 CCB</p></div></section><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">悔改</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><div class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2"><p>聖靈懇求祢在今天光照我在生命中，有沒有什麼是祢要我去做，但我沒有去做的事？</p><p>又有什麼是祢不喜悅我去做，但我卻行的事？</p></div><div class="pb-2 pl-6"><p>上帝啊，求你按你的慈愛恩待我！</p><p>按你極大的憐憫除去我 ___ 的過犯！</p><p>求祢洗淨我的罪過，清除我的罪惡。</p><p>求祢讓我重新享受蒙祢拯救的喜樂，賜我一個樂意順服祢的心靈，並開始以 ___ 的行動做出改變。</p></div></div></section><section class="mb-6 flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">反思</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><div class="pl-2"><p class="font-bold text-xl">出埃及記 第 8 章</p><a href="https://www.bible.com/bible/1392/EXO.8" class="text-blue-500 hover:underline text-md block my-2" target="_blank" rel="noopener noreferrer">YouVersion 連結</a></div><div class="rounded-2xl bg-[#1D292E] text-white ml-2 mb-2 px-4 py-2"><p>1. 你覺得神透過今天的經文對你說什麼呢？</p><p>2. 有什麼你可以做出的行動或改變呢？</p></div></div></section><section class="flex"><h3 class="font-bold text-[#1D292E] text-xl text-center">祈禱</h3><div class="flex flex-col items-center space-y-1"><span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span><span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span></div><div class="w-full space-y-2"><p class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">神啊！我將我的 ___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。</p><div class="pb-2 pl-6"><p>我們在天上的父：願人都尊你的名為聖。</p><p>願你的國降臨；願你的旨意行在地上，如同行在天上。</p><p>我們日用的飲食，今日賜給我們。</p><p>免我們的債，如同我們免了人的債。</p><p>不叫我們陷入試探；救我們脫離那惡者。</p><p>因為國度、權柄、榮耀，全是你的，直到永遠。阿們！</p></div></div></section></div></article></main>
+      </body>
+    </html>"
 `;

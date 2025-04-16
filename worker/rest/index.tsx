@@ -30,7 +30,7 @@ app.openapi(endpoints.getPlan, async (c) => {
 
   switch (format) {
     case 'html':
-      return c.html(<PlanPage plan={data} />);
+      return c.render(<PlanPage plan={data} />);
     case 'json':
     default:
       return c.json(data, 200);
