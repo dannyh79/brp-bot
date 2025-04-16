@@ -3,7 +3,7 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { toDateString } from '@worker/lib';
 import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
-import { FC } from 'hono/jsx';
+import { PlanPage } from './templates';
 
 const app = new OpenAPIHono();
 
@@ -16,14 +16,6 @@ const app = new OpenAPIHono();
 //#endregion
 
 // Register OpenAPI endpoints
-
-const Layout: FC = (props) => {
-  return (
-    <html>
-      <body>{props.children}</body>
-    </html>
-  );
-};
 
 app.openapi(endpoints.getPlan, async (c) => {
   const { date, format } = c.req.valid('query');
@@ -38,19 +30,7 @@ app.openapi(endpoints.getPlan, async (c) => {
 
   switch (format) {
     case 'html':
-      return c.html(
-        <Layout>
-          <main>
-            <h1>{data.date}</h1>
-            <p>
-              {data.praise.content} ({data.praise.scope})
-            </p>
-            <p>{data.repentence}</p>
-            <p>{data.devotional.scope}</p>
-            <p>{data.prayer}</p>
-          </main>
-        </Layout>,
-      );
+      return c.html(<PlanPage plan={data} />);
     case 'json':
     default:
       return c.json(data, 200);
