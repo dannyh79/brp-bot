@@ -1,22 +1,12 @@
 import { GetPlanOutput } from '@/readingPlans';
+import { toDateString } from '@worker/lib';
 import { AppContext, ScheduledWorker } from './types';
-
-/** The en-CA (Canadian English) locale outputs dates in YYYY-MM-DD format by default. */
-const locale = 'en-CA' as const;
-const timeZone = 'Asia/Taipei' as const;
-
-const formatter = new Intl.DateTimeFormat(locale, {
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-  timeZone,
-});
 
 export const getPlanThenNotifyLine =
   (ctx: AppContext): ScheduledWorker =>
   async (event, env) => {
     const { usecases: u, services: s } = ctx;
-    const date = formatter.format(new Date(event.scheduledTime));
+    const date = toDateString(new Date(event.scheduledTime));
     const data = await u.getPlan({ date });
 
     /** Empty space used in placeholder values to not break LINE API contract. */

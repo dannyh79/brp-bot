@@ -1,9 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { GetPlanOutputSchema } from '@/readingPlans';
-import { withUsecases } from '@worker/rest/middlewares';
+import { withTimeTestability, withUsecases } from '@worker/rest/middlewares';
 
 export const GetPlanQuery = z.object({
-  date: z.string().openapi({ example: '2025-01-01' }),
+  date: z.string().optional().openapi({ example: '2025-01-01' }),
+  format: z.enum(['html', 'json']).optional().openapi({ example: 'html' }),
 });
 
 export const getPlan = createRoute({
@@ -14,13 +15,17 @@ export const getPlan = createRoute({
   request: {
     query: GetPlanQuery,
   },
-  middleware: [withUsecases] as const,
+  middleware: [withUsecases, withTimeTestability] as const,
   responses: {
     '200': {
-      description: 'Returns reading plan for the date',
+      description:
+        'Returns reading plan for the date; date defaults to current date in UTC+8 if date is not provided',
       content: {
         'application/json': {
           schema: GetPlanOutputSchema,
+        },
+        'text/html': {
+          schema: {},
         },
       },
     },

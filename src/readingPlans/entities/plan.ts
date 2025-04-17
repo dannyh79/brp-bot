@@ -43,6 +43,48 @@ export const PlanSchema = z
 
 export type Plan = z.infer<typeof PlanSchema>;
 
+/**
+ * @param date - String in numeric format, like "4/13" for April 13th.
+ * @param weekday - String in traditional Chinese, like "星期一".
+ */
+export type LocaleDate = {
+  date: string;
+  dayOfWeek: string;
+};
+
+/**
+ * Formats date string to localized date object.
+ *
+ * @remarks
+ * Output date is converted to date in UTC+8 (Asia/Taipei).
+ */
+export const toLocaleDateObject = (str: string): LocaleDate => {
+  const date = new Date(str);
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date string: ${str}`);
+  }
+
+  const timeZone = 'Asia/Taipei' as const;
+
+  /** Use locale "en-US" to get numeric date format like "4/1" for April first. */
+  const dateFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    timeZone,
+  }).format;
+
+  /** Use locale "zh-TW" to get weekday in traditional Chinese. */
+  const weekdayFormatter = new Intl.DateTimeFormat('zh-TW', {
+    weekday: 'long',
+    timeZone,
+  }).format;
+
+  return {
+    date: dateFormatter(date),
+    dayOfWeek: weekdayFormatter(date),
+  };
+};
+
 const parseBibleLink = (scope: string, bookMap: Record<string, string> = bibleBookMap): string => {
   const bookMatch = Object.keys(bookMap).find((book) => scope.includes(book));
   if (!bookMatch) return ccbBibleBaseLink;

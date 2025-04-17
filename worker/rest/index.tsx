@@ -1,7 +1,9 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { toDateString } from '@worker/lib';
 import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
+import { PlanPage } from './templates';
 
 const app = new OpenAPIHono();
 
@@ -14,15 +16,24 @@ const app = new OpenAPIHono();
 //#endregion
 
 // Register OpenAPI endpoints
+
 app.openapi(endpoints.getPlan, async (c) => {
-  const query = c.req.valid('query');
+  const { date, format } = c.req.valid('query');
 
   const usecase = c.get('getPlan');
-  const data = await usecase(query);
+  const defaultDate = c.env.MOCK_DATE === undefined ? new Date() : c.get('mockDate');
+  const data = await usecase({ date: date || toDateString(defaultDate) });
+
   if (!data) {
     return c.notFound();
-  } else {
-    return c.json(data, 200);
+  }
+
+  switch (format) {
+    case 'html':
+      return c.render(<PlanPage plan={data} />);
+    case 'json':
+    default:
+      return c.json(data, 200);
   }
 });
 

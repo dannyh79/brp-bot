@@ -24,6 +24,14 @@ export const withAuth = createMiddleware(async (c: AppContext, next: Next) => {
   await next();
 });
 
+export const withTimeTestability = createMiddleware(async (c: AppContext, next: Next) => {
+  if (c.env.MOCK_DATE) {
+    const mockedDate = '2025-01-01 00:00:00 GMT+8';
+    c.set('mockDate', new Date(mockedDate));
+  }
+  await next();
+});
+
 /**
  * Registers authorization component in OpenAPI.
  * @see {@link https://github.com/honojs/middleware/blob/main/packages/zod-openapi/README.md#how-to-setup-authorization|@hono/zod-openapi doc}

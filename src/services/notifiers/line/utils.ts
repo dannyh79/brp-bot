@@ -1,29 +1,12 @@
-import { GetPlanOutput } from '@/readingPlans';
+import { GetPlanOutput, toLocaleDateObject } from '@/readingPlans';
 import { LineMessage } from './types';
-
-const formatDateString = (str: string): { date: string; dayOfWeek: string } => {
-  const date = new Date(str);
-  if (isNaN(date.getTime())) {
-    throw new Error(`Invalid date string: ${str}`);
-  }
-
-  const daysOfWeek = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  const dayOfWeek = daysOfWeek[date.getDay()];
-
-  const month = date.getMonth() + 1; // Months are 0-based
-  const day = date.getDate();
-  return {
-    date: `${month}/${day}`,
-    dayOfWeek,
-  };
-};
 
 const repentencePrelude =
   '聖靈懇求祢在今天光照我在生命中，有沒有什麼是祢要我去做，但我沒有去做的事？\n又有什麼是祢不喜悅我去做，但我卻行的事？';
 
 export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
   const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
-  const { date, dayOfWeek } = formatDateString(dateFromData);
+  const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
 
   return {
