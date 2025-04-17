@@ -43,6 +43,23 @@ export const PlanSchema = z
 
 export type Plan = z.infer<typeof PlanSchema>;
 
+export const toLocaleDateObject = (str: string): { date: string; dayOfWeek: string } => {
+  const date = new Date(str);
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date string: ${str}`);
+  }
+
+  const daysOfWeek = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  const dayOfWeek = daysOfWeek[date.getDay()];
+
+  const month = date.getMonth() + 1; // Months are 0-based
+  const day = date.getDate();
+  return {
+    date: `${month}/${day}`,
+    dayOfWeek,
+  };
+};
+
 const parseBibleLink = (scope: string, bookMap: Record<string, string> = bibleBookMap): string => {
   const bookMatch = Object.keys(bookMap).find((book) => scope.includes(book));
   if (!bookMatch) return ccbBibleBaseLink;

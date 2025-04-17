@@ -1,6 +1,6 @@
 import { html } from 'hono/html';
 import { FC, PropsWithChildren } from 'hono/jsx';
-import { Plan } from '@/readingPlans';
+import { Plan, toLocaleDateObject } from '@/readingPlans';
 
 export type LayoutProps = PropsWithChildren<{ title: string }>;
 
@@ -31,26 +31,9 @@ const repentencePrelude = [
   '又有什麼是祢不喜悅我去做，但我卻行的事？',
 ];
 
-const toDateString = (str: string): { date: string; dayOfWeek: string } => {
-  const date = new Date(str);
-  if (isNaN(date.getTime())) {
-    throw new Error(`Invalid date string: ${str}`);
-  }
-
-  const daysOfWeek = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  const dayOfWeek = daysOfWeek[date.getDay()];
-
-  const month = date.getMonth() + 1; // Months are 0-based
-  const day = date.getDate();
-  return {
-    date: `${month}/${day}`,
-    dayOfWeek,
-  };
-};
-
 export const PlanPage: FC<PlanPageProps> = ({ plan }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
-  const { date, dayOfWeek } = toDateString(plan.date);
+  const { date, dayOfWeek } = toLocaleDateObject(plan.date);
   return (
     <Layout title={`好好靈修 Daily Devotion - ${plan.date}`}>
       <main class="max-w-md mx-2 md:mx-auto p-4 bg-[#FEFEFE] rounded-xl shadow-md text-[#5D5D5D]">

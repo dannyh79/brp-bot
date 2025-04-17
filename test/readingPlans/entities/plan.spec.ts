@@ -1,4 +1,4 @@
-import { PlanSchema } from '@/readingPlans';
+import { PlanSchema, toLocaleDateObject } from '@/readingPlans';
 
 export const rawData = {
   date: '2025-01-01',
@@ -44,6 +44,37 @@ describe('PlanSchema devotional link', () => {
 
       expect(success).toBe(true);
       expect(data!.devotional.link).toBe(expected);
+    });
+  });
+});
+
+describe('toLocaleDateObject()', () => {
+  const testCases: [name: string, date: string, expected: object][] = [
+    [
+      `formats 2025-01-01 as { date: "1/1", dayOfWeek: "星期四" }`,
+      '2025-01-01 00:00:00 GMT+8',
+      { date: '1/1', dayOfWeek: '星期三' },
+    ],
+    [
+      `formats 2025-01-11 as { date: "1/11", dayOfWeek: "星期六" }`,
+      '2025-01-11 00:00:00 GMT+8',
+      { date: '1/11', dayOfWeek: '星期六' },
+    ],
+    [
+      `formats 2025-10-01 as { date: "10/1", dayOfWeek: "星期三" }`,
+      '2025-10-01 00:00:00 GMT+8',
+      { date: '10/1', dayOfWeek: '星期三' },
+    ],
+    [
+      `formats 2025-10-10 as { date: "10/10", dayOfWeek: "星期五" }`,
+      '2025-10-10 00:00:00 GMT+8',
+      { date: '10/10', dayOfWeek: '星期五' },
+    ],
+  ];
+
+  testCases.forEach(([name, date, expected]) => {
+    it(name, () => {
+      expect(toLocaleDateObject(date)).toStrictEqual(expected);
     });
   });
 });
