@@ -43,20 +43,45 @@ export const PlanSchema = z
 
 export type Plan = z.infer<typeof PlanSchema>;
 
-export const toLocaleDateObject = (str: string): { date: string; dayOfWeek: string } => {
+/**
+ * @param date - String in numeric format, like "4/13" for April 13th.
+ * @param weekday - String in traditional Chinese, like "星期一".
+ */
+export type LocaleDate = {
+  date: string;
+  dayOfWeek: string;
+};
+
+/**
+ * Formats date string to localized date object.
+ *
+ * @remarks
+ * Output date is converted to date in UTC+8 (Asia/Taipei).
+ */
+export const toLocaleDateObject = (str: string): LocaleDate => {
   const date = new Date(str);
   if (isNaN(date.getTime())) {
     throw new Error(`Invalid date string: ${str}`);
   }
 
-  const daysOfWeek = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  const dayOfWeek = daysOfWeek[date.getDay()];
+  const timeZone = 'Asia/Taipei' as const;
 
-  const month = date.getMonth() + 1; // Months are 0-based
-  const day = date.getDate();
+  /** Use locale "en-US" to get numeric date format like "4/1" for April first. */
+  const dateFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    timeZone,
+  }).format;
+
+  /** Use locale "zh-TW" to get weekday in traditional Chinese. */
+  const weekdayFormatter = new Intl.DateTimeFormat('zh-TW', {
+    weekday: 'long',
+    timeZone,
+  }).format;
+
   return {
-    date: `${month}/${day}`,
-    dayOfWeek,
+    date: dateFormatter(date),
+    dayOfWeek: weekdayFormatter(date),
   };
 };
 
