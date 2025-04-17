@@ -18,7 +18,8 @@ export const getPlan = createRoute({
   middleware: [withUsecases, withTimeTestability] as const,
   responses: {
     '200': {
-      description: 'Returns reading plan for the date',
+      description:
+        'Returns reading plan for the date; date defaults to current date in UTC+8 if date is not provided',
       content: {
         'application/json': {
           schema: GetPlanOutputSchema,
