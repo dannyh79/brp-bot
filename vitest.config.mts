@@ -23,7 +23,6 @@ export default defineWorkersConfig({
         miniflare: {
           bindings: {
             TEST_MIGRATIONS: migrations,
-            MOCK_DATE: true,
           },
         },
       },

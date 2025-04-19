@@ -3,6 +3,9 @@ import * as helper from 'test/helpers/d1';
 
 const stubDomain = 'https://brp-bot.pages.dev';
 
+beforeEach(vi.useFakeTimers);
+afterEach(vi.useRealTimers);
+
 describe('GET /api/v1/plan', () => {
   beforeEach(async () => {
     await helper.insertPlanRecord();
@@ -40,6 +43,10 @@ describe('GET /api/v1/plan', () => {
   });
 
   describe('without date params', () => {
+    beforeEach(() => {
+      vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
+    });
+
     it('responds 200 with plan for the current date', async () => {
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan`);
       expect(response.status).toBe(200);

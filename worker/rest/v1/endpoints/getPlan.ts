@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { GetPlanOutputSchema } from '@/readingPlans';
-import { withTimeTestability, withUsecases } from '@worker/rest/middlewares';
+import { withUsecases } from '@worker/rest/middlewares';
 
 export const GetPlanQuery = z.object({
   date: z.string().optional().openapi({ example: '2025-01-01' }),
@@ -15,7 +15,7 @@ export const getPlan = createRoute({
   request: {
     query: GetPlanQuery,
   },
-  middleware: [withUsecases, withTimeTestability] as const,
+  middleware: [withUsecases] as const,
   responses: {
     '200': {
       description:
