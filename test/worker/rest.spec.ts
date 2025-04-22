@@ -3,15 +3,9 @@ import * as helper from 'test/helpers/d1';
 
 const stubDomain = 'https://brp-bot.pages.dev';
 
-beforeEach(vi.useFakeTimers);
-afterEach(vi.useRealTimers);
-
 describe('GET /api/v1/plan', () => {
-  beforeEach(async () => {
-    await helper.insertPlanRecord();
-  });
-
   it('responds 200 with plan for the date', async () => {
+    await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
@@ -32,22 +26,25 @@ describe('GET /api/v1/plan', () => {
   });
 
   it('responds 200 with plan in HTML', async () => {
+    await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
     expect(response.status).toBe(200);
     expect(await response.text()).toMatchSnapshot();
   });
 
   it('responds 404', async () => {
+    await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
   });
 
   describe('without date params', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
-    });
+    beforeEach(vi.useFakeTimers);
+    afterEach(vi.useRealTimers);
 
     it('responds 200 with plan for the current date', async () => {
+      await helper.insertPlanRecord();
+      vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan`);
       expect(response.status).toBe(200);
       expect(await response.json()).toMatchObject({
@@ -71,6 +68,8 @@ describe('GET /api/v1/plan', () => {
     });
 
     it('responds 200 with plan in HTML', async () => {
+      await helper.insertPlanRecord();
+      vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan?format=html`);
       expect(response.status).toBe(200);
       expect(await response.text()).toMatchSnapshot();
@@ -81,11 +80,8 @@ describe('GET /api/v1/plan', () => {
 describe('POST /api/v1/recipients', () => {
   const recipient = helper.recipientRecordFixture;
 
-  beforeEach(async () => {
-    await helper.insertRecipientRecord();
-  });
-
   it('responds 401 when not authorized', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -95,6 +91,7 @@ describe('POST /api/v1/recipients', () => {
   });
 
   it('responds 204 when saves a recipient', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${env.API_TOKEN}` },
@@ -105,6 +102,7 @@ describe('POST /api/v1/recipients', () => {
   });
 
   it('responds 304', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${env.API_TOKEN}` },
@@ -118,11 +116,8 @@ describe('POST /api/v1/recipients', () => {
 describe('DELETE /api/v1/recipients/:id', () => {
   const recipient = helper.recipientRecordFixture;
 
-  beforeEach(async () => {
-    await helper.insertRecipientRecord();
-  });
-
   it('responds 401 when not authorized', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
       method: 'DELETE',
     });
@@ -130,6 +125,7 @@ describe('DELETE /api/v1/recipients/:id', () => {
   });
 
   it('responds 204 when deletes a recipient', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${env.API_TOKEN}` },
@@ -139,6 +135,7 @@ describe('DELETE /api/v1/recipients/:id', () => {
   });
 
   it('responds 404 when recipient not found', async () => {
+    await helper.insertRecipientRecord();
     const response = await SELF.fetch(
       `${stubDomain}/api/v1/recipients/C5678f49365c6b492b337189e3343a9d9`,
       {

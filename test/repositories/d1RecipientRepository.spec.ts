@@ -10,25 +10,20 @@ describe('D1RecipientRepository', () => {
   const repo = new D1RecipientRepository(env.DB);
 
   describe('all()', () => {
-    beforeEach(async () => {
-      await Promise.all([recipient1, recipient2].map(insertRecipientRecord));
-    });
-
     it('returns all recipients', async () => {
+      await Promise.all([recipient1, recipient2].map(insertRecipientRecord));
       expect(await repo.all()).toMatchObject([recipient1, recipient2]);
     });
   });
 
   describe('findById()', () => {
-    beforeEach(async () => {
-      await insertRecipientRecord(recipient1);
-    });
-
     it('returns recipient object', async () => {
+      await insertRecipientRecord(recipient1);
       expect(await repo.findById(recipient1.id)).toMatchObject(recipient1);
     });
 
     it('returns null', async () => {
+      await insertRecipientRecord(recipient1);
       expect(await repo.findById('C5678f49365c6b492b337189e3343a9d9')).toBeNull();
     });
   });
@@ -48,6 +43,7 @@ describe('D1RecipientRepository', () => {
     });
 
     it('throws error when trying to save a recipient by the same ID', async () => {
+      await env.DB.prepare('DELETE FROM recipients').run();
       await repo.save(recipient1);
       await expect(repo.save(recipient1)).rejects.toThrowError();
     });
@@ -56,10 +52,10 @@ describe('D1RecipientRepository', () => {
   describe('destroy()', () => {
     beforeEach(async () => {
       await env.DB.prepare('DELETE FROM recipients').run();
-      await insertRecipientRecord(recipient1);
     });
 
     it('deletes a recipient record', async () => {
+      await insertRecipientRecord(recipient1);
       await repo.destroy(recipient1);
 
       const result = await env.DB.prepare('SELECT * FROM recipients WHERE id = ?')

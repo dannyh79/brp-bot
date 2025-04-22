@@ -14,10 +14,6 @@ describe('getPlanThenNotifyLine()', () => {
   });
   const ctx = createExecutionContext();
 
-  beforeEach(async () => {
-    await helper.insertRecipientRecord(recipient);
-  });
-
   afterEach(() => {
     mockGetPlan.mockRestore();
     mockListRecipients.mockRestore();
@@ -26,6 +22,7 @@ describe('getPlanThenNotifyLine()', () => {
   });
 
   it('pushes the message to target then logs the result', async () => {
+    await helper.insertRecipientRecord(recipient);
     mockListRecipients.mockResolvedValue([recipient]);
     await getPlanThenNotifyLine({ usecases, services })(ctrl, env, ctx);
 
@@ -35,6 +32,7 @@ describe('getPlanThenNotifyLine()', () => {
 
   describe('when there is NO reading plan', () => {
     it('pushes a message to admin then logs the result', async () => {
+      await helper.insertRecipientRecord(recipient);
       mockGetPlan.mockResolvedValue(null);
       await getPlanThenNotifyLine({ usecases, services })(ctrl, env, ctx);
 

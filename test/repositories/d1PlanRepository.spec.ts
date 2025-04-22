@@ -2,15 +2,12 @@ import { env } from 'cloudflare:test';
 import D1PlanRepository from '@/repositories/d1Plan';
 import { insertPlanRecord } from 'test/helpers/d1';
 
-beforeEach(async () => {
-  await insertPlanRecord();
-});
-
 describe('D1PlanRepository', () => {
   const repo = new D1PlanRepository(env.DB);
 
   describe('findById()', () => {
     it('returns plan object', async () => {
+      await insertPlanRecord();
       expect(await repo.findById('2025-01-01')).toMatchObject({
         date: '2025-01-01',
         praise: {
@@ -32,6 +29,7 @@ describe('D1PlanRepository', () => {
     });
 
     it('returns null', async () => {
+      await insertPlanRecord();
       expect(await repo.findById('2024-12-31')).toBeNull();
     });
   });
