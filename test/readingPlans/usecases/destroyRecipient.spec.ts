@@ -39,7 +39,7 @@ describe('destroyRecipient()', () => {
     expect(result).toMatchObject(recipient);
   });
 
-  it('returns null', async () => {
+  it('returns null, when there is error destroying the record', async () => {
     const nonExistentRecipient = {
       ...helper.recipientRecordFixture,
       id: 'C5678f49365c6b492b337189e3343a9d9',

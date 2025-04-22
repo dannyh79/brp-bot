@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`GET /api/v1/plan > responds 200 with plan in HTML 1`] = `
+exports[`GET /api/v1/plan > responds 200 with plan in HTML, with querystring format=html 1`] = `
 "<!DOCTYPE html>
     <html lang="zh-Hant">
       <head>
@@ -19,7 +19,7 @@ exports[`GET /api/v1/plan > responds 200 with plan in HTML 1`] = `
     </html>"
 `;
 
-exports[`GET /api/v1/plan > without date params > responds 200 with plan in HTML 1`] = `
+exports[`GET /api/v1/plan > without date params > responds 200 with plan in HTML, with querystring format=html 1`] = `
 "<!DOCTYPE html>
     <html lang="zh-Hant">
       <head>

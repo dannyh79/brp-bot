@@ -31,7 +31,7 @@ describe('getPlan()', () => {
     expect(result).toMatchObject(plan);
   });
 
-  it('returns null', async () => {
+  it('returns null, when no record found', async () => {
     const nonExistentPlan = { ...plan, date: '2024-12-31' };
     const result = await getPlan(repo)(nonExistentPlan);
     expect(result).toBeNull();

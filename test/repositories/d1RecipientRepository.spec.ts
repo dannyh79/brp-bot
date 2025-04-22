@@ -24,7 +24,7 @@ describe('D1RecipientRepository', () => {
       expect(result).toMatchObject(recipient1);
     });
 
-    it('returns null', async () => {
+    it('returns null, when no record found by ID', async () => {
       await insertRecipientRecord(recipient1);
       const result = await repo.findById('C5678f49365c6b492b337189e3343a9d9');
       expect(result).toBeNull();
@@ -45,7 +45,7 @@ describe('D1RecipientRepository', () => {
       expect(result?.id).toEqual(recipient1.id);
     });
 
-    it('throws error when trying to save a recipient by the same ID', async () => {
+    it('throws error, when trying to save a recipient by the same ID', async () => {
       await env.DB.prepare('DELETE FROM recipients').run();
       await repo.save(recipient1);
       await expect(() => repo.save(recipient1)).rejects.toThrowError();
@@ -67,7 +67,7 @@ describe('D1RecipientRepository', () => {
       expect(result).toBeNull();
     });
 
-    it('throws error when trying to destroy a non-existent recipient', async () => {
+    it('throws error, when trying to destroy a non-existent recipient', async () => {
       await expect(() => repo.destroy(recipient2)).rejects.toThrowError(ErrorRecordNotFound);
     });
   });

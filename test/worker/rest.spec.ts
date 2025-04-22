@@ -25,14 +25,14 @@ describe('GET /api/v1/plan', () => {
     });
   });
 
-  it('responds 200 with plan in HTML', async () => {
+  it('responds 200 with plan in HTML, with querystring format=html', async () => {
     await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
     expect(response.status).toBe(200);
     expect(await response.text()).toMatchSnapshot();
   });
 
-  it('responds 404', async () => {
+  it('responds 404, when no plan found', async () => {
     await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
@@ -67,7 +67,7 @@ describe('GET /api/v1/plan', () => {
       });
     });
 
-    it('responds 200 with plan in HTML', async () => {
+    it('responds 200 with plan in HTML, with querystring format=html', async () => {
       await helper.insertPlanRecord();
       vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan?format=html`);
@@ -80,7 +80,7 @@ describe('GET /api/v1/plan', () => {
 describe('POST /api/v1/recipients', () => {
   const recipient = helper.recipientRecordFixture;
 
-  it('responds 401 when not authorized', async () => {
+  it('responds 401, when not authorized', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
@@ -90,7 +90,7 @@ describe('POST /api/v1/recipients', () => {
     expect(response.status).toBe(401);
   });
 
-  it('responds 204 when saves a recipient', async () => {
+  it('responds 204, when saves a recipient', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
@@ -101,7 +101,7 @@ describe('POST /api/v1/recipients', () => {
     expect(await response.text()).toBe('');
   });
 
-  it('responds 304', async () => {
+  it('responds 304, when the recipient already exists', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients`, {
       method: 'POST',
@@ -116,7 +116,7 @@ describe('POST /api/v1/recipients', () => {
 describe('DELETE /api/v1/recipients/:id', () => {
   const recipient = helper.recipientRecordFixture;
 
-  it('responds 401 when not authorized', async () => {
+  it('responds 401, when not authorized', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
       method: 'DELETE',
@@ -124,7 +124,7 @@ describe('DELETE /api/v1/recipients/:id', () => {
     expect(response.status).toBe(401);
   });
 
-  it('responds 204 when deletes a recipient', async () => {
+  it('responds 204, when deletes a recipient', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/recipients/${recipient.id}`, {
       method: 'DELETE',
@@ -134,7 +134,7 @@ describe('DELETE /api/v1/recipients/:id', () => {
     expect(await response.text()).toBe('');
   });
 
-  it('responds 404 when recipient not found', async () => {
+  it('responds 404, when no recipient found', async () => {
     await helper.insertRecipientRecord();
     const response = await SELF.fetch(
       `${stubDomain}/api/v1/recipients/C5678f49365c6b492b337189e3343a9d9`,

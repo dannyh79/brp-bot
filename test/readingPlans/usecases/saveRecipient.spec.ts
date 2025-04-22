@@ -35,7 +35,7 @@ describe('saveRecipient()', () => {
     expect(result).toMatchObject(nonExistentRecipient);
   });
 
-  it('returns null', async () => {
+  it('returns null, when there is error saving the record', async () => {
     const result = await saveRecipient(repo)(recipient);
     expect(result).toBeNull();
   });

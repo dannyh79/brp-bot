@@ -73,7 +73,7 @@ describe('GoogleSheetsService', () => {
     expect(result).toEqual(stubSheetData);
   });
 
-  it('throws an error when no data or only sheet header is returned', async () => {
+  it('throws an error, when no data or only sheet header is returned', async () => {
     const noData: string[][] = [];
     const headersOnly = [stubSheetData[0]];
 
@@ -89,7 +89,7 @@ describe('GoogleSheetsService', () => {
     });
   });
 
-  it('throws an error when authentication fails', async () => {
+  it('throws an error, when authentication fails', async () => {
     vi.mocked(mockGoogle.auth.GoogleAuth).mockImplementationOnce(
       () =>
         ({
