@@ -27,11 +27,13 @@ describe('getPlan()', () => {
   const repo = new StubRepository();
 
   it('returns plan object', async () => {
-    expect(await getPlan(repo)(plan)).toMatchObject(plan);
+    const result = await getPlan(repo)(plan);
+    expect(result).toMatchObject(plan);
   });
 
   it('returns null', async () => {
     const nonExistentPlan = { ...plan, date: '2024-12-31' };
-    expect(await getPlan(repo)(nonExistentPlan)).toBeNull();
+    const result = await getPlan(repo)(nonExistentPlan);
+    expect(result).toBeNull();
   });
 });

@@ -12,19 +12,22 @@ describe('D1RecipientRepository', () => {
   describe('all()', () => {
     it('returns all recipients', async () => {
       await Promise.all([recipient1, recipient2].map(insertRecipientRecord));
-      expect(await repo.all()).toMatchObject([recipient1, recipient2]);
+      const result = await repo.all();
+      expect(result).toMatchObject([recipient1, recipient2]);
     });
   });
 
   describe('findById()', () => {
     it('returns recipient object', async () => {
       await insertRecipientRecord(recipient1);
-      expect(await repo.findById(recipient1.id)).toMatchObject(recipient1);
+      const result = await repo.findById(recipient1.id);
+      expect(result).toMatchObject(recipient1);
     });
 
     it('returns null', async () => {
       await insertRecipientRecord(recipient1);
-      expect(await repo.findById('C5678f49365c6b492b337189e3343a9d9')).toBeNull();
+      const result = await repo.findById('C5678f49365c6b492b337189e3343a9d9');
+      expect(result).toBeNull();
     });
   });
 
@@ -45,7 +48,7 @@ describe('D1RecipientRepository', () => {
     it('throws error when trying to save a recipient by the same ID', async () => {
       await env.DB.prepare('DELETE FROM recipients').run();
       await repo.save(recipient1);
-      await expect(repo.save(recipient1)).rejects.toThrowError();
+      await expect(() => repo.save(recipient1)).rejects.toThrowError();
     });
   });
 
@@ -65,7 +68,7 @@ describe('D1RecipientRepository', () => {
     });
 
     it('throws error when trying to destroy a non-existent recipient', async () => {
-      await expect(repo.destroy(recipient2)).rejects.toThrowError(ErrorRecordNotFound);
+      await expect(() => repo.destroy(recipient2)).rejects.toThrowError(ErrorRecordNotFound);
     });
   });
 });

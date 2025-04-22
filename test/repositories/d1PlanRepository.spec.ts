@@ -8,7 +8,8 @@ describe('D1PlanRepository', () => {
   describe('findById()', () => {
     it('returns plan object', async () => {
       await insertPlanRecord();
-      expect(await repo.findById('2025-01-01')).toMatchObject({
+      const result = await repo.findById('2025-01-01');
+      expect(result).toMatchObject({
         date: '2025-01-01',
         praise: {
           scope: '歷代志上 16:34 CCB',
@@ -30,7 +31,8 @@ describe('D1PlanRepository', () => {
 
     it('returns null', async () => {
       await insertPlanRecord();
-      expect(await repo.findById('2024-12-31')).toBeNull();
+      const result = await repo.findById('2024-12-31');
+      expect(result).toBeNull();
     });
   });
 });

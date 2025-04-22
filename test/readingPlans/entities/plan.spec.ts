@@ -74,7 +74,8 @@ describe('toLocaleDateObject()', () => {
 
   testCases.forEach(([name, date, expected]) => {
     it(name, () => {
-      expect(toLocaleDateObject(date)).toStrictEqual(expected);
+      const result = toLocaleDateObject(date);
+      expect(result).toStrictEqual(expected);
     });
   });
 });

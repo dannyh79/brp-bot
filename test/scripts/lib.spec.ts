@@ -83,7 +83,7 @@ describe('GoogleSheetsService', () => {
       });
 
       const service = newGoogleSheetService();
-      await expect(service.execute()).rejects.toThrow(
+      await expect(() => service.execute()).rejects.toThrow(
         'No data found or only headers present in data.',
       );
     });
@@ -98,6 +98,6 @@ describe('GoogleSheetsService', () => {
     );
 
     const service = newGoogleSheetService();
-    await expect(service.execute()).rejects.toThrow('Authentication Failed');
+    await expect(() => service.execute()).rejects.toThrow('Authentication Failed');
   });
 });

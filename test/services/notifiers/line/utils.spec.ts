@@ -19,6 +19,7 @@ describe('toBubbleMessage()', () => {
   };
 
   it('returns LINE bubble message payload', () => {
-    expect(toBubbleMessage(data)).toMatchSnapshot();
+    const result = toBubbleMessage(data);
+    expect(result).toMatchSnapshot();
   });
 });
