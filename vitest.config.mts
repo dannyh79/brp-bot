@@ -1,17 +1,24 @@
 import path from 'node:path';
 import { defineWorkersConfig, readD1Migrations } from '@cloudflare/vitest-pool-workers/config';
 import { coverageConfigDefaults } from 'vitest/config';
+import tsconfig from './tsconfig.json';
 
 const migrationsPath = path.resolve(__dirname, 'migrations');
 const migrations = await readD1Migrations(migrationsPath);
 
+// Create an alias object from the paths in tsconfig.json
+const alias = Object.fromEntries(
+  Object.entries(tsconfig.compilerOptions.paths).map(([key, [value]]) => [
+    // Remove the "/*" from the key and resolve the path
+    key.replace('/*', ''),
+    // Remove the "/*" from the value Resolve the relative path
+    path.resolve(__dirname, value.replace('/*', '')),
+  ]),
+);
+
 export default defineWorkersConfig({
   resolve: {
-    // NOTE: Ensure alias matches tsconfig.json
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@worker': path.resolve(__dirname, './worker'),
-    },
+    alias,
   },
 
   test: {
