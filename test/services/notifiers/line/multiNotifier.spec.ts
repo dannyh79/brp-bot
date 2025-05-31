@@ -20,7 +20,7 @@ describe('LineMultiNotifier', () => {
       json: vi.fn(),
     });
 
-    await new LineMultiNotifier(stubNotifierArg).pushMessage(
+    await new LineMultiNotifier({ channelAccessToken: stubChannelAccessToken }).pushMessage(
       pushMessageArg['to'],
       pushMessageArg['message'],
     );
@@ -29,25 +29,22 @@ describe('LineMultiNotifier', () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${stubNotifierArg.channelAccessToken}`,
+        'Authorization': `Bearer ${stubChannelAccessToken}`,
       },
-      body: expect.stringContaining(JSON.stringify(stubNotifierArg.to[0])),
+      body: expect.stringContaining(JSON.stringify(pushMessageArg.to[0])),
     });
     expect(mockFetch).toHaveBeenNthCalledWith(2, 'https://api.line.me/v2/bot/message/push', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${stubNotifierArg.channelAccessToken}`,
+        'Authorization': `Bearer ${stubChannelAccessToken}`,
       },
-      body: expect.stringContaining(JSON.stringify(stubNotifierArg.to[1])),
+      body: expect.stringContaining(JSON.stringify(pushMessageArg.to[1])),
     });
   });
 });
 
-const stubNotifierArg = {
-  to: ['some-group-id1', 'some-group-id2'],
-  channelAccessToken: 'some-token',
-};
+const stubChannelAccessToken = 'some-token';
 
 const stubMessage = {
   date: '2025-01-01',
