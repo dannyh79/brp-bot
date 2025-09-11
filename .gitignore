@@ -177,3 +177,5 @@ secrets.json
 # scripts
 
 **/service-account.json
+worker/rest/templates/customScript.ts*
+!worker/rest/templates/customScript.ts.example

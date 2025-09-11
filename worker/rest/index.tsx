@@ -28,8 +28,19 @@ app.openapi(endpoints.getPlan, async (c) => {
   }
 
   switch (format) {
-    case 'html':
-      return c.render(<PlanPage plan={data} />);
+    case 'html': {
+      let customScript: string | undefined;
+      try {
+        // NOTE: Use runtime import to avoid bundler errors
+        const scriptName = 'customScript';
+        const module = await import(`./templates/${scriptName}.ts`);
+
+        customScript = module.default;
+      } catch {
+        // Ignore if custom script not found
+      }
+      return c.render(<PlanPage plan={data} customScript={customScript} />);
+    }
     case 'json':
     default:
       return c.json(data, 200);

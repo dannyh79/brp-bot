@@ -92,6 +92,13 @@ SPREADSHEET_ID={{ GoogleSheets spreadsheet ID }} SHEET_NAME={{ GoogleSheets shee
 sqlite3 .wrangler/state/v3/d1/miniflare-D1DatabaseObject/{{ some_version }}.sqlite
 ```
 
+### Custom Script in HTML Response
+
+Inject custom scripts (e.g., for analytics) into the HTML response.
+Create `worker/rest/templates/customScript.ts` exporting a `customScript` string as default export.
+This file is git-ignored and its content will be injected at the end of `<body>`.
+See `worker/rest/index.tsx` and `worker/rest/templates/customScript.ts.example` for an example.
+
 ## Gotchas
 
 ### LINE
