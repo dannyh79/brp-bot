@@ -4,8 +4,11 @@ import * as helper from 'test/helpers/d1';
 const stubDomain = 'https://brp-bot.pages.dev';
 
 describe('GET /api/v1/plan', () => {
-  it('responds 200 with plan for the date', async () => {
+  beforeAll(async () => {
     await helper.insertPlanRecord();
+  });
+
+  it('responds 200 with plan for the date', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
@@ -26,14 +29,12 @@ describe('GET /api/v1/plan', () => {
   });
 
   it('responds 200 with plan in HTML, with querystring format=html', async () => {
-    await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
     expect(response.status).toBe(200);
     expect(await response.text()).toMatchSnapshot();
   });
 
   it('responds 404, when no plan found', async () => {
-    await helper.insertPlanRecord();
     const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
   });
@@ -43,7 +44,6 @@ describe('GET /api/v1/plan', () => {
     afterEach(vi.useRealTimers);
 
     it('responds 200 with plan for the current date', async () => {
-      await helper.insertPlanRecord();
       vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan`);
       expect(response.status).toBe(200);
@@ -68,7 +68,6 @@ describe('GET /api/v1/plan', () => {
     });
 
     it('responds 200 with plan in HTML, with querystring format=html', async () => {
-      await helper.insertPlanRecord();
       vi.setSystemTime(new Date('2025-01-01 00:00:00 GMT+8'));
       const response = await SELF.fetch(`${stubDomain}/api/v1/plan?format=html`);
       expect(response.status).toBe(200);

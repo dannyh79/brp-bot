@@ -1,0 +1,3 @@
+const customScript = `<script>console.log("Hello from a custom script!");</script>`;
+
+export default customScript;

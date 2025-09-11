@@ -1,10 +1,10 @@
-import { html } from 'hono/html';
+import { html, raw } from 'hono/html';
 import { FC, PropsWithChildren } from 'hono/jsx';
 import { Plan, toLocaleDateObject } from '@/readingPlans';
 
-export type LayoutProps = PropsWithChildren<{ title: string }>;
+export type LayoutProps = PropsWithChildren<{ title: string; customScript?: string | undefined }>;
 
-export const Layout: FC<LayoutProps> = ({ title, children }) =>
+export const Layout: FC<LayoutProps> = ({ title, children, customScript = '' }) =>
   html`<!DOCTYPE html>
     <html lang="zh-Hant">
       <head>
@@ -18,12 +18,13 @@ export const Layout: FC<LayoutProps> = ({ title, children }) =>
         <script defer src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
       </head>
       <body>
-        ${children}
+        ${children}${raw(customScript)}
       </body>
     </html>`;
 
 export type PlanPageProps = {
   plan: Plan;
+  customScript?: string | undefined;
 };
 
 const repentencePrelude = [
@@ -31,11 +32,11 @@ const repentencePrelude = [
   '又有什麼是祢不喜悅我去做，但我卻行的事？',
 ];
 
-export const PlanPage: FC<PlanPageProps> = ({ plan }) => {
+export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
   const { date, dayOfWeek } = toLocaleDateObject(plan.date);
   return (
-    <Layout title={`好好靈修 Daily Devotion - ${plan.date}`}>
+    <Layout title={`好好靈修 Daily Devotion - ${plan.date}`} customScript={customScript}>
       <main class="max-w-md mx-2 md:mx-auto p-4 bg-[#FEFEFE] rounded-xl shadow-md text-[#5D5D5D]">
         <h1 class="bg-[#FFCC32] font-bold text-[#1D292E] text-2xl pl-4 py-4 rounded-lg mb-3">
           好好靈修 Daily Devotion
