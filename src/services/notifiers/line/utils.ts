@@ -313,47 +313,9 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
                     type: 'box',
                     layout: 'vertical',
                     contents: [
-                      {
-                        type: 'box',
-                        layout: 'vertical',
-                        contents: [
-                          {
-                            type: 'text',
-                            text: devotional.scope,
-                            size: 'lg',
-                            color: '#5D5D5D',
-                            wrap: true,
-                            lineSpacing: '10px',
-                            weight: 'bold',
-                            gravity: 'center',
-                          },
-                          {
-                            type: 'box',
-                            layout: 'horizontal',
-                            contents: [
-                              {
-                                type: 'button',
-                                action: {
-                                  type: 'uri',
-                                  label: 'YouVersion 連結',
-                                  uri: devotional.link,
-                                },
-                                adjustMode: 'shrink-to-fit',
-                                style: 'link',
-                                height: 'sm',
-                                flex: 1,
-                              },
-                              {
-                                type: 'filler',
-                                flex: 1,
-                              },
-                            ],
-                            flex: 1,
-                            offsetEnd: 'lg',
-                          },
-                        ],
-                        flex: 8,
-                      },
+                      ...devotional.scope.map((scope, index) =>
+                        toScopeWithLink({ scope, link: devotional.link[index] }),
+                      ),
                       {
                         type: 'box',
                         layout: 'vertical',
@@ -513,3 +475,45 @@ export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
     },
   };
 };
+
+const toScopeWithLink = ({ scope, link }: { scope: string; link: string }) => ({
+  type: 'box' as const,
+  layout: 'vertical' as const,
+  contents: [
+    {
+      type: 'text' as const,
+      text: scope,
+      size: 'lg' as const,
+      color: '#5D5D5D',
+      wrap: true,
+      lineSpacing: '10px',
+      weight: 'bold' as const,
+      gravity: 'center' as const,
+    },
+    {
+      type: 'box' as const,
+      layout: 'horizontal' as const,
+      contents: [
+        {
+          type: 'button' as const,
+          action: {
+            type: 'uri' as const,
+            label: 'YouVersion 連結',
+            uri: link,
+          },
+          adjustMode: 'shrink-to-fit' as const,
+          style: 'link' as const,
+          height: 'sm' as const,
+          flex: 1,
+        },
+        {
+          type: 'filler' as const,
+          flex: 1,
+        },
+      ],
+      flex: 1,
+      offsetEnd: 'lg' as const,
+    },
+  ],
+  flex: 8,
+});

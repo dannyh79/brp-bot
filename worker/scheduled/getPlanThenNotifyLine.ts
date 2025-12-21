@@ -14,7 +14,7 @@ export const getPlanThenNotifyLine =
       date,
       praise: { scope: ' ', content: 'No Plan Found' },
       repentence: ' ',
-      devotional: { scope: ' ', link: '', content: [' '] },
+      devotional: { scope: [' '], link: [''], content: [' '] },
       prayer: ' ',
     };
 
