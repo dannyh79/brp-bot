@@ -83,17 +83,9 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 <span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span>
               </div>
               <div class="w-full space-y-2">
-                <div class="pl-2">
-                  <p class="font-bold text-xl">{plan.devotional.scope}</p>
-                  <a
-                    href={plan.devotional.link}
-                    class="text-blue-500 hover:underline text-md block my-2"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    YouVersion 連結
-                  </a>
-                </div>
+                {plan.devotional.scope.map((scope, index) => (
+                  <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
+                ))}
                 <div class="rounded-2xl bg-[#1D292E] text-white ml-2 mb-2 px-4 py-2">
                   {plan.devotional.content.map((paragraph) => (
                     <p>{paragraph}</p>
@@ -123,3 +115,17 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
     </Layout>
   );
 };
+
+const ScopeWithLink = ({ scope, link }: { scope: string; link: string }) => (
+  <div class="pl-2">
+    <p class="font-bold text-xl">{scope}</p>
+    <a
+      href={link}
+      class="text-blue-500 hover:underline text-md block my-2"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      YouVersion 連結
+    </a>
+  </div>
+);

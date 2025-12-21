@@ -1,5 +1,5 @@
-import { Recipient } from '@/readingPlans';
 import { env } from 'cloudflare:test';
+import { Recipient } from '@/readingPlans';
 
 export const planRecordFixture = {
   date: '2025-01-01',
@@ -8,7 +8,8 @@ export const planRecordFixture = {
     content: '你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！',
   },
   devotional: {
-    scope: '出埃及記 第 8 章',
+    scope: ['出埃及記 第 8 章'],
+    link: [],
   },
 };
 
@@ -19,7 +20,7 @@ export const insertPlanRecord = async (data = planRecordFixture) => {
     VALUES (?1, ?2, ?3, ?4)
     `,
   )
-    .bind(data.date, data.praise.scope, data.praise.content, data.devotional.scope)
+    .bind(data.date, data.praise.scope, data.praise.content, data.devotional.scope.join(','))
     .run();
 };
 
