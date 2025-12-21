@@ -24,8 +24,10 @@ export const PlanSchema = z
       example: defaultValues['repentence'],
     }),
     devotional: z.object({
-      scope: z.string().openapi({ example: '出埃及記 第 8 章' }),
-      link: z.string().default('').openapi({ example: 'https://www.bible.com/bible/1392/EXO.8' }),
+      scope: z.array(z.string().openapi({ example: '出埃及記 第 8 章' })),
+      link: z.array(
+        z.string().default('').openapi({ example: 'https://www.bible.com/bible/1392/EXO.8' }),
+      ),
       content: z.array(z.string()).default(defaultValues['devotional']).openapi({
         example: defaultValues['devotional'],
       }),
@@ -35,9 +37,11 @@ export const PlanSchema = z
     }),
   })
   .transform((plan) => {
-    if (plan.devotional.link === '') {
-      plan.devotional.link = parseBibleLink(plan.devotional.scope);
-    }
+    plan.devotional.scope.forEach((scope, index) => {
+      if (!plan.devotional.link[index]) {
+        plan.devotional.link[index] = parseBibleLink(scope);
+      }
+    });
     return plan;
   });
 

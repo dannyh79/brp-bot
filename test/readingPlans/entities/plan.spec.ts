@@ -7,34 +7,35 @@ export const rawData = {
     content: '你們要稱謝耶和華，因為祂是美善的，祂的慈愛永遠長存！',
   },
   devotional: {
-    scope: '出埃及記 第 8 章',
+    scope: ['出埃及記 第 8 章'],
+    link: [],
   },
 };
 
 describe('PlanSchema devotional link', () => {
-  const testCases: [name: string, raw: object, expected: string][] = [
+  const testCases: [name: string, raw: object, expected: Array<string>][] = [
     [
       `parses plan's devotional link from data with devotional scope "出埃及記 第 8 章"`,
       rawData,
-      'https://www.bible.com/bible/1392/EXO.8',
+      ['https://www.bible.com/bible/1392/EXO.8'],
     ],
     [
       `parses plan's devotional link from data with devotional scope "出埃及記 8 章"`,
-      { ...rawData, devotional: { scope: '出埃及記 8 章' } },
-      'https://www.bible.com/bible/1392/EXO.8',
+      { ...rawData, devotional: { ...rawData.devotional, scope: ['出埃及記 8 章'] } },
+      ['https://www.bible.com/bible/1392/EXO.8'],
     ],
     [
       `parses plan's devotional link from data with devotional scope "出埃及記 8:1-11"`,
-      { ...rawData, devotional: { scope: '出埃及記 8:1-11' } },
-      'https://www.bible.com/bible/1392/EXO.8.1-11',
+      { ...rawData, devotional: { ...rawData.devotional, scope: ['出埃及記 8:1-11'] } },
+      ['https://www.bible.com/bible/1392/EXO.8.1-11'],
     ],
     [
       `parses plan's devotional link from data with devotional link`,
       {
         ...rawData,
-        devotional: { ...rawData.devotional, link: 'https://www.bible.com/bible/59/EXO.8' },
+        devotional: { ...rawData.devotional, link: ['https://www.bible.com/bible/59/EXO.8'] },
       },
-      'https://www.bible.com/bible/59/EXO.8',
+      ['https://www.bible.com/bible/59/EXO.8'],
     ],
   ];
 
@@ -43,7 +44,7 @@ describe('PlanSchema devotional link', () => {
       const { data, success } = PlanSchema.safeParse(raw);
 
       expect(success).toBe(true);
-      expect(data!.devotional.link).toBe(expected);
+      expect(data!.devotional.link).toStrictEqual(expected);
     });
   });
 });
