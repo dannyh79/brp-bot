@@ -11,6 +11,8 @@ export type ServiceArgs = {
   sheetId: string;
   sheetName: string;
   keyFilePath: string;
+  rangeStart?: number;
+  rangeEnd?: number;
 };
 
 export class GoogleSheetsService implements Service<string[][]> {
@@ -19,30 +21,56 @@ export class GoogleSheetsService implements Service<string[][]> {
   #keyFilePath: string;
   #google: GoogleApis;
   #jwt!: JWT;
+  #rangeStart?: number;
+  #rangeEnd?: number;
 
   constructor(args: ServiceArgs) {
     this.#google = args.google;
     this.#sheetId = args.sheetId;
     this.#sheetName = args.sheetName;
     this.#keyFilePath = args.keyFilePath;
+    this.#rangeStart = args.rangeStart;
+    this.#rangeEnd = args.rangeEnd;
   }
 
   async execute(): Promise<string[][]> {
     await this.#authenticate();
+    const sheets = this.#google.sheets({ version: 'v4', auth: this.#jwt });
 
-    const response = await this.#google
-      .sheets({ version: 'v4', auth: this.#jwt })
-      .spreadsheets.values.get({
+    if (!this.#rangeStart) {
+      const response = await sheets.spreadsheets.values.get({
         spreadsheetId: this.#sheetId,
         range: `${this.#sheetName}!A1:Z`,
       });
-
-    const rows: string[][] | null | undefined = response.data.values;
-    if (!rows || rows.length < 2) {
-      throw new Error('No data found or only headers present in data.');
+      const rows: string[][] | null | undefined = response.data.values;
+      if (!rows) {
+        return [];
+      }
+      return rows;
     }
 
-    return rows;
+    // Fetch header row (A1:Z1)
+    const headerResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: this.#sheetId,
+      range: `${this.#sheetName}!A1:Z1`,
+    });
+    const headerRow = headerResponse.data.values?.[0];
+    if (!headerRow) {
+      throw new Error('Header row (A1:Z1) not found.');
+    }
+
+    // Fetch data rows
+    const dataRange = `A${this.#rangeStart}:Z${this.#rangeEnd ?? ''}`;
+    const dataResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: this.#sheetId,
+      range: `${this.#sheetName}!${dataRange}`,
+    });
+    const dataRows = dataResponse.data.values;
+    if (!dataRows || dataRows.length === 0) {
+      return [headerRow];
+    }
+
+    return [headerRow, ...dataRows];
   }
 
   async #authenticate(): Promise<void> {
@@ -62,6 +90,10 @@ export const writeToD1FromGoogleSheets = async (
   { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
 ): Promise<void> => {
   const rows = await service.execute();
+  if (rows.length < 2) {
+    console.log('No data rows found to write to D1.');
+    return;
+  }
   writeToD1(!!isRemote)(formatRows(rows));
 };
 
