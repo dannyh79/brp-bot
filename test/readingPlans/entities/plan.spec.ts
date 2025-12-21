@@ -45,6 +45,27 @@ describe('PlanSchema devotional link', () => {
       },
       ['https://www.bible.com/bible/1392/NEH.2', 'https://www.bible.com/bible/1392/MAT.1'],
     ],
+    [
+      `parses plan's devotional link from data with devotional scope "以賽亞書 第 53-54 章,約翰福音 18-19 章"`,
+      {
+        ...rawData,
+        devotional: { ...rawData.devotional, scope: ['以賽亞書 第 53-54 章', '約翰福音 18-19 章'] },
+      },
+      // YouVersion does not support link for multiple chapters, so only the first chatper is linked
+      ['https://www.bible.com/bible/1392/ISA.53', 'https://www.bible.com/bible/1392/JHN.18'],
+    ],
+    [
+      `parses plan's devotional link from data with devotional scope "以賽亞書 第 53:2-54 章,約翰福音 18:2-19 章"`,
+      {
+        ...rawData,
+        devotional: {
+          ...rawData.devotional,
+          scope: ['以賽亞書 第 53:2-54 章', '約翰福音 18:2-19 章'],
+        },
+      },
+      // YouVersion does not support link for "the rest of chapters", so link to the first chatper only
+      ['https://www.bible.com/bible/1392/ISA.53', 'https://www.bible.com/bible/1392/JHN.18'],
+    ],
   ];
 
   testCases.forEach(([name, raw, expected]) => {

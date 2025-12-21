@@ -93,21 +93,32 @@ const parseBibleLink = (scope: string, bookMap: Record<string, string> = bibleBo
   const bookMatch = Object.keys(bookMap).find((book) => scope.includes(book));
   if (!bookMatch) return ccbBibleBaseLink;
 
-  /** Matches scope like "出埃及記 8:1-11". */
-  const chapterVerseMatch = scope.match(/(\d+):(\d+-\d+)/);
-  /** Matches scope like "出埃及記 第 11 章" or "出埃及記 11 章". */
-  const chapterOnlyMatch = scope.match(/第\s*(\d+)\s*章|(\d+)\s*章/);
+  const bookCode = bookMap[bookMatch];
 
-  if (chapterVerseMatch) {
-    const chapter = chapterVerseMatch[1];
-    const verses = chapterVerseMatch[2];
-    return `${ccbBibleBaseLink}${bookMap[bookMatch]}.${chapter}.${verses}`;
-  } else if (chapterOnlyMatch) {
-    const chapter = chapterOnlyMatch[1] || chapterOnlyMatch[2];
-    return `${ccbBibleBaseLink}${bookMap[bookMatch]}.${chapter}`;
-  } else {
-    return ccbBibleBaseLink;
+  // Try to find the first number in the scope, which is typically the chapter number
+  const chapterMatch = scope.match(/\d+/);
+  if (chapterMatch) {
+    const chapter = chapterMatch[0]; // Gets the first number
+
+    // Check for specific chapter-verse pattern like "8:1-11"
+    const chapterVersePatternMatch = scope.match(/(?<chapter>\d+):(?<verse>\d+-\d+)/);
+
+    // If a chapter-verse pattern is found, and it matches the extracted chapter,
+    // and the scope does not contain "章" (indicating a chapter range, not specific verses),
+    // then include the verses in the link.
+    if (
+      chapterVersePatternMatch?.groups &&
+      chapter === chapterVersePatternMatch.groups.chapter &&
+      !scope.includes('章')
+    ) {
+      return `${ccbBibleBaseLink}${bookCode}.${chapterVersePatternMatch.groups.chapter}.${chapterVersePatternMatch.groups.verse}`;
+    }
+
+    // Otherwise, just link to the chapter (this handles chapter-only, chapter ranges, and chapter-verse within "章")
+    return `${ccbBibleBaseLink}${bookCode}.${chapter}`;
   }
+
+  return ccbBibleBaseLink;
 };
 
 /** Bible book Chinese-English map */
