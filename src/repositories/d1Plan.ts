@@ -8,6 +8,9 @@ type Record = {
   devotional_content: string | undefined;
 };
 
+const scopeDelimiter = ',';
+const devotionalDelimiter = '\n';
+
 const toParsable = (r: Record) => ({
   date: r.date,
   praise: {
@@ -15,8 +18,9 @@ const toParsable = (r: Record) => ({
     content: r.praise_content,
   },
   devotional: {
-    scope: r.devotional_scope,
-    content: r.devotional_content?.split('\n'),
+    scope: r.devotional_scope.split(scopeDelimiter),
+    link: [],
+    content: r.devotional_content?.split(devotionalDelimiter),
   },
 });
 
