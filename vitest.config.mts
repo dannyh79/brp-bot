@@ -28,13 +28,7 @@ export default defineWorkersConfig({
       workers: {
         wrangler: { configPath: './wrangler.toml' },
         miniflare: {
-          compatibilityFlags: [
-            'nodejs_compat',
-            'enable_nodejs_tty_module',
-            'enable_nodejs_fs_module',
-            'enable_nodejs_http_modules',
-            'enable_nodejs_perf_hooks_module',
-          ],
+          compatibilityFlags: ['nodejs_compat'],
           bindings: {
             TEST_MIGRATIONS: migrations,
           },
