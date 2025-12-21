@@ -37,6 +37,14 @@ describe('PlanSchema devotional link', () => {
       },
       ['https://www.bible.com/bible/59/EXO.8'],
     ],
+    [
+      `parses plan's devotional link from data with devotional scope "尼希米記 第 2 章,馬太福音 1 章"`,
+      {
+        ...rawData,
+        devotional: { ...rawData.devotional, scope: ['尼希米記 第 2 章', '馬太福音 1 章'] },
+      },
+      ['https://www.bible.com/bible/1392/NEH.2', 'https://www.bible.com/bible/1392/MAT.1'],
+    ],
   ];
 
   testCases.forEach(([name, raw, expected]) => {
