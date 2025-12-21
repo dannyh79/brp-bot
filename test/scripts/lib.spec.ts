@@ -58,35 +58,64 @@ describe('GoogleSheetsService', () => {
     ).toHaveBeenCalledOnce();
   });
 
-  it('calls Google Sheets API with correct parameters', async () => {
+  it('calls Google Sheets API with default range when no range is provided', async () => {
     const service = newGoogleSheetService();
+    mockGet.mockResolvedValueOnce({ data: { values: stubSheetData } });
     await service.execute();
-    expect(mockGet).toHaveBeenNthCalledWith(1, {
+    expect(mockGet).toHaveBeenCalledTimes(1);
+    expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: '123456789pZYSNDDii7UyDu1BNQqVENxS8xRRRRRRRRR',
       range: 'data-brp!A1:Z',
     });
   });
 
+  it('calls Google Sheets API with header and data ranges when range is provided', async () => {
+    const service = new GoogleSheetsService({
+      google: mockGoogle,
+      sheetId: '123456789pZYSNDDii7UyDu1BNQqVENxS8xRRRRRRRRR',
+      sheetName: 'data-brp',
+      keyFilePath: './scripts/service-account.json',
+      rangeStart: 5,
+      rangeEnd: 10,
+    });
+
+    mockGet.mockResolvedValueOnce({ data: { values: [stubSheetData[0]] } }); // Header
+    mockGet.mockResolvedValueOnce({ data: { values: [stubSheetData[1]] } }); // Data
+
+    await service.execute();
+
+    expect(mockGet).toHaveBeenCalledTimes(2);
+    expect(mockGet).toHaveBeenCalledWith({
+      spreadsheetId: '123456789pZYSNDDii7UyDu1BNQqVENxS8xRRRRRRRRR',
+      range: 'data-brp!A1:Z1',
+    });
+    expect(mockGet).toHaveBeenCalledWith({
+      spreadsheetId: '123456789pZYSNDDii7UyDu1BNQqVENxS8xRRRRRRRRR',
+      range: 'data-brp!A5:Z10',
+    });
+  });
+
   it('returns data successfully', async () => {
     const service = newGoogleSheetService();
+    mockGet.mockResolvedValueOnce({ data: { values: stubSheetData } });
     const result = await service.execute();
     expect(result).toEqual(stubSheetData);
   });
 
-  it('throws an error, when no data or only sheet header is returned', async () => {
-    const noData: string[][] = [];
-    const headersOnly = [stubSheetData[0]];
-
-    [noData, headersOnly].forEach(async (values) => {
-      mockGet.mockResolvedValueOnce({
-        data: { values },
-      });
-
-      const service = newGoogleSheetService();
-      await expect(() => service.execute()).rejects.toThrow(
-        'No data found or only headers present in data.',
-      );
+  it('returns combined data successfully when range is provided', async () => {
+    const service = new GoogleSheetsService({
+      google: mockGoogle,
+      sheetId: '123456789pZYSNDDii7UyDu1BNQqVENxS8xRRRRRRRRR',
+      sheetName: 'data-brp',
+      keyFilePath: './scripts/service-account.json',
+      rangeStart: 2,
+      rangeEnd: 2,
     });
+    mockGet.mockResolvedValueOnce({ data: { values: [stubSheetData[0]] } }); // Header
+    mockGet.mockResolvedValueOnce({ data: { values: [stubSheetData[1]] } }); // Data
+
+    const result = await service.execute();
+    expect(result).toEqual(stubSheetData);
   });
 
   it('throws an error, when authentication fails', async () => {

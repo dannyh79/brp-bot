@@ -8,10 +8,12 @@ SPREADSHEET_ID={{ GoogleSheets spreadsheet ID }} SHEET_NAME={{ GoogleSheets shee
 
 Description: The command fetches BRP data from Google Sheets spreadsheet, then upserts the data into local D1 database. Use optional env "REMOTE=true" to write data to remote D1 database.
 
-- SPREADSHEET_ID: Spreadsheet unique ID; No default value
--     SHEET_NAME: Spreadsheet sheet name; Defaults to "data-brp"
--  KEY_FILE_PATH: GCP service account private key file; Defaults to "./scripts/service-account.json"
--         REMOTE: Whether to write Data to remote D1 database; Defaults to false
+-       SPREADSHEET_ID: Spreadsheet unique ID; No default value
+-           SHEET_NAME: Spreadsheet sheet name; Defaults to "data-brp"
+-    SHEET_RANGE_START: The starting row number of the data rows to read from; if not provided, all rows after the header are read.
+-      SHEET_RANGE_END: The ending row number of the data rows to read from; No default value.
+-        KEY_FILE_PATH: GCP service account private key file; Defaults to "./scripts/service-account.json"
+-               REMOTE: Whether to write Data to remote D1 database; Defaults to false
 
 See below for more info:
 - https://developers.google.com/sheets/api/guides/concepts (for SPREADSHEET_ID)
@@ -23,11 +25,25 @@ const sheetName = process.env.SHEET_NAME || 'data-brp';
 const keyFilePath = process.env.KEY_FILE_PATH || './scripts/service-account.json';
 const isRemote = process.env.REMOTE === 'true';
 
+const rangeStart = process.env.SHEET_RANGE_START
+  ? parseInt(process.env.SHEET_RANGE_START, 10)
+  : undefined;
+const rangeEnd = process.env.SHEET_RANGE_END
+  ? parseInt(process.env.SHEET_RANGE_END, 10)
+  : undefined;
+
 if (!sheetId) {
   console.warn(helpMsg);
   exit(1);
 }
 
-const serviceArgs: ServiceArgs = { google, sheetId, sheetName, keyFilePath };
+const serviceArgs: ServiceArgs = {
+  google,
+  sheetId,
+  sheetName,
+  keyFilePath,
+  rangeStart,
+  rangeEnd,
+};
 const service = new GoogleSheetsService(serviceArgs);
 writeToD1FromGoogleSheets(service, { isRemote });
