@@ -32,7 +32,7 @@ export const GetPlanOutputSchema = z.object({
   }),
 });
 
-export type GetPlanOutput = z.infer<typeof GetPlanOutputSchema>;
+export type GetPlanOutput = z.infer<typeof GetPlanOutputSchema> | null;
 
 export const getPlan: UsecaseConstructor<Repository<Plan>, GetPlanArgs, GetPlanOutput> =
   (repo) => async (args) => {
@@ -43,7 +43,14 @@ export const getPlan: UsecaseConstructor<Repository<Plan>, GetPlanArgs, GetPlanO
       return null;
     }
 
-    return plan;
+    const { data, error, success } = GetPlanOutputSchema.safeParse(plan);
+
+    if (!success) {
+      console.error(error.message);
+      return null;
+    }
+
+    return data;
   };
 
 export default getPlan;

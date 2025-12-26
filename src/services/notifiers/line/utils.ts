@@ -4,7 +4,7 @@ import { LineMessage } from './types';
 const repentencePrelude =
   '聖靈懇求祢在今天光照我在生命中，有沒有什麼是祢要我去做，但我沒有去做的事？\n又有什麼是祢不喜悅我去做，但我卻行的事？';
 
-export const toBubbleMessage = (arg: GetPlanOutput): LineMessage => {
+export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage => {
   const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
   const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
