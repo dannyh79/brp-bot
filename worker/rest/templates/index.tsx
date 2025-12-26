@@ -1,6 +1,7 @@
 import { html, raw } from 'hono/html';
 import { FC, PropsWithChildren } from 'hono/jsx';
-import { Plan, toLocaleDateObject } from '@/readingPlans';
+import { toLocaleDateObject } from '@/readingPlans';
+import * as endpoints from '../v1/endpoints';
 
 export type LayoutProps = PropsWithChildren<{ title: string; customScript?: string | undefined }>;
 
@@ -23,7 +24,7 @@ export const Layout: FC<LayoutProps> = ({ title, children, customScript = '' }) 
     </html>`;
 
 export type PlanPageProps = {
-  plan: Plan;
+  plan: endpoints.GetPlanOutput;
   customScript?: string | undefined;
 };
 

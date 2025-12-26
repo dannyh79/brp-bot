@@ -1,4 +1,5 @@
 import { SELF, env } from 'cloudflare:test';
+import * as endpoints from '@worker/rest/v1/endpoints';
 import * as helper from 'test/helpers/d1';
 
 const stubDomain = 'https://brp-bot.pages.dev';
@@ -7,6 +8,8 @@ describe('GET /api/v1/plan', () => {
   beforeAll(async () => {
     await helper.insertPlanRecord();
   });
+
+  beforeEach(vi.resetAllMocks);
 
   it('responds 200 with plan for the date', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
@@ -35,8 +38,18 @@ describe('GET /api/v1/plan', () => {
   });
 
   it('responds 404, when no plan found', async () => {
-    const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
+  });
+
+  it('responds 500, when failing to parse usecase output', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {}); // silences console.error
+    vi.spyOn(endpoints, 'GetPlanOutputSchema', 'get').mockReturnValue({
+      safeParse: () => ({ success: false, error: { message: 'some error' } }),
+    } as unknown as typeof endpoints.GetPlanOutputSchema);
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
+    expect(response.status).toBe(500);
+    expect(consoleErrorSpy).toHaveBeenCalledWith('some error');
   });
 
   describe('without date params', () => {
