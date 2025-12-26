@@ -21,10 +21,17 @@ app.openapi(endpoints.getPlan, async (c) => {
   const { date, format } = c.req.valid('query');
 
   const usecase = c.get('getPlan');
-  const data = await usecase({ date: date || toDateString(new Date()) });
+  const usecaseOutput = await usecase({ date: date || toDateString(new Date()) });
 
-  if (!data) {
+  if (!usecaseOutput) {
     return c.notFound();
+  }
+
+  const { data, error, success } = endpoints.GetPlanOutputSchema.safeParse(usecaseOutput);
+
+  if (!success) {
+    console.error(error.message);
+    return c.json({ message: 'Internal server error' }, 500);
   }
 
   switch (format) {
