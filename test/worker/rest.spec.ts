@@ -38,7 +38,7 @@ describe('GET /api/v1/plan', () => {
   });
 
   it('responds 404, when no plan found', async () => {
-    const response = await SELF.fetch(`${stubDomain}/plan?date=2024-12-31`);
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2024-12-31`);
     expect(response.status).toBe(404);
   });
 
