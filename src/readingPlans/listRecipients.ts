@@ -15,6 +15,15 @@ export const listRecipients: UsecaseConstructor<
   Repository<Recipient>,
   void,
   ListRecipientsOutput
-> = (repo) => async () => await repo.all();
+> = (repo) => async () =>
+  await repo.all().then((result) => {
+    const { data, error, success } = ListRecipientsOutputSchema.safeParse(result);
+    if (!success) {
+      console.error(error.message);
+      return [];
+    }
+
+    return data;
+  });
 
 export default listRecipients;
