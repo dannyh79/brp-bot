@@ -7,7 +7,7 @@ exports[`GET /api/v1/plan > responds 200 with plan in HTML, with querystring for
         <title>好好靈修 Daily Devotion - 2025-01-01</title>
         <meta
           name="description"
-          content="[非官方] The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
+          content="The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +26,7 @@ exports[`GET /api/v1/plan > without date params > responds 200 with plan in HTML
         <title>好好靈修 Daily Devotion - 2025-01-01</title>
         <meta
           name="description"
-          content="[非官方] The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
+          content="The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

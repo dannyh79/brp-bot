@@ -12,7 +12,7 @@ export const Layout: FC<LayoutProps> = ({ title, children, customScript = '' }) 
         <title>${title}</title>
         <meta
           name="description"
-          content="[非官方] The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
+          content="The Hope 好好靈修每日靈修內容。 PDF 版請至 thehope.co/brp 。"
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
