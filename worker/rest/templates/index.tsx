@@ -29,8 +29,9 @@ export type PlanPageProps = {
 };
 
 const repentencePrelude = [
-  '聖靈懇求祢在今天光照我在生命中，有沒有什麼是祢要我去做，但我沒有去做的事？',
-  '又有什麼是祢不喜悅我去做，但我卻行的事？',
+  '聖靈，求祢今日光照我的生命。',
+  '顯明那些祢命定我去行，我卻尚未行的事；',
+  '也顯明那些祢不喜悅，我卻仍執意去行的事。',
 ];
 
 export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
