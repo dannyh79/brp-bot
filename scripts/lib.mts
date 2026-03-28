@@ -105,25 +105,30 @@ type PlanDataRow = {
   devotional_content: string | undefined;
 };
 
-type DataRow = PlanDataRow & Record<string, unknown>;
+type DataRow = Partial<PlanDataRow> & Record<string, string | undefined>;
 
 const formatRows = (rows: string[][]): PlanDataRow[] => {
-  const headers = rows[0];
+  const headers = rows[0].map((h) => h.trim().toLowerCase());
   const dataRows = rows.slice(1);
-  return dataRows.map((row: string[]) =>
-    row.reduce((object, cell, index) => {
-      const field = headers[index] as keyof PlanDataRow;
-      object[field] = toTrimmed(
-        ['praise_content', 'devotional_content'].includes(field)
-          ? cell === undefined
-            ? cell
-            : toChinesePunctuation(cell)
-          : cell,
-      );
-      return object;
-    }, {} as DataRow),
+  return dataRows.map(
+    (row: string[]) =>
+      row.reduce((object, cell, index) => {
+        const field = headers[index];
+        const formattedCell = toTrimmed(
+          ['praise_content', 'devotional_content'].includes(field)
+            ? cell === undefined
+              ? ''
+              : toChinesePunctuation(cell)
+            : (cell ?? ''),
+        );
+        object[field] =
+          formattedCell === '' && field === 'devotional_content' ? undefined : formattedCell;
+        return object;
+      }, {} as DataRow) as PlanDataRow,
   );
 };
+
+const escapeSql = (str: string) => str.replace(/'/g, "''");
 
 const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
   const query = `
@@ -131,7 +136,7 @@ const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
     ${rows
       .map(
         (r) =>
-          `('${r.date}', '${r.praise_scope}', '${r.praise_content}', '${r.devotional_scope}', ${r.devotional_content === undefined ? 'NULL' : [`'`, r.devotional_content, `'`].join('')})`,
+          `('${escapeSql(r.date)}', '${escapeSql(r.praise_scope)}', '${escapeSql(r.praise_content)}', '${escapeSql(r.devotional_scope)}', ${r.devotional_content === undefined ? 'NULL' : `'${escapeSql(r.devotional_content)}'`})`,
       )
       .join(',\n')}
     ON CONFLICT (date) DO UPDATE SET

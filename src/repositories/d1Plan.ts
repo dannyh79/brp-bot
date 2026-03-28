@@ -20,7 +20,9 @@ const toParsable = (r: Record) => ({
   devotional: {
     scope: r.devotional_scope.split(scopeDelimiter),
     link: [],
-    content: r.devotional_content?.split(devotionalDelimiter),
+    content: (r.devotional_content === '' ? undefined : r.devotional_content)?.split(
+      devotionalDelimiter,
+    ),
   },
 });
 
