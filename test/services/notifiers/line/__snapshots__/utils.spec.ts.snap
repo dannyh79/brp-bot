@@ -1,5 +1,547 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`toBubbleMessage() > includes Holy Week video section when date is in range 1`] = `
+{
+  "altText": "Bible Reading Plan for 2026-03-29",
+  "contents": {
+    "body": {
+      "contents": [
+        {
+          "backgroundColor": "#EEF0F4",
+          "contents": [
+            {
+              "backgroundColor": "#1D292E",
+              "contents": [
+                {
+                  "color": "#FFFFFF",
+                  "size": "sm",
+                  "text": "聖週好好靈修導讀",
+                  "type": "text",
+                  "weight": "bold",
+                },
+                {
+                  "action": {
+                    "label": "點此觀看導讀影片",
+                    "type": "uri",
+                    "uri": "https://drive.google.com/file/d/12NBd3Q5sNbsoM2PsW2GQ34il5zeI1-2x/view?usp=share_link",
+                  },
+                  "color": "#FFCC32",
+                  "height": "sm",
+                  "style": "link",
+                  "type": "button",
+                },
+              ],
+              "cornerRadius": "lg",
+              "layout": "vertical",
+              "paddingAll": "md",
+              "type": "box",
+            },
+            {
+              "type": "filler",
+            },
+            {
+              "color": "#5D5D5D",
+              "size": "md",
+              "text": "3/29 星期日",
+              "type": "text",
+            },
+            {
+              "contents": [
+                {
+                  "alignItems": "flex-end",
+                  "contents": [
+                    {
+                      "size": "lg",
+                      "text": "讚",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                    {
+                      "size": "lg",
+                      "text": "美",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "vertical",
+                  "offsetBottom": "sm",
+                  "type": "box",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [],
+                      "cornerRadius": "30px",
+                      "height": "12px",
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "12px",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "backgroundColor": "#1D292E",
+                          "contents": [],
+                          "layout": "vertical",
+                          "type": "box",
+                          "width": "2px",
+                        },
+                      ],
+                      "flex": 1,
+                      "justifyContent": "center",
+                      "layout": "horizontal",
+                      "type": "box",
+                    },
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "contents": [
+                    {
+                      "color": "#5D5D5D",
+                      "flex": 8,
+                      "lineSpacing": "5px",
+                      "size": "xs",
+                      "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
+歷代志上 16:34 CCB",
+                      "type": "text",
+                      "weight": "bold",
+                      "wrap": true,
+                    },
+                  ],
+                  "flex": 14,
+                  "layout": "vertical",
+                  "paddingBottom": "md",
+                  "paddingStart": "xl",
+                  "type": "box",
+                },
+              ],
+              "layout": "horizontal",
+              "paddingBottom": "md",
+              "paddingTop": "sm",
+              "spacing": "md",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "alignItems": "flex-end",
+                  "contents": [
+                    {
+                      "size": "lg",
+                      "text": "悔",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                    {
+                      "size": "lg",
+                      "text": "改",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "vertical",
+                  "offsetBottom": "sm",
+                  "type": "box",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [],
+                      "cornerRadius": "30px",
+                      "height": "12px",
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "12px",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "backgroundColor": "#1D292E",
+                          "contents": [],
+                          "layout": "vertical",
+                          "type": "box",
+                          "width": "2px",
+                        },
+                      ],
+                      "flex": 1,
+                      "justifyContent": "center",
+                      "layout": "horizontal",
+                      "type": "box",
+                    },
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [
+                        {
+                          "color": "#FFFFFF",
+                          "flex": 8,
+                          "gravity": "center",
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "聖靈，求祢今日光照我的生命。
+顯明那些祢命定我去行，我卻尚未行的事；
+也顯明那些祢不喜悅，我卻仍執意去行的事。",
+                          "type": "text",
+                          "wrap": true,
+                        },
+                      ],
+                      "cornerRadius": "lg",
+                      "flex": 8,
+                      "layout": "vertical",
+                      "paddingBottom": "md",
+                      "paddingEnd": "xl",
+                      "paddingStart": "xl",
+                      "paddingTop": "md",
+                      "type": "box",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "color": "#5D5D5D",
+                          "flex": 8,
+                          "gravity": "center",
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "上帝啊，求你按你的慈愛恩待我！
+按你極大的憐憫除去我 ___ 的過犯！
+求你洗淨我的罪過，清除我的罪惡。求你讓我重新享受蒙你拯救的喜樂，賜我一個樂意順服你的心靈。",
+                          "type": "text",
+                          "wrap": true,
+                        },
+                      ],
+                      "layout": "vertical",
+                      "paddingStart": "xl",
+                      "type": "box",
+                    },
+                  ],
+                  "flex": 14,
+                  "layout": "vertical",
+                  "paddingBottom": "md",
+                  "paddingTop": "sm",
+                  "spacing": "md",
+                  "type": "box",
+                },
+              ],
+              "layout": "horizontal",
+              "paddingBottom": "md",
+              "paddingTop": "sm",
+              "spacing": "md",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "alignItems": "flex-end",
+                  "contents": [
+                    {
+                      "size": "lg",
+                      "text": "反",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                    {
+                      "size": "lg",
+                      "text": "思",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "vertical",
+                  "offsetBottom": "sm",
+                  "type": "box",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [],
+                      "cornerRadius": "30px",
+                      "height": "12px",
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "12px",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "backgroundColor": "#1D292E",
+                          "contents": [],
+                          "layout": "vertical",
+                          "type": "box",
+                          "width": "2px",
+                        },
+                      ],
+                      "flex": 1,
+                      "justifyContent": "center",
+                      "layout": "horizontal",
+                      "type": "box",
+                    },
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "contents": [
+                    {
+                      "contents": [
+                        {
+                          "color": "#5D5D5D",
+                          "gravity": "center",
+                          "lineSpacing": "10px",
+                          "size": "lg",
+                          "text": "出埃及記 第 8 章",
+                          "type": "text",
+                          "weight": "bold",
+                          "wrap": true,
+                        },
+                        {
+                          "contents": [
+                            {
+                              "action": {
+                                "label": "YouVersion 連結",
+                                "type": "uri",
+                                "uri": "https://www.bible.com/bible/1392/EXO.8",
+                              },
+                              "adjustMode": "shrink-to-fit",
+                              "flex": 1,
+                              "height": "sm",
+                              "style": "link",
+                              "type": "button",
+                            },
+                            {
+                              "flex": 1,
+                              "type": "filler",
+                            },
+                          ],
+                          "flex": 1,
+                          "layout": "horizontal",
+                          "offsetEnd": "lg",
+                          "type": "box",
+                        },
+                      ],
+                      "flex": 8,
+                      "layout": "vertical",
+                      "type": "box",
+                    },
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [
+                        {
+                          "color": "#FFFFFF",
+                          "flex": 8,
+                          "gravity": "center",
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "1. 你覺得神透過今天的經文對你說什麼呢?
+2. 有什麼你可以做出的行動或改變呢?",
+                          "type": "text",
+                          "wrap": true,
+                        },
+                      ],
+                      "cornerRadius": "lg",
+                      "flex": 8,
+                      "layout": "vertical",
+                      "paddingBottom": "md",
+                      "paddingEnd": "xl",
+                      "paddingStart": "xl",
+                      "paddingTop": "md",
+                      "type": "box",
+                    },
+                  ],
+                  "flex": 14,
+                  "layout": "vertical",
+                  "paddingBottom": "md",
+                  "spacing": "md",
+                  "type": "box",
+                },
+              ],
+              "layout": "horizontal",
+              "paddingBottom": "md",
+              "paddingTop": "sm",
+              "spacing": "md",
+              "type": "box",
+            },
+            {
+              "contents": [
+                {
+                  "alignItems": "flex-end",
+                  "contents": [
+                    {
+                      "size": "lg",
+                      "text": "祈",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                    {
+                      "size": "lg",
+                      "text": "求",
+                      "type": "text",
+                      "weight": "bold",
+                    },
+                  ],
+                  "flex": 1,
+                  "layout": "vertical",
+                  "offsetBottom": "sm",
+                  "type": "box",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [],
+                      "cornerRadius": "30px",
+                      "height": "12px",
+                      "layout": "vertical",
+                      "type": "box",
+                      "width": "12px",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "backgroundColor": "#1D292E",
+                          "contents": [],
+                          "layout": "vertical",
+                          "type": "box",
+                          "width": "2px",
+                        },
+                      ],
+                      "flex": 1,
+                      "justifyContent": "center",
+                      "layout": "horizontal",
+                      "type": "box",
+                    },
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box",
+                  "width": "12px",
+                },
+                {
+                  "contents": [
+                    {
+                      "backgroundColor": "#1D292E",
+                      "contents": [
+                        {
+                          "color": "#FFFFFF",
+                          "flex": 8,
+                          "gravity": "center",
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。",
+                          "type": "text",
+                          "wrap": true,
+                        },
+                      ],
+                      "cornerRadius": "lg",
+                      "flex": 8,
+                      "layout": "vertical",
+                      "paddingBottom": "md",
+                      "paddingEnd": "xl",
+                      "paddingStart": "xl",
+                      "paddingTop": "md",
+                      "type": "box",
+                    },
+                    {
+                      "contents": [
+                        {
+                          "color": "#5D5D5D",
+                          "flex": 8,
+                          "gravity": "center",
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”",
+                          "type": "text",
+                          "wrap": true,
+                        },
+                      ],
+                      "layout": "vertical",
+                      "paddingStart": "xl",
+                      "type": "box",
+                    },
+                  ],
+                  "flex": 14,
+                  "layout": "vertical",
+                  "paddingTop": "sm",
+                  "spacing": "md",
+                  "type": "box",
+                },
+              ],
+              "layout": "horizontal",
+              "paddingBottom": "md",
+              "paddingTop": "sm",
+              "spacing": "md",
+              "type": "box",
+            },
+          ],
+          "cornerRadius": "lg",
+          "layout": "vertical",
+          "paddingAll": "lg",
+          "spacing": "lg",
+          "type": "box",
+        },
+      ],
+      "layout": "vertical",
+      "paddingBottom": "lg",
+      "paddingEnd": "lg",
+      "paddingStart": "lg",
+      "paddingTop": "sm",
+      "type": "box",
+    },
+    "header": {
+      "contents": [
+        {
+          "backgroundColor": "#FFCC32",
+          "contents": [
+            {
+              "color": "#1D292E",
+              "size": "xl",
+              "text": "好好靈修 Daily Devotion",
+              "type": "text",
+              "weight": "bold",
+            },
+          ],
+          "cornerRadius": "lg",
+          "layout": "vertical",
+          "paddingBottom": "xl",
+          "paddingEnd": "lg",
+          "paddingStart": "lg",
+          "paddingTop": "xl",
+          "type": "box",
+        },
+      ],
+      "layout": "vertical",
+      "paddingBottom": "sm",
+      "paddingEnd": "lg",
+      "paddingStart": "lg",
+      "paddingTop": "lg",
+      "spacing": "md",
+      "type": "box",
+    },
+    "size": "giga",
+    "type": "bubble",
+  },
+  "type": "flex",
+}
+`;
+
 exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
 {
   "altText": "Bible Reading Plan for 2025-01-01",

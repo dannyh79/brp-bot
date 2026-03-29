@@ -4,10 +4,30 @@ import { LineMessage } from './types';
 const repentencePrelude =
   '聖靈，求祢今日光照我的生命。\n顯明那些祢命定我去行，我卻尚未行的事；\n也顯明那些祢不喜悅，我卻仍執意去行的事。';
 
+const holyWeekVideos: Record<string, string> = {
+  '2026-03-29':
+    'https://drive.google.com/file/d/12NBd3Q5sNbsoM2PsW2GQ34il5zeI1-2x/view?usp=share_link',
+  '2026-03-30':
+    'https://drive.google.com/file/d/1vP_IUzGZ67Le1ezd1Ry_6Ot_tYLKCgcK/view?usp=share_link',
+  '2026-03-31':
+    'https://drive.google.com/file/d/1_dLF3UaJsrdy9BhdfaxwS6SIm3V7CsBS/view?usp=share_link',
+  '2026-04-01':
+    'https://drive.google.com/file/d/1lInHFzEMODynAyfX3bFylxYlLwTk28hq/view?usp=share_link',
+  '2026-04-02':
+    'https://drive.google.com/file/d/1tS_IEVv-uxnM3gP4qq0MGQCjAxlRiWlW/view?usp=share_link',
+  // FIXME: AMEND THIS when the video is ready
+  '2026-04-03': '',
+  '2026-04-04':
+    'https://drive.google.com/file/d/1faz7SpfxktQjI2g1QEqpNKsn25J3djZw/view?usp=share_link',
+  '2026-04-05':
+    'https://drive.google.com/file/d/1sWJ8NEj-FhdZYSbC8XW_2-6K0mub7K5i/view?usp=share_link',
+};
+
 export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage => {
   const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
   const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
+  const holyWeekVideo = holyWeekVideos[dateFromData];
 
   return {
     type: 'flex',
@@ -53,6 +73,40 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
             type: 'box',
             layout: 'vertical',
             contents: [
+              ...(holyWeekVideo
+                ? [
+                    {
+                      type: 'box' as const,
+                      layout: 'vertical' as const,
+                      backgroundColor: '#1D292E',
+                      cornerRadius: 'lg',
+                      paddingAll: 'md',
+                      contents: [
+                        {
+                          type: 'text' as const,
+                          text: '聖週好好靈修導讀',
+                          color: '#FFFFFF',
+                          weight: 'bold' as const,
+                          size: 'sm' as const,
+                        },
+                        {
+                          type: 'button' as const,
+                          action: {
+                            type: 'uri' as const,
+                            label: '點此觀看導讀影片',
+                            uri: holyWeekVideo,
+                          },
+                          style: 'link' as const,
+                          color: '#FFCC32',
+                          height: 'sm' as const,
+                        },
+                      ],
+                    },
+                    {
+                      type: 'filler' as const,
+                    },
+                  ]
+                : []),
               {
                 type: 'text',
                 text: `${date} ${dayOfWeek}`,

@@ -22,4 +22,17 @@ describe('toBubbleMessage()', () => {
     const result = toBubbleMessage(data);
     expect(result).toMatchSnapshot();
   });
+
+  it('includes Holy Week video section when date is in range', () => {
+    const holyWeekData = {
+      ...data,
+      date: '2026-03-29',
+    };
+    const result = toBubbleMessage(holyWeekData);
+    expect(JSON.stringify(result)).toContain('聖週好好靈修導讀');
+    expect(JSON.stringify(result)).toContain(
+      'https://drive.google.com/file/d/12NBd3Q5sNbsoM2PsW2GQ34il5zeI1-2x/view?usp=share_link',
+    );
+    expect(result).toMatchSnapshot();
+  });
 });
