@@ -34,15 +34,51 @@ const repentencePrelude = [
   '也顯明那些祢不喜悅，我卻仍執意去行的事。',
 ];
 
+const holyWeekVideos: Record<string, string | undefined> = {
+  '2026-03-29':
+    'https://drive.google.com/file/d/12NBd3Q5sNbsoM2PsW2GQ34il5zeI1-2x/view?usp=share_link',
+  '2026-03-30':
+    'https://drive.google.com/file/d/1vP_IUzGZ67Le1ezd1Ry_6Ot_tYLKCgcK/view?usp=share_link',
+  '2026-03-31':
+    'https://drive.google.com/file/d/1_dLF3UaJsrdy9BhdfaxwS6SIm3V7CsBS/view?usp=share_link',
+  '2026-04-01':
+    'https://drive.google.com/file/d/1lInHFzEMODynAyfX3bFylxYlLwTk28hq/view?usp=share_link',
+  '2026-04-02':
+    'https://drive.google.com/file/d/1tS_IEVv-uxnM3gP4qq0MGQCjAxlRiWlW/view?usp=share_link',
+  // FIXME: AMEND THIS when the video is ready
+  '2026-04-03': undefined,
+  '2026-04-04':
+    'https://drive.google.com/file/d/1faz7SpfxktQjI2g1QEqpNKsn25J3djZw/view?usp=share_link',
+  '2026-04-05':
+    'https://drive.google.com/file/d/1sWJ8NEj-FhdZYSbC8XW_2-6K0mub7K5i/view?usp=share_link',
+};
+
 export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
   const { date, dayOfWeek } = toLocaleDateObject(plan.date);
+  const holyWeekVideo = holyWeekVideos[plan.date];
+
   return (
     <Layout title={`好好靈修 Daily Devotion - ${plan.date}`} customScript={customScript}>
       <main class="max-w-md mx-2 md:mx-auto p-4 bg-[#FEFEFE] rounded-xl shadow-md text-[#5D5D5D]">
         <h1 class="bg-[#FFCC32] font-bold text-[#1D292E] text-2xl pl-4 py-4 rounded-lg mb-3">
           好好靈修 Daily Devotion
         </h1>
+
+        {holyWeekVideo && (
+          <section class="mb-4 bg-[#1D292E] text-white rounded-lg p-4">
+            <h3 class="font-bold text-xl mb-2">聖週好好靈修導讀</h3>
+            <a
+              href={holyWeekVideo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-[#FFCC32] break-all"
+            >
+              點此觀看導讀影片
+            </a>
+          </section>
+        )}
+
         <article class="space-y-6 text-md leading-8">
           <div class="bg-[#EEF0F4] rounded-lg px-4 py-4">
             <h2 class="text-lg mb-4">{[date, dayOfWeek].join(' ')}</h2>
@@ -85,6 +121,20 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 <span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span>
               </div>
               <div class="w-full space-y-2">
+                {/* TODO: Put 聖週靈修好好閱讀 link from 2026-03-29 thru 2026-04-05 as href here */}
+                {/* start: block that only shows from 2026-03-29 thru 2026-04-05 */}
+                {/* <div class="pl-2"> */}
+                {/*   <a */}
+                {/*     // href={link} */}
+                {/*     class="text-blue-500 hover:underline text-md block my-2" */}
+                {/*     target="_blank" */}
+                {/*     rel="noopener noreferrer" */}
+                {/*   > */}
+                {/*     聖週靈修好好閱讀 */}
+                {/*   </a> */}
+                {/* </div> */}
+                {/* end: block that only shows from 2026-03-29 thru 2026-04-05 */}
+
                 {plan.devotional.scope.map((scope, index) => (
                   <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
                 ))}
