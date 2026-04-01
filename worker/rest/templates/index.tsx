@@ -45,8 +45,8 @@ const holyWeekVideos: Record<string, string | undefined> = {
     'https://drive.google.com/file/d/1lInHFzEMODynAyfX3bFylxYlLwTk28hq/view?usp=share_link',
   '2026-04-02':
     'https://drive.google.com/file/d/1tS_IEVv-uxnM3gP4qq0MGQCjAxlRiWlW/view?usp=share_link',
-  // FIXME: AMEND THIS when the video is ready
-  '2026-04-03': undefined,
+  '2026-04-03':
+    'https://drive.google.com/file/d/10q3LfNf42Pepkky7d3UH4NmWkl1sAqHL/view?usp=share_link',
   '2026-04-04':
     'https://drive.google.com/file/d/1faz7SpfxktQjI2g1QEqpNKsn25J3djZw/view?usp=share_link',
   '2026-04-05':
