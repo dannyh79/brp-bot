@@ -5,7 +5,7 @@ import * as helper from 'test/helpers/d1';
 const stubDomain = 'https://brp-bot.pages.dev';
 
 describe('GET /api/v1/plan', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await helper.insertPlanRecord();
   });
 

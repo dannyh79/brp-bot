@@ -16,9 +16,9 @@ const mockGet = vi.fn().mockResolvedValue({
 
 const mockGoogle = {
   auth: {
-    GoogleAuth: vi.fn().mockImplementation(() => ({
-      getClient: vi.fn().mockResolvedValue(new JWT()),
-    })),
+    GoogleAuth: vi.fn().mockImplementation(function () {
+      return { getClient: vi.fn().mockResolvedValue(new JWT()) };
+    }),
   },
   sheets: vi.fn().mockImplementation(() => ({
     spreadsheets: {
@@ -119,12 +119,11 @@ describe('GoogleSheetsService', () => {
   });
 
   it('throws an error, when authentication fails', async () => {
-    vi.mocked(mockGoogle.auth.GoogleAuth).mockImplementationOnce(
-      () =>
-        ({
-          getClient: vi.fn().mockRejectedValue(new Error('Authentication Failed')),
-        }) as unknown as GoogleAuth<AuthClient>,
-    );
+    vi.mocked(mockGoogle.auth.GoogleAuth).mockImplementationOnce(function () {
+      return {
+        getClient: vi.fn().mockRejectedValue(new Error('Authentication Failed')),
+      } as unknown as GoogleAuth<AuthClient>;
+    });
 
     const service = newGoogleSheetService();
     await expect(() => service.execute()).rejects.toThrow('Authentication Failed');

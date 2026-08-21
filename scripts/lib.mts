@@ -81,20 +81,25 @@ export class GoogleSheetsService implements Service<string[][]> {
   }
 }
 
+export type CommandExecutor = (command: string, options: { stdio: 'inherit' }) => unknown;
+
 export type WriteToD1FromGoogleSheetsOptions = {
   isRemote?: boolean;
+  executeCommand?: CommandExecutor;
 };
 
 export const writeToD1FromGoogleSheets = async (
   service: Service<string[][]>,
-  { isRemote }: WriteToD1FromGoogleSheetsOptions = { isRemote: false },
+  { isRemote, executeCommand = execSync }: WriteToD1FromGoogleSheetsOptions = {
+    isRemote: false,
+  },
 ): Promise<void> => {
   const rows = await service.execute();
   if (rows.length < 2) {
     console.log('No data rows found to write to D1.');
     return;
   }
-  writeToD1(!!isRemote)(formatRows(rows));
+  writeToD1(!!isRemote, executeCommand)(formatRows(rows));
 };
 
 type PlanDataRow = {
@@ -130,7 +135,7 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
 
 const escapeSql = (str: string) => str.replace(/'/g, "''");
 
-const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
+const writeToD1 = (isRemote: boolean, executeCommand: CommandExecutor) => (rows: PlanDataRow[]) => {
   const query = `
   INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_content) VALUES
     ${rows
@@ -151,7 +156,7 @@ const writeToD1 = (isRemote: boolean) => (rows: PlanDataRow[]) => {
     isRemote ? '--remote' : '',
     `--command="${query}"`,
   ].join(' ');
-  execSync(command, { stdio: 'inherit' });
+  executeCommand(command, { stdio: 'inherit' });
 };
 
 const toChinesePunctuation = (input: string): string => {

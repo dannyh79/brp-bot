@@ -1,4 +1,3 @@
-import { exit } from 'node:process';
 import { google } from 'googleapis';
 import { GoogleSheetsService, type ServiceArgs, writeToD1FromGoogleSheets } from './lib.mts';
 
@@ -34,16 +33,16 @@ const rangeEnd = process.env.SHEET_RANGE_END
 
 if (!sheetId) {
   console.warn(helpMsg);
-  exit(1);
+  process.exitCode = 1;
+} else {
+  const serviceArgs: ServiceArgs = {
+    google,
+    sheetId,
+    sheetName,
+    keyFilePath,
+    rangeStart,
+    rangeEnd,
+  };
+  const service = new GoogleSheetsService(serviceArgs);
+  writeToD1FromGoogleSheets(service, { isRemote });
 }
-
-const serviceArgs: ServiceArgs = {
-  google,
-  sheetId,
-  sheetName,
-  keyFilePath,
-  rangeStart,
-  rangeEnd,
-};
-const service = new GoogleSheetsService(serviceArgs);
-writeToD1FromGoogleSheets(service, { isRemote });
