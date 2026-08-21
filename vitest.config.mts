@@ -1,22 +1,38 @@
 import path from 'node:path';
-import { defineWorkersConfig, readD1Migrations } from '@cloudflare/vitest-pool-workers/config';
-import { coverageConfigDefaults } from 'vitest/config';
-import tsconfig from './tsconfig.json';
+import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
+import { coverageConfigDefaults, defineConfig } from 'vitest/config';
+import tsconfig from './tsconfig.json' with { type: 'json' };
 
-const migrationsPath = path.resolve(__dirname, 'migrations');
+const rootDir = import.meta.dirname;
+const migrationsPath = path.resolve(rootDir, 'migrations');
 const migrations = await readD1Migrations(migrationsPath);
 
 // Create an alias object from the paths in tsconfig.json
-const alias = Object.fromEntries(
-  Object.entries(tsconfig.compilerOptions.paths).map(([key, [value]]) => [
-    // Remove the "/*" from the key and resolve the path
-    key.replace('/*', ''),
-    // Remove the "/*" from the value Resolve the relative path
-    path.resolve(__dirname, value.replace('/*', '')),
-  ]),
-);
+const alias = {
+  ...Object.fromEntries(
+    Object.entries(tsconfig.compilerOptions.paths).map(([key, [value]]) => [
+      // Remove the "/*" from the key and resolve the path
+      key.replace('/*', ''),
+      // Remove the "/*" from the value Resolve the relative path
+      path.resolve(rootDir, value.replace('/*', '')),
+    ]),
+  ),
+  test: path.resolve(rootDir, 'test'),
+};
 
-export default defineWorkersConfig({
+export default defineConfig({
+  plugins: [
+    cloudflareTest({
+      wrangler: { configPath: './wrangler.toml' },
+      miniflare: {
+        compatibilityFlags: ['nodejs_compat'],
+        bindings: {
+          TEST_MIGRATIONS: migrations,
+        },
+      },
+    }),
+  ],
+
   resolve: {
     alias,
   },
@@ -24,17 +40,6 @@ export default defineWorkersConfig({
   test: {
     globals: true,
     setupFiles: ['./test/setups/applyMigrations.ts'],
-    poolOptions: {
-      workers: {
-        wrangler: { configPath: './wrangler.toml' },
-        miniflare: {
-          compatibilityFlags: ['nodejs_compat'],
-          bindings: {
-            TEST_MIGRATIONS: migrations,
-          },
-        },
-      },
-    },
 
     coverage: {
       provider: 'istanbul',
@@ -67,7 +72,7 @@ export default defineWorkersConfig({
         resolve: {
           // NOTE: Ensure alias matches tsconfig.json
           alias: {
-            '@root': __dirname,
+            '@root': rootDir,
           },
         },
         test: {

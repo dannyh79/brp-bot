@@ -1,8 +1,9 @@
-import { execSync } from 'node:child_process';
-import { GoogleSheetsService, Service, writeToD1FromGoogleSheets } from '@root/scripts/lib.mts';
+import { GoogleSheetsService, writeToD1FromGoogleSheets } from '@root/scripts/lib.mts';
+import type { Service } from '@root/scripts/lib.mts';
+import type * as scriptsLib from '@root/scripts/lib.mts';
 
 vi.mock('@root/scripts/lib.mts', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@root/scripts/lib.mts')>();
+  const actual = await importOriginal<typeof scriptsLib>();
   return {
     ...actual,
     GoogleSheetsService: vi.fn(),
@@ -10,22 +11,25 @@ vi.mock('@root/scripts/lib.mts', async (importOriginal) => {
   };
 });
 
+const execSync = vi.fn();
+
 describe('script writeToD1FromGoogleSheets', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.stubEnv('SPREADSHEET_ID', undefined);
     vi.stubEnv('SHEET_RANGE_START', undefined);
     vi.stubEnv('SHEET_RANGE_END', undefined);
+    process.exitCode = undefined;
     vi.mocked(GoogleSheetsService).mockClear();
     vi.mocked(writeToD1FromGoogleSheets).mockClear();
   });
 
-  it('prints help message when missing env SPREADSHEET_ID', async () => {
+  it('prints help and exits nonzero when SPREADSHEET_ID is missing', async () => {
     const logger = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    await expect(
-      async () => await import('@root/scripts/writeToD1FromGoogleSheets.mts'),
-    ).rejects.toThrowError();
+    // The module reads environment variables at import time.
+    await import('@root/scripts/writeToD1FromGoogleSheets.mts');
     expect(logger).toHaveBeenCalledOnce();
+    expect(process.exitCode).toBe(1);
   });
 
   it('passes correct rangeStart and rangeEnd when SHEET_RANGE_START and SHEET_RANGE_END are set', async () => {
@@ -65,28 +69,20 @@ describe('script writeToD1FromGoogleSheets', () => {
   });
 });
 
-describe('function writeToD1FromGoogleSheets', async () => {
-  vi.mock('node:child_process', async () => {
-    const actual = await vi.importActual<typeof import('node:child_process')>('node:child_process');
-    return {
-      ...actual,
-      execSync: vi.fn(),
-    };
-  });
-
+describe('function writeToD1FromGoogleSheets', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('NO extra spaces or line breaks in query command', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService());
+    await writeToD1FromGoogleSheets(new MockGoogleService(), { executeCommand: execSync });
     expect(execSync).toHaveBeenNthCalledWith(1, expect.stringContaining(expectedQueryValues), {
       stdio: 'inherit',
     });
   });
 
   it('writes row data to D1 local database', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService());
+    await writeToD1FromGoogleSheets(new MockGoogleService(), { executeCommand: execSync });
 
     expect(execSync).toHaveBeenNthCalledWith(
       1,
@@ -98,7 +94,10 @@ describe('function writeToD1FromGoogleSheets', async () => {
   });
 
   it('writes row data to D1 remote database', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService(), { isRemote: true });
+    await writeToD1FromGoogleSheets(new MockGoogleService(), {
+      isRemote: true,
+      executeCommand: execSync,
+    });
 
     expect(execSync).toHaveBeenNthCalledWith(
       1,
