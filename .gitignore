@@ -179,3 +179,7 @@ secrets.json
 **/service-account.json
 worker/rest/templates/customScript.ts*
 !worker/rest/templates/customScript.ts.example
+
+# Local task documents
+/docs/tasks/**
+!/docs/tasks/TEMPLATE.md
