@@ -1,18 +1,24 @@
 import { google } from 'googleapis';
-import { GoogleSheetsService, type ServiceArgs, writeToD1FromGoogleSheets } from './lib.mts';
+import {
+  GoogleSheetsService,
+  type ServiceArgs,
+  writeSubsectionBlocksToD1,
+  writeToD1FromGoogleSheets,
+} from './lib.mts';
 
 const helpMsg = `
 Usage:
-SPREADSHEET_ID={{ GoogleSheets spreadsheet ID }} SHEET_NAME={{ GoogleSheets sheet name }} KEY_FILE_PATH={{ /path/to/your/gcp-service-account.json }} pnpm db:write
+SPREADSHEET_ID={{ Google Sheets spreadsheet ID }} SHEET_NAME={{ base plan sheet name }} DATE_START=YYYY-MM-DD DATE_END=YYYY-MM-DD pnpm db:write
 
-Description: The command fetches BRP data from Google Sheets spreadsheet, then upserts the data into local D1 database. Use optional env "REMOTE=true" to write data to remote D1 database.
+Description: Fetches base plans and subsection blocks from Google Sheets, then upserts the selected inclusive date range into local D1. Use optional env "REMOTE=true" to write to remote D1.
 
--       SPREADSHEET_ID: Spreadsheet unique ID; No default value
--           SHEET_NAME: Spreadsheet sheet name; Defaults to "data-brp"
--    SHEET_RANGE_START: The starting row number of the data rows to read from; if not provided, all rows after the header are read.
--      SHEET_RANGE_END: The ending row number of the data rows to read from; No default value.
--        KEY_FILE_PATH: GCP service account private key file; Defaults to "./scripts/service-account.json"
--               REMOTE: Whether to write Data to remote D1 database; Defaults to false
+-       SPREADSHEET_ID: Google Sheets spreadsheet ID; no default value
+-           SHEET_NAME: Base plan tab; defaults to "data-brp"
+- SUBSECTION_SHEET_NAME: Subsection block tab; defaults to "subsection_blocks"
+-           DATE_START: Inclusive start date in YYYY-MM-DD; defaults to the earliest source date
+-             DATE_END: Inclusive end date in YYYY-MM-DD; defaults to the latest source date
+-        KEY_FILE_PATH: GCP service account private key file; defaults to "./scripts/service-account.json"
+-               REMOTE: Whether to write to remote D1; defaults to false
 
 See below for more info:
 - https://developers.google.com/sheets/api/guides/concepts (for SPREADSHEET_ID)
@@ -24,25 +30,27 @@ const sheetName = process.env.SHEET_NAME || 'data-brp';
 const keyFilePath = process.env.KEY_FILE_PATH || './scripts/service-account.json';
 const isRemote = process.env.REMOTE === 'true';
 
-const rangeStart = process.env.SHEET_RANGE_START
-  ? parseInt(process.env.SHEET_RANGE_START, 10)
-  : undefined;
-const rangeEnd = process.env.SHEET_RANGE_END
-  ? parseInt(process.env.SHEET_RANGE_END, 10)
-  : undefined;
+const dateStart = process.env.DATE_START;
+const dateEnd = process.env.DATE_END;
+const subsectionSheetName = process.env.SUBSECTION_SHEET_NAME || 'subsection_blocks';
 
 if (!sheetId) {
   console.warn(helpMsg);
   process.exitCode = 1;
 } else {
-  const serviceArgs: ServiceArgs = {
+  const planServiceArgs: ServiceArgs = {
     google,
     sheetId,
     sheetName,
     keyFilePath,
-    rangeStart,
-    rangeEnd,
   };
-  const service = new GoogleSheetsService(serviceArgs);
-  writeToD1FromGoogleSheets(service, { isRemote });
+  const subsectionServiceArgs: ServiceArgs = {
+    google,
+    sheetId,
+    sheetName: subsectionSheetName,
+    keyFilePath,
+  };
+  const options = { dateStart, dateEnd, isRemote };
+  await writeToD1FromGoogleSheets(new GoogleSheetsService(planServiceArgs), options);
+  await writeSubsectionBlocksToD1(new GoogleSheetsService(subsectionServiceArgs), options);
 }

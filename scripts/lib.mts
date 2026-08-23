@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { GoogleApis } from 'googleapis';
 import { JWT } from 'google-auth-library';
 
@@ -81,25 +81,97 @@ export class GoogleSheetsService implements Service<string[][]> {
   }
 }
 
-export type CommandExecutor = (command: string, options: { stdio: 'inherit' }) => unknown;
+export type CommandExecutor = (
+  file: string,
+  args: string[],
+  options: { stdio: 'inherit' },
+) => unknown;
 
 export type WriteToD1FromGoogleSheetsOptions = {
+  dateStart?: string;
+  dateEnd?: string;
   isRemote?: boolean;
   executeCommand?: CommandExecutor;
 };
 
+const filterRowsByDate = <T extends { date: string }>(
+  rows: T[],
+  { dateStart, dateEnd }: WriteToD1FromGoogleSheetsOptions,
+) => {
+  if (dateStart && dateEnd && dateStart > dateEnd) {
+    throw new Error('DATE_START must be on or before DATE_END.');
+  }
+
+  return rows.filter(
+    (row) => (!dateStart || row.date >= dateStart) && (!dateEnd || row.date <= dateEnd),
+  );
+};
+
 export const writeToD1FromGoogleSheets = async (
   service: Service<string[][]>,
-  { isRemote, executeCommand = execSync }: WriteToD1FromGoogleSheetsOptions = {
-    isRemote: false,
-  },
+  options: WriteToD1FromGoogleSheetsOptions = {},
 ): Promise<void> => {
-  const rows = await service.execute();
-  if (rows.length < 2) {
-    console.log('No data rows found to write to D1.');
+  const source = await service.execute();
+  if (source.length < 2) {
+    console.log('No plan rows found to write to D1.');
     return;
   }
-  writeToD1(!!isRemote, executeCommand)(formatRows(rows));
+
+  const rows = filterRowsByDate(formatRows(source), options);
+  if (rows.length === 0) {
+    console.log('No plan rows found to write to D1.');
+    return;
+  }
+  writeToD1(!!options.isRemote, options.executeCommand ?? execFileSync)(rows);
+};
+
+type SubsectionBlockRow = {
+  date: string;
+  section: string;
+  position: string;
+  title: string | undefined;
+  scripture_content: string | undefined;
+  scripture_scope: string | undefined;
+  content: string;
+  sort_order: number;
+};
+
+const formatSubsectionBlocks = (rows: string[][]): SubsectionBlockRow[] => {
+  const headers = rows[0].map((header) => header.trim().toLowerCase());
+  return rows.slice(1).flatMap((row) => {
+    const value = Object.fromEntries(headers.map((header, index) => [header, row[index] ?? '']));
+    if (!value.date || !value.section || !value.position || !value.content) return [];
+
+    return [
+      {
+        date: value.date,
+        section: value.section,
+        position: value.position,
+        title: value.title || undefined,
+        scripture_content: value.scripture_content || undefined,
+        scripture_scope: value.scripture_scope || undefined,
+        content: value.content,
+        sort_order: Number(value.sort_order || 1),
+      },
+    ];
+  });
+};
+
+export const writeSubsectionBlocksToD1 = async (
+  service: Service<string[][]>,
+  options: WriteToD1FromGoogleSheetsOptions = {},
+): Promise<void> => {
+  const source = await service.execute();
+  const rows = source.length < 2 ? [] : filterRowsByDate(formatSubsectionBlocks(source), options);
+  if (rows.length === 0 && !options.dateStart && !options.dateEnd) {
+    console.log('No subsection blocks found to write to D1.');
+    return;
+  }
+
+  writeSubsectionBlocksToD1Query(!!options.isRemote, options.executeCommand ?? execFileSync)(
+    rows,
+    options,
+  );
 };
 
 type PlanDataRow = {
@@ -160,6 +232,14 @@ const escapeSql = (str: string) => str.replace(/'/g, "''");
 const toSqlValue = (value: string | undefined) =>
   value === undefined ? 'NULL' : `'${escapeSql(value)}'`;
 
+const executeD1Query = (query: string, isRemote: boolean, executeCommand: CommandExecutor) => {
+  executeCommand(
+    'npx',
+    ['wrangler', 'd1', 'execute', 'DB', ...(isRemote ? ['--remote'] : []), '--command', query],
+    { stdio: 'inherit' },
+  );
+};
+
 const writeToD1 = (isRemote: boolean, executeCommand: CommandExecutor) => (rows: PlanDataRow[]) => {
   const query = `
   INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_intro, church_prayer_guide) VALUES
@@ -177,13 +257,43 @@ const writeToD1 = (isRemote: boolean, executeCommand: CommandExecutor) => (rows:
       church_prayer_guide = COALESCE(excluded.church_prayer_guide, plans.church_prayer_guide);
   `;
 
-  const command = [
-    'npx wrangler d1 execute DB',
-    isRemote ? '--remote' : '',
-    `--command="${query}"`,
-  ].join(' ');
-  executeCommand(command, { stdio: 'inherit' });
+  executeD1Query(query, isRemote, executeCommand);
 };
+
+const writeSubsectionBlocksToD1Query =
+  (isRemote: boolean, executeCommand: CommandExecutor) =>
+  (rows: SubsectionBlockRow[], { dateStart, dateEnd }: WriteToD1FromGoogleSheetsOptions) => {
+    const selectedDates = [...new Set(rows.map((row) => row.date))];
+    const deleteWhere =
+      dateStart || dateEnd
+        ? [
+            dateStart ? `date >= '${escapeSql(dateStart)}'` : '',
+            dateEnd ? `date <= '${escapeSql(dateEnd)}'` : '',
+          ]
+            .filter(Boolean)
+            .join(' AND ')
+        : `date IN (${selectedDates.map((date) => `'${escapeSql(date)}'`).join(', ')})`;
+    const insert = rows.length
+      ? `
+    INSERT INTO subsection_blocks (date, section, position, title, scripture_content, scripture_scope, content, sort_order) VALUES
+      ${rows
+        .map(
+          (row) =>
+            `('${escapeSql(row.date)}', '${escapeSql(row.section)}', '${escapeSql(row.position)}', ${toSqlValue(row.title)}, ${toSqlValue(row.scripture_content)}, ${toSqlValue(row.scripture_scope)}, '${escapeSql(row.content)}', ${row.sort_order})`,
+        )
+        .join(',\n')}
+    ON CONFLICT (date, section, position, sort_order) DO UPDATE SET
+      title = excluded.title,
+      scripture_content = excluded.scripture_content,
+      scripture_scope = excluded.scripture_scope,
+      content = excluded.content;`
+      : '';
+    executeD1Query(
+      `DELETE FROM subsection_blocks WHERE ${deleteWhere};${insert}`,
+      isRemote,
+      executeCommand,
+    );
+  };
 
 const toChinesePunctuation = (input: string): string => {
   const halfToFullMap: { [key: string]: string } = {
