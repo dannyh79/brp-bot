@@ -23,6 +23,23 @@ describe('toBubbleMessage()', () => {
     expect(result).toMatchSnapshot();
   });
 
+  it('includes optional reading introduction and church prayer', () => {
+    const result = toBubbleMessage({
+      ...data,
+      devotional: {
+        ...data.devotional,
+        intro: '樂意撒種，經歷神敞開天窗的豐盛祝福。',
+      },
+      churchPrayer: {
+        scripture: '「凡敬畏神的人，你們都來聽！」詩篇 66:16',
+        guide: '為 FORWARD 奉獻預備自己的心。',
+      },
+    });
+
+    expect(JSON.stringify(result)).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
+    expect(JSON.stringify(result)).toContain('「凡敬畏神的人，你們都來聽！」詩篇 66:16');
+    expect(JSON.stringify(result)).toContain('為 FORWARD 奉獻預備自己的心。');
+  });
   it('includes Holy Week video section when date is in range', () => {
     const holyWeekData = {
       ...data,

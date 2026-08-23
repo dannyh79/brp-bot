@@ -5,7 +5,10 @@ type Record = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
-  devotional_content: string | undefined;
+  devotional_content: string | null;
+  devotional_intro: string | null;
+  church_prayer_scripture: string | null;
+  church_prayer_guide: string | null;
 };
 
 const scopeDelimiter = ',';
@@ -18,12 +21,20 @@ const toParsable = (r: Record) => ({
     content: r.praise_content,
   },
   devotional: {
+    intro: r.devotional_intro || undefined,
     scope: r.devotional_scope.split(scopeDelimiter),
     link: [],
-    content: (r.devotional_content === '' ? undefined : r.devotional_content)?.split(
-      devotionalDelimiter,
-    ),
+    content: (r.devotional_intro || r.devotional_content === ''
+      ? undefined
+      : r.devotional_content
+    )?.split(devotionalDelimiter),
   },
+  churchPrayer: r.church_prayer_guide
+    ? {
+        scripture: r.church_prayer_scripture || undefined,
+        guide: r.church_prayer_guide,
+      }
+    : undefined,
 });
 
 export default class D1PlanRepository implements Repository<Plan> {

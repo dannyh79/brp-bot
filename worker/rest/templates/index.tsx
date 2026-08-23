@@ -135,6 +135,12 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 {/* </div> */}
                 {/* end: block that only shows from 2026-03-29 thru 2026-04-05 */}
 
+                {plan.devotional.intro && (
+                  <div class="rounded-2xl bg-[#1D292E] text-white ml-2 mb-2 px-4 py-2">
+                    <p>{plan.devotional.intro}</p>
+                  </div>
+                )}
+
                 {plan.devotional.scope.map((scope, index) => (
                   <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
                 ))}
@@ -161,6 +167,27 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 </div>
               </div>
             </section>
+
+            {plan.churchPrayer && (
+              <section class="flex">
+                <h3 class="font-bold text-[#1D292E] text-xl text-center whitespace-nowrap">
+                  為教會禱告
+                </h3>
+                <div class="flex flex-col items-center space-y-1">
+                  <span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span>
+                </div>
+                <div class="w-full space-y-2">
+                  {plan.churchPrayer.scripture && (
+                    <p class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
+                      {plan.churchPrayer.scripture}
+                    </p>
+                  )}
+                  <div class="pb-2 pl-6">
+                    <p>{plan.churchPrayer.guide}</p>
+                  </div>
+                </div>
+              </section>
+            )}
           </div>
         </article>
       </main>

@@ -107,10 +107,22 @@ type PlanDataRow = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
-  devotional_content: string | undefined;
+  devotional_intro: string | undefined;
+  church_prayer_guide: string | undefined;
 };
 
 type DataRow = Partial<PlanDataRow> & Record<string, string | undefined>;
+
+const novemberStart = '2026-11-01';
+const sourceFieldMap: Record<string, keyof PlanDataRow> = {
+  'devotional_content': 'devotional_intro',
+  'pray for church': 'church_prayer_guide',
+};
+const proseFields = new Set<keyof PlanDataRow>([
+  'praise_content',
+  'devotional_intro',
+  'church_prayer_guide',
+]);
 
 const formatRows = (rows: string[][]): PlanDataRow[] => {
   const headers = rows[0].map((h) => h.trim().toLowerCase());
@@ -118,16 +130,26 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
   return dataRows.map(
     (row: string[]) =>
       row.reduce((object, cell, index) => {
-        const field = headers[index];
+        const field = sourceFieldMap[headers[index]] ?? headers[index];
+        if (
+          ['devotional_intro', 'church_prayer_guide'].includes(field) &&
+          object.date &&
+          object.date < novemberStart
+        ) {
+          return object;
+        }
+
         const formattedCell = toTrimmed(
-          ['praise_content', 'devotional_content'].includes(field)
+          proseFields.has(field as keyof PlanDataRow)
             ? cell === undefined
               ? ''
               : toChinesePunctuation(cell)
             : (cell ?? ''),
         );
         object[field] =
-          formattedCell === '' && field === 'devotional_content' ? undefined : formattedCell;
+          formattedCell === '' && ['devotional_intro', 'church_prayer_guide'].includes(field)
+            ? undefined
+            : formattedCell;
         return object;
       }, {} as DataRow) as PlanDataRow,
   );
@@ -135,20 +157,24 @@ const formatRows = (rows: string[][]): PlanDataRow[] => {
 
 const escapeSql = (str: string) => str.replace(/'/g, "''");
 
+const toSqlValue = (value: string | undefined) =>
+  value === undefined ? 'NULL' : `'${escapeSql(value)}'`;
+
 const writeToD1 = (isRemote: boolean, executeCommand: CommandExecutor) => (rows: PlanDataRow[]) => {
   const query = `
-  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_content) VALUES
+  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_intro, church_prayer_guide) VALUES
     ${rows
       .map(
         (r) =>
-          `('${escapeSql(r.date)}', '${escapeSql(r.praise_scope)}', '${escapeSql(r.praise_content)}', '${escapeSql(r.devotional_scope)}', ${r.devotional_content === undefined ? 'NULL' : `'${escapeSql(r.devotional_content)}'`})`,
+          `('${escapeSql(r.date)}', '${escapeSql(r.praise_scope)}', '${escapeSql(r.praise_content)}', '${escapeSql(r.devotional_scope)}', ${toSqlValue(r.devotional_intro)}, ${toSqlValue(r.church_prayer_guide)})`,
       )
       .join(',\n')}
     ON CONFLICT (date) DO UPDATE SET
       praise_scope = excluded.praise_scope,
       praise_content = excluded.praise_content,
       devotional_scope = excluded.devotional_scope,
-      devotional_content = excluded.devotional_content;
+      devotional_intro = excluded.devotional_intro,
+      church_prayer_guide = COALESCE(excluded.church_prayer_guide, plans.church_prayer_guide);
   `;
 
   const command = [

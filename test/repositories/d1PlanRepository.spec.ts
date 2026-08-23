@@ -29,6 +29,37 @@ describe('D1PlanRepository', () => {
       });
     });
 
+    it('returns a reading introduction and church prayer from stored content', async () => {
+      await insertPlanRecord();
+      await env.DB.prepare(
+        `
+          UPDATE plans
+          SET devotional_content = ?1, devotional_intro = ?2, church_prayer_guide = ?3
+          WHERE date = ?4
+          `,
+      )
+        .bind(
+          '舊的反思內容',
+          '樂意撒種，經歷神敞開天窗的豐盛祝福。',
+          '為 FORWARD 奉獻預備自己的心。',
+          '2025-01-01',
+        )
+        .run();
+
+      expect(await repo.findById('2025-01-01')).toMatchObject({
+        devotional: {
+          intro: '樂意撒種，經歷神敞開天窗的豐盛祝福。',
+          content: [
+            '1. 你覺得神透過今天的經文對你說什麼呢？',
+            '2. 有什麼你可以做出的行動或改變呢？',
+          ],
+        },
+        churchPrayer: {
+          guide: '為 FORWARD 奉獻預備自己的心。',
+        },
+      });
+    });
+
     it('returns null, when no record found', async () => {
       await insertPlanRecord();
       const result = await repo.findById('2024-12-31');
