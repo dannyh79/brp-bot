@@ -103,21 +103,28 @@ exports[`toBubbleMessage() > includes Holy Week video section when date is in ra
                 {
                   "contents": [
                     {
-                      "color": "#5D5D5D",
-                      "flex": 8,
-                      "lineSpacing": "5px",
-                      "size": "xs",
-                      "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
+                      "contents": [
+                        {
+                          "color": "#5D5D5D",
+                          "flex": 8,
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
 歷代志上 16:34 CCB",
-                      "type": "text",
-                      "weight": "bold",
-                      "wrap": true,
+                          "type": "text",
+                          "weight": "bold",
+                          "wrap": true,
+                        },
+                      ],
+                      "layout": "vertical",
+                      "paddingStart": "xl",
+                      "type": "box",
                     },
                   ],
                   "flex": 14,
                   "layout": "vertical",
                   "paddingBottom": "md",
-                  "paddingStart": "xl",
+                  "spacing": "md",
                   "type": "box",
                 },
               ],
@@ -615,21 +622,28 @@ exports[`toBubbleMessage() > returns LINE bubble message payload 1`] = `
                 {
                   "contents": [
                     {
-                      "color": "#5D5D5D",
-                      "flex": 8,
-                      "lineSpacing": "5px",
-                      "size": "xs",
-                      "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
+                      "contents": [
+                        {
+                          "color": "#5D5D5D",
+                          "flex": 8,
+                          "lineSpacing": "5px",
+                          "size": "xs",
+                          "text": "你們要稱謝耶和華, 因為祂是美善的, 祂的慈愛永遠長存!
 歷代志上 16:34 CCB",
-                      "type": "text",
-                      "weight": "bold",
-                      "wrap": true,
+                          "type": "text",
+                          "weight": "bold",
+                          "wrap": true,
+                        },
+                      ],
+                      "layout": "vertical",
+                      "paddingStart": "xl",
+                      "type": "box",
                     },
                   ],
                   "flex": 14,
                   "layout": "vertical",
                   "paddingBottom": "md",
-                  "paddingStart": "xl",
+                  "spacing": "md",
                   "type": "box",
                 },
               ],

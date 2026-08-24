@@ -28,12 +28,10 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
   const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
   const holyWeekVideo = holyWeekVideos[dateFromData];
-  const devotionalBeforeBlocks = subsectionBlocks.filter(
-    (block) => block.section === 'devotional' && block.position === 'before_content',
-  );
-  const prayerAfterBlocks = subsectionBlocks.filter(
-    (block) => block.section === 'prayer' && block.position === 'after_content',
-  );
+  const subsectionBlocksFor = (
+    section: SubsectionBlock['section'],
+    position: SubsectionBlock['position'],
+  ) => subsectionBlocks.filter((block) => block.section === section && block.position === position);
 
   return {
     type: 'flex',
@@ -180,20 +178,29 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
+                      ...subsectionBlocksFor('praise', 'before_content').map(toSubsectionBlock),
                       {
-                        type: 'text',
-                        text: [praise.content, praise.scope].join('\n'),
-                        flex: 8,
-                        size: 'xs',
-                        color: '#5D5D5D',
-                        wrap: true,
-                        lineSpacing: '5px',
-                        weight: 'bold',
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: [praise.content, praise.scope].join('\n'),
+                            flex: 8,
+                            size: 'xs',
+                            color: '#5D5D5D',
+                            wrap: true,
+                            lineSpacing: '5px',
+                            weight: 'bold',
+                          },
+                        ],
+                        paddingStart: 'xl',
                       },
+                      ...subsectionBlocksFor('praise', 'after_content').map(toSubsectionBlock),
                     ],
                     flex: 14,
                     paddingBottom: 'md',
-                    paddingStart: 'xl',
+                    spacing: 'md',
                   },
                 ],
                 spacing: 'md',
@@ -261,6 +268,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
+                      ...subsectionBlocksFor('repentance', 'before_content').map(toSubsectionBlock),
                       {
                         type: 'box',
                         layout: 'vertical',
@@ -301,6 +309,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                         ],
                         paddingStart: 'xl',
                       },
+                      ...subsectionBlocksFor('repentance', 'after_content').map(toSubsectionBlock),
                     ],
                     flex: 14,
                     paddingTop: 'sm',
@@ -373,7 +382,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
-                      ...devotionalBeforeBlocks.map(toSubsectionBlock),
+                      ...subsectionBlocksFor('devotional', 'before_content').map(toSubsectionBlock),
                       ...devotional.scope.map((scope, index) =>
                         toScopeWithLink({ scope, link: devotional.link[index] }),
                       ),
@@ -400,6 +409,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                         paddingBottom: 'md',
                         cornerRadius: 'lg',
                       },
+                      ...subsectionBlocksFor('devotional', 'after_content').map(toSubsectionBlock),
                     ],
                     flex: 14,
                     spacing: 'md',
@@ -471,6 +481,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
+                      ...subsectionBlocksFor('prayer', 'before_content').map(toSubsectionBlock),
                       {
                         type: 'box',
                         layout: 'vertical',
@@ -511,6 +522,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                         ],
                         paddingStart: 'xl',
                       },
+                      ...subsectionBlocksFor('prayer', 'after_content').map(toSubsectionBlock),
                     ],
                     flex: 14,
                     paddingTop: 'sm',
@@ -521,7 +533,6 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                 paddingBottom: 'md',
                 paddingTop: 'sm',
               },
-              ...prayerAfterBlocks.map(toSubsectionBlock),
             ],
             spacing: 'lg',
             backgroundColor: '#EEF0F4',

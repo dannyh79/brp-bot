@@ -103,4 +103,46 @@ describe('toBubbleMessage()', () => {
     );
     expect(result).toMatchSnapshot();
   });
+  it('renders every subsection slot around its LINE section content', () => {
+    const slots = [
+      ['praise', 'before_content', 'praise-before'],
+      ['praise', 'after_content', 'praise-after'],
+      ['repentance', 'before_content', 'repentance-before'],
+      ['repentance', 'after_content', 'repentance-after'],
+      ['devotional', 'before_content', 'devotional-before'],
+      ['devotional', 'after_content', 'devotional-after'],
+      ['prayer', 'before_content', 'prayer-before'],
+      ['prayer', 'after_content', 'prayer-after'],
+    ] as const;
+    const message = toBubbleMessage({
+      ...data,
+      subsectionBlocks: slots.map(([section, position, content], sortOrder) => ({
+        section,
+        position,
+        content,
+        sortOrder: sortOrder + 1,
+      })),
+    });
+    const payload = JSON.stringify(message);
+    const position = (content: string) => payload.indexOf(content);
+
+    for (const content of slots.map(([, , content]) => content)) {
+      expect(position(content)).toBeGreaterThanOrEqual(0);
+    }
+    expect(position('praise-before')).toBeLessThan(position('你們要稱謝耶和華'));
+    expect(position('你們要稱謝耶和華')).toBeLessThan(position('praise-after'));
+    expect(position('repentance-before')).toBeLessThan(position('聖靈，求祢今日光照我的生命。'));
+    expect(position('聖靈，求祢今日光照我的生命。')).toBeLessThan(position('repentance-after'));
+    expect(position('devotional-before')).toBeLessThan(position('出埃及記 第 8 章'));
+    expect(position('出埃及記 第 8 章')).toBeLessThan(position('devotional-after'));
+    expect(position('prayer-before')).toBeLessThan(position('”神啊！我將我的'));
+    expect(position('”神啊！我將我的')).toBeLessThan(position('prayer-after'));
+
+    expect(payload).toContain(
+      `"type":"box","layout":"vertical","contents":[{"type":"text","text":"${[
+        data.praise.content,
+        data.praise.scope,
+      ].join('\\n')}"`,
+    );
+  });
 });
