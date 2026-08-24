@@ -50,6 +50,49 @@ describe('toBubbleMessage()', () => {
     expect(JSON.stringify(result)).toContain('「凡敬畏神的人，你們都來聽！」');
     expect(JSON.stringify(result)).toContain('為 FORWARD 奉獻預備自己的心。');
   });
+
+  it('keeps subsection scripture content and scope separate', () => {
+    const result = toBubbleMessage({
+      ...data,
+      subsectionBlocks: [
+        {
+          section: 'prayer',
+          position: 'after_content',
+          scriptureContent: '「凡敬畏神的人，你們都來聽！」',
+          scriptureScope: '詩篇 66:16',
+          content: '為 FORWARD 奉獻預備自己的心。',
+          sortOrder: 1,
+        },
+      ],
+    });
+    const payload = JSON.stringify(result);
+
+    expect(payload).toContain('「凡敬畏神的人，你們都來聽！」');
+    expect(payload).toContain('詩篇 66:16');
+    expect(payload).not.toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
+  });
+
+  it('includes devotional block metadata', () => {
+    const result = toBubbleMessage({
+      ...data,
+      subsectionBlocks: [
+        {
+          section: 'devotional',
+          position: 'before_content',
+          title: '今日靈修引導',
+          scriptureContent: '你們要先求他的國和他的義。',
+          scriptureScope: '馬太福音 6:33',
+          content: '安靜思想：今天我可以在哪一件事上先求神的國？',
+          sortOrder: 1,
+        },
+      ],
+    });
+    const payload = JSON.stringify(result);
+
+    expect(payload).toContain('今日靈修引導');
+    expect(payload).toContain('你們要先求他的國和他的義。');
+    expect(payload).toContain('馬太福音 6:33');
+  });
   it('includes Holy Week video section when date is in range', () => {
     const holyWeekData = {
       ...data,

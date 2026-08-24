@@ -373,23 +373,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
-                      ...devotionalBeforeBlocks.map((block) => ({
-                        type: 'box' as const,
-                        layout: 'vertical' as const,
-                        contents: [
-                          {
-                            type: 'text' as const,
-                            text: block.content,
-                            size: 'xs' as const,
-                            color: '#FFFFFF',
-                            wrap: true,
-                            lineSpacing: '5px',
-                          },
-                        ],
-                        backgroundColor: '#1D292E',
-                        paddingAll: 'md',
-                        cornerRadius: 'lg',
-                      })),
+                      ...devotionalBeforeBlocks.map(toSubsectionBlock),
                       ...devotional.scope.map((scope, index) =>
                         toScopeWithLink({ scope, link: devotional.link[index] }),
                       ),
@@ -537,48 +521,7 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                 paddingBottom: 'md',
                 paddingTop: 'sm',
               },
-              ...prayerAfterBlocks.map((block) => ({
-                type: 'box' as const,
-                layout: 'vertical' as const,
-                contents: [
-                  ...(block.title
-                    ? [
-                        {
-                          type: 'text' as const,
-                          text: block.title,
-                          size: 'lg' as const,
-                          weight: 'bold' as const,
-                        },
-                      ]
-                    : []),
-                  ...(block.scriptureContent
-                    ? [
-                        {
-                          type: 'text' as const,
-                          text: [block.scriptureContent, block.scriptureScope]
-                            .filter(Boolean)
-                            .join('，'),
-                          size: 'xs' as const,
-                          color: '#FFFFFF',
-                          wrap: true,
-                          lineSpacing: '5px',
-                        },
-                      ]
-                    : []),
-                  {
-                    type: 'text' as const,
-                    text: block.content,
-                    size: 'xs' as const,
-                    color: '#FFFFFF',
-                    wrap: true,
-                    lineSpacing: '5px',
-                  },
-                ],
-                backgroundColor: '#1D292E',
-                paddingAll: 'md',
-                cornerRadius: 'lg',
-                spacing: 'md',
-              })),
+              ...prayerAfterBlocks.map(toSubsectionBlock),
             ],
             spacing: 'lg',
             backgroundColor: '#EEF0F4',
@@ -595,6 +538,60 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
   };
 };
 
+type SubsectionBlock = NonNullable<GetPlanOutput>['subsectionBlocks'][number];
+
+const toSubsectionBlock = (block: SubsectionBlock) => ({
+  type: 'box' as const,
+  layout: 'vertical' as const,
+  contents: [
+    ...(block.title
+      ? [
+          {
+            type: 'text' as const,
+            text: block.title,
+            size: 'lg' as const,
+            weight: 'bold' as const,
+          },
+        ]
+      : []),
+    ...(block.scriptureContent
+      ? [
+          {
+            type: 'text' as const,
+            text: block.scriptureContent,
+            size: 'xs' as const,
+            color: '#FFFFFF',
+            wrap: true,
+            lineSpacing: '5px',
+          },
+        ]
+      : []),
+    ...(block.scriptureScope
+      ? [
+          {
+            type: 'text' as const,
+            text: block.scriptureScope,
+            size: 'xs' as const,
+            color: '#FFCC32',
+            weight: 'bold' as const,
+            wrap: true,
+          },
+        ]
+      : []),
+    {
+      type: 'text' as const,
+      text: block.content,
+      size: 'xs' as const,
+      color: '#FFFFFF',
+      wrap: true,
+      lineSpacing: '5px',
+    },
+  ],
+  backgroundColor: '#1D292E',
+  paddingAll: 'md',
+  cornerRadius: 'lg',
+  spacing: 'md',
+});
 const toScopeWithLink = ({ scope, link }: { scope: string; link: string }) => ({
   type: 'box' as const,
   layout: 'vertical' as const,

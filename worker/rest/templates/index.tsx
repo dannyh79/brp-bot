@@ -214,7 +214,8 @@ const SubsectionBlock = ({
 }) => (
   <div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
     {title && <p class="font-bold text-xl">{title}</p>}
-    {scriptureContent && <p>{[scriptureContent, scriptureScope].filter(Boolean).join('，')}</p>}
+    {scriptureContent && <p>{scriptureContent}</p>}
+    {scriptureScope && <p class="text-[#FFCC32] font-bold">{scriptureScope}</p>}
     <div class={title ? 'pb-2 pl-6' : undefined}>
       <p>{content}</p>
     </div>
