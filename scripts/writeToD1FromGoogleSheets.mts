@@ -34,6 +34,14 @@ const dateStart = process.env.DATE_START;
 const dateEnd = process.env.DATE_END;
 const subsectionSheetName = process.env.SUBSECTION_SHEET_NAME || 'subsection_blocks';
 
+const isMissingSubsectionSheetError = (error: unknown) =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  error.code === 400 &&
+  'message' in error &&
+  error.message === `Unable to parse range: ${subsectionSheetName}!A1:Z`;
+
 if (!sheetId) {
   console.warn(helpMsg);
   process.exitCode = 1;
@@ -52,5 +60,12 @@ if (!sheetId) {
   };
   const options = { dateStart, dateEnd, isRemote };
   await writeToD1FromGoogleSheets(new GoogleSheetsService(planServiceArgs), options);
-  await writeSubsectionBlocksToD1(new GoogleSheetsService(subsectionServiceArgs), options);
+  try {
+    await writeSubsectionBlocksToD1(new GoogleSheetsService(subsectionServiceArgs), options);
+  } catch (error) {
+    if (!isMissingSubsectionSheetError(error)) throw error;
+    console.warn(
+      `Subsection blocks sheet "${subsectionSheetName}" was not found; skipped subsection block sync.`,
+    );
+  }
 }

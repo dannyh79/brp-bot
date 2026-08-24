@@ -71,6 +71,21 @@ describe('script writeToD1FromGoogleSheets', () => {
       isRemote: false,
     });
   });
+
+  it('warns and completes the plan sync when the subsection tab is missing', async () => {
+    vi.stubEnv('SPREADSHEET_ID', 'test-id');
+    vi.mocked(writeToD1FromGoogleSheets).mockResolvedValueOnce(undefined);
+    vi.mocked(writeSubsectionBlocksToD1).mockRejectedValueOnce(
+      Object.assign(new Error('Unable to parse range: subsection_blocks!A1:Z'), { code: 400 }),
+    );
+    const logger = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await expect(import('@root/scripts/writeToD1FromGoogleSheets.mts')).resolves.toBeDefined();
+
+    expect(logger).toHaveBeenCalledWith(
+      'Subsection blocks sheet "subsection_blocks" was not found; skipped subsection block sync.',
+    );
+  });
 });
 
 describe('D1 writers', () => {
