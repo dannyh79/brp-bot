@@ -68,6 +68,10 @@ describe('GET /api/v1/plan', () => {
     expect(body).toContain('為教會禱告');
     expect(body).toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
     expect(body).toContain('為 FORWARD 奉獻預備自己的心。');
+
+    expect(body).toContain(
+      '<div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2"><div><p>樂意撒種，經歷神敞開天窗的豐盛祝福。</p></div></div>',
+    );
     expect(body.indexOf('樂意撒種，經歷神敞開天窗的豐盛祝福。')).toBeLessThan(
       body.indexOf('出埃及記 第 8 章'),
     );
