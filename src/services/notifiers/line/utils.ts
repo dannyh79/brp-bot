@@ -24,10 +24,16 @@ const holyWeekVideos: Record<string, string | undefined> = {
 };
 
 export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage => {
-  const { date: dateFromData, praise, repentence, devotional, prayer, churchPrayer } = arg;
+  const { date: dateFromData, praise, repentence, devotional, prayer, subsectionBlocks } = arg;
   const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
   const holyWeekVideo = holyWeekVideos[dateFromData];
+  const devotionalBeforeBlocks = subsectionBlocks.filter(
+    (block) => block.section === 'devotional' && block.position === 'before_content',
+  );
+  const prayerAfterBlocks = subsectionBlocks.filter(
+    (block) => block.section === 'prayer' && block.position === 'after_content',
+  );
 
   return {
     type: 'flex',
@@ -367,27 +373,23 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
-                      ...(devotional.intro
-                        ? [
-                            {
-                              type: 'box' as const,
-                              layout: 'vertical' as const,
-                              contents: [
-                                {
-                                  type: 'text' as const,
-                                  text: devotional.intro,
-                                  size: 'xs' as const,
-                                  color: '#FFFFFF',
-                                  wrap: true,
-                                  lineSpacing: '5px',
-                                },
-                              ],
-                              backgroundColor: '#1D292E',
-                              paddingAll: 'md',
-                              cornerRadius: 'lg',
-                            },
-                          ]
-                        : []),
+                      ...devotionalBeforeBlocks.map((block) => ({
+                        type: 'box' as const,
+                        layout: 'vertical' as const,
+                        contents: [
+                          {
+                            type: 'text' as const,
+                            text: block.content,
+                            size: 'xs' as const,
+                            color: '#FFFFFF',
+                            wrap: true,
+                            lineSpacing: '5px',
+                          },
+                        ],
+                        backgroundColor: '#1D292E',
+                        paddingAll: 'md',
+                        cornerRadius: 'lg',
+                      })),
                       ...devotional.scope.map((scope, index) =>
                         toScopeWithLink({ scope, link: devotional.link[index] }),
                       ),
@@ -535,61 +537,48 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                 paddingBottom: 'md',
                 paddingTop: 'sm',
               },
-              ...(churchPrayer
-                ? [
-                    {
-                      type: 'box' as const,
-                      layout: 'vertical' as const,
-                      contents: [
+              ...prayerAfterBlocks.map((block) => ({
+                type: 'box' as const,
+                layout: 'vertical' as const,
+                contents: [
+                  ...(block.title
+                    ? [
                         {
                           type: 'text' as const,
-                          text: '為教會禱告',
+                          text: block.title,
                           size: 'lg' as const,
                           weight: 'bold' as const,
                         },
-                        ...(churchPrayer.scripture
-                          ? [
-                              {
-                                type: 'box' as const,
-                                layout: 'vertical' as const,
-                                contents: [
-                                  {
-                                    type: 'text' as const,
-                                    text: churchPrayer.scripture,
-                                    size: 'xs' as const,
-                                    color: '#FFFFFF',
-                                    wrap: true,
-                                    lineSpacing: '5px',
-                                  },
-                                ],
-                                backgroundColor: '#1D292E',
-                                paddingAll: 'md',
-                                cornerRadius: 'lg',
-                              },
-                            ]
-                          : []),
+                      ]
+                    : []),
+                  ...(block.scriptureContent
+                    ? [
                         {
-                          type: 'box' as const,
-                          layout: 'vertical' as const,
-                          contents: [
-                            {
-                              type: 'text' as const,
-                              text: churchPrayer.guide,
-                              size: 'xs' as const,
-                              color: '#5D5D5D',
-                              wrap: true,
-                              lineSpacing: '5px',
-                            },
-                          ],
-                          paddingStart: 'xl',
+                          type: 'text' as const,
+                          text: [block.scriptureContent, block.scriptureScope]
+                            .filter(Boolean)
+                            .join('，'),
+                          size: 'xs' as const,
+                          color: '#FFFFFF',
+                          wrap: true,
+                          lineSpacing: '5px',
                         },
-                      ],
-                      spacing: 'md',
-                      paddingBottom: 'md',
-                      paddingTop: 'sm',
-                    },
-                  ]
-                : []),
+                      ]
+                    : []),
+                  {
+                    type: 'text' as const,
+                    text: block.content,
+                    size: 'xs' as const,
+                    color: '#FFFFFF',
+                    wrap: true,
+                    lineSpacing: '5px',
+                  },
+                ],
+                backgroundColor: '#1D292E',
+                paddingAll: 'md',
+                cornerRadius: 'lg',
+                spacing: 'md',
+              })),
             ],
             spacing: 'lg',
             backgroundColor: '#EEF0F4',

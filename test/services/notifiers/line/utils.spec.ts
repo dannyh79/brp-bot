@@ -14,6 +14,7 @@ describe('toBubbleMessage()', () => {
       link: ['https://www.bible.com/bible/1392/EXO.8'],
       content: ['1. 你覺得神透過今天的經文對你說什麼呢?', '2. 有什麼你可以做出的行動或改變呢?'],
     },
+    subsectionBlocks: [],
     prayer:
       '”神啊！我將我的，___ ， ___ ， ___ 交給祢，我相信祢在這些事上掌權。\n『我們在天上的父：願人都尊你的名為聖。願你的國降臨；願你的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是你的，直到永遠。阿們！』”',
   };
@@ -23,21 +24,30 @@ describe('toBubbleMessage()', () => {
     expect(result).toMatchSnapshot();
   });
 
-  it('includes optional reading introduction and church prayer', () => {
+  it('includes normalized reading and prayer blocks', () => {
     const result = toBubbleMessage({
       ...data,
-      devotional: {
-        ...data.devotional,
-        intro: '樂意撒種，經歷神敞開天窗的豐盛祝福。',
-      },
-      churchPrayer: {
-        scripture: '「凡敬畏神的人，你們都來聽！」詩篇 66:16',
-        guide: '為 FORWARD 奉獻預備自己的心。',
-      },
+      subsectionBlocks: [
+        {
+          section: 'devotional',
+          position: 'before_content',
+          content: '樂意撒種，經歷神敞開天窗的豐盛祝福。',
+          sortOrder: 1,
+        },
+        {
+          section: 'prayer',
+          position: 'after_content',
+          title: '為教會禱告',
+          scriptureContent: '「凡敬畏神的人，你們都來聽！」',
+          scriptureScope: '詩篇 66:16',
+          content: '為 FORWARD 奉獻預備自己的心。',
+          sortOrder: 1,
+        },
+      ],
     });
 
     expect(JSON.stringify(result)).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
-    expect(JSON.stringify(result)).toContain('「凡敬畏神的人，你們都來聽！」詩篇 66:16');
+    expect(JSON.stringify(result)).toContain('「凡敬畏神的人，你們都來聽！」');
     expect(JSON.stringify(result)).toContain('為 FORWARD 奉獻預備自己的心。');
   });
   it('includes Holy Week video section when date is in range', () => {

@@ -57,6 +57,12 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
   const { date, dayOfWeek } = toLocaleDateObject(plan.date);
   const holyWeekVideo = holyWeekVideos[plan.date];
+  const devotionalBeforeBlocks = plan.subsectionBlocks.filter(
+    (block) => block.section === 'devotional' && block.position === 'before_content',
+  );
+  const prayerAfterBlocks = plan.subsectionBlocks.filter(
+    (block) => block.section === 'prayer' && block.position === 'after_content',
+  );
 
   return (
     <Layout title={`好好靈修 Daily Devotion - ${plan.date}`} customScript={customScript}>
@@ -135,11 +141,12 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 {/* </div> */}
                 {/* end: block that only shows from 2026-03-29 thru 2026-04-05 */}
 
-                {plan.devotional.intro && (
-                  <div class="rounded-2xl bg-[#1D292E] text-white ml-2 mb-2 px-4 py-2">
-                    <p>{plan.devotional.intro}</p>
-                  </div>
-                )}
+                {devotionalBeforeBlocks.map((block, index) => (
+                  <SubsectionBlock
+                    key={`${block.section}-${block.sortOrder}-${index}`}
+                    {...block}
+                  />
+                ))}
 
                 {plan.devotional.scope.map((scope, index) => (
                   <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
@@ -165,29 +172,14 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                     <p>{paragraph}</p>
                   ))}
                 </div>
+                {prayerAfterBlocks.map((block, index) => (
+                  <SubsectionBlock
+                    key={`${block.section}-${block.sortOrder}-${index}`}
+                    {...block}
+                  />
+                ))}
               </div>
             </section>
-
-            {plan.churchPrayer && (
-              <section class="flex">
-                <h3 class="font-bold text-[#1D292E] text-xl text-center whitespace-nowrap">
-                  為教會禱告
-                </h3>
-                <div class="flex flex-col items-center space-y-1">
-                  <span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span>
-                </div>
-                <div class="w-full space-y-2">
-                  {plan.churchPrayer.scripture && (
-                    <p class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
-                      {plan.churchPrayer.scripture}
-                    </p>
-                  )}
-                  <div class="pb-2 pl-6">
-                    <p>{plan.churchPrayer.guide}</p>
-                  </div>
-                </div>
-              </section>
-            )}
           </div>
         </article>
       </main>
@@ -206,5 +198,25 @@ const ScopeWithLink = ({ scope, link }: { scope: string; link: string }) => (
     >
       YouVersion 連結
     </a>
+  </div>
+);
+
+const SubsectionBlock = ({
+  title,
+  scriptureContent,
+  scriptureScope,
+  content,
+}: {
+  title?: string;
+  scriptureContent?: string;
+  scriptureScope?: string;
+  content: string;
+}) => (
+  <div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
+    {title && <p class="font-bold text-xl">{title}</p>}
+    {scriptureContent && <p>{[scriptureContent, scriptureScope].filter(Boolean).join('，')}</p>}
+    <div class="pb-2 pl-6">
+      <p>{content}</p>
+    </div>
   </div>
 );

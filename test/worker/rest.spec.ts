@@ -37,36 +37,36 @@ describe('GET /api/v1/plan', () => {
     expect(await response.text()).toMatchSnapshot();
   });
 
-  it('renders reading introduction and church prayer in their requested order', async () => {
+  it('renders normalized reading and prayer blocks in their requested order', async () => {
     await env.DB.prepare(
       `
-        UPDATE plans
-        SET devotional_intro = ?1, church_prayer_scripture = ?2, church_prayer_guide = ?3
-        WHERE date = ?4
+        INSERT INTO subsection_blocks (date, section, position, title, scripture_content, scripture_scope, content, sort_order)
+        VALUES
+          (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8),
+          (?1, ?9, ?10, NULL, NULL, NULL, ?11, ?8)
         `,
     )
       .bind(
-        '樂意撒種，經歷神敞開天窗的豐盛祝福。',
-        '「凡敬畏神的人，你們都來聽！」詩篇 66:16',
-        '為 FORWARD 奉獻預備自己的心。',
         '2025-01-01',
+        'prayer',
+        'after_content',
+        '為教會禱告',
+        '「凡敬畏神的人，你們都來聽！」',
+        '詩篇 66:16',
+        '為 FORWARD 奉獻預備自己的心。',
+        1,
+        'devotional',
+        'before_content',
+        '樂意撒種，經歷神敞開天窗的豐盛祝福。',
       )
       .run();
-    const jsonResponse = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01`);
-    expect(await jsonResponse.json()).toMatchObject({
-      devotional: { intro: '樂意撒種，經歷神敞開天窗的豐盛祝福。' },
-      churchPrayer: {
-        scripture: '「凡敬畏神的人，你們都來聽！」詩篇 66:16',
-        guide: '為 FORWARD 奉獻預備自己的心。',
-      },
-    });
 
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
     const body = await response.text();
 
     expect(body).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
     expect(body).toContain('為教會禱告');
-    expect(body).toContain('「凡敬畏神的人，你們都來聽！」詩篇 66:16');
+    expect(body).toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
     expect(body).toContain('為 FORWARD 奉獻預備自己的心。');
     expect(body.indexOf('樂意撒種，經歷神敞開天窗的豐盛祝福。')).toBeLessThan(
       body.indexOf('出埃及記 第 8 章'),

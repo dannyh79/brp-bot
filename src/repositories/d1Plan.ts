@@ -5,50 +5,61 @@ type Record = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
-  devotional_content: string | null;
-  devotional_intro: string | null;
-  church_prayer_scripture: string | null;
-  church_prayer_guide: string | null;
+};
+
+type SubsectionBlockRecord = {
+  section: 'praise' | 'repentance' | 'devotional' | 'prayer';
+  position: 'before_content' | 'after_content';
+  title: string | null;
+  scripture_content: string | null;
+  scripture_scope: string | null;
+  content: string;
+  sort_order: number;
 };
 
 const scopeDelimiter = ',';
-const devotionalDelimiter = '\n';
 
-const toParsable = (r: Record) => ({
+const toParsable = (r: Record, subsectionBlocks: SubsectionBlockRecord[]) => ({
   date: r.date,
   praise: {
     scope: r.praise_scope,
     content: r.praise_content,
   },
   devotional: {
-    intro: r.devotional_intro || undefined,
     scope: r.devotional_scope.split(scopeDelimiter),
     link: [],
-    content: (r.devotional_intro || r.devotional_content === ''
-      ? undefined
-      : r.devotional_content
-    )?.split(devotionalDelimiter),
   },
-  churchPrayer: r.church_prayer_guide
-    ? {
-        scripture: r.church_prayer_scripture || undefined,
-        guide: r.church_prayer_guide,
-      }
-    : undefined,
+  subsectionBlocks: subsectionBlocks.map((block) => ({
+    section: block.section,
+    position: block.position,
+    title: block.title || undefined,
+    scriptureContent: block.scripture_content || undefined,
+    scriptureScope: block.scripture_scope || undefined,
+    content: block.content,
+    sortOrder: block.sort_order,
+  })),
 });
 
 export default class D1PlanRepository implements Repository<Plan> {
   constructor(private readonly db: D1Database) {}
 
   async findById(date: string): Promise<Plan | null> {
-    const stmt = this.db.prepare('SELECT * FROM plans WHERE date = ?');
-
-    const result = await stmt.bind(date).first<Record>();
-    if (!result) {
+    const plan = await this.db
+      .prepare('SELECT * FROM plans WHERE date = ?')
+      .bind(date)
+      .first<Record>();
+    if (!plan) {
       return null;
     }
 
-    return PlanSchema.parse(toParsable(result));
+    const blocks = await this.db
+      .prepare(
+        'SELECT section, position, title, scripture_content, scripture_scope, content, sort_order FROM subsection_blocks WHERE date = ? ORDER BY section, position, sort_order',
+      )
+      .bind(date)
+      .all<SubsectionBlockRecord>();
+
+    return PlanSchema.parse(toParsable(plan, blocks.results));
   }
 
   async all() {
