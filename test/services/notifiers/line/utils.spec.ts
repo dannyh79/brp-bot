@@ -51,7 +51,7 @@ describe('toBubbleMessage()', () => {
     expect(JSON.stringify(result)).toContain('為 FORWARD 奉獻預備自己的心。');
   });
 
-  it('keeps subsection scripture content and scope separate', () => {
+  it('joins subsection scripture content and scope with a half-width space', () => {
     const result = toBubbleMessage({
       ...data,
       subsectionBlocks: [
@@ -67,9 +67,7 @@ describe('toBubbleMessage()', () => {
     });
     const payload = JSON.stringify(result);
 
-    expect(payload).toContain('「凡敬畏神的人，你們都來聽！」');
-    expect(payload).toContain('詩篇 66:16');
-    expect(payload).not.toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
+    expect(payload).toContain('「凡敬畏神的人，你們都來聽！」 詩篇 66:16');
   });
 
   it('includes devotional block metadata', () => {

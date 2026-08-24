@@ -66,9 +66,7 @@ describe('GET /api/v1/plan', () => {
 
     expect(body).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
     expect(body).toContain('為教會禱告');
-    expect(body).toContain(
-      '<p>「凡敬畏神的人，你們都來聽！」</p><p class="text-[#FFCC32] font-bold">詩篇 66:16</p>',
-    );
+    expect(body).toContain('<p>「凡敬畏神的人，你們都來聽！」 詩篇 66:16</p>');
     expect(body).toContain('為 FORWARD 奉獻預備自己的心。');
 
     expect(body).toContain(

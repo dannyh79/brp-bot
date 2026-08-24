@@ -554,27 +554,15 @@ const toSubsectionBlock = (block: SubsectionBlock) => ({
           },
         ]
       : []),
-    ...(block.scriptureContent
+    ...(block.scriptureContent || block.scriptureScope
       ? [
           {
             type: 'text' as const,
-            text: block.scriptureContent,
+            text: [block.scriptureContent, block.scriptureScope].filter(Boolean).join(' '),
             size: 'xs' as const,
             color: '#FFFFFF',
             wrap: true,
             lineSpacing: '5px',
-          },
-        ]
-      : []),
-    ...(block.scriptureScope
-      ? [
-          {
-            type: 'text' as const,
-            text: block.scriptureScope,
-            size: 'xs' as const,
-            color: '#FFCC32',
-            weight: 'bold' as const,
-            wrap: true,
           },
         ]
       : []),
