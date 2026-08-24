@@ -24,7 +24,6 @@ export const PlanSchema = z
       example: defaultValues['repentence'],
     }),
     devotional: z.object({
-      intro: z.string().optional(),
       scope: z.array(z.string().openapi({ example: '出埃及記 第 8 章' })),
       link: z.array(
         z.string().default('').openapi({ example: 'https://www.bible.com/bible/1392/EXO.8' }),

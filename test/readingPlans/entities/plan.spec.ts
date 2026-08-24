@@ -78,6 +78,15 @@ describe('PlanSchema devotional link', () => {
   });
 });
 
+it('strips obsolete devotional intro content', () => {
+  const data = PlanSchema.parse({
+    ...rawData,
+    devotional: { ...rawData.devotional, intro: 'Legacy introductory text' },
+  });
+
+  expect(data.devotional).not.toHaveProperty('intro');
+});
+
 describe('toLocaleDateObject()', () => {
   const testCases: [name: string, date: string, expected: object][] = [
     [
