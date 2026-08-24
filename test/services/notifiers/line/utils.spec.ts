@@ -50,6 +50,47 @@ describe('toBubbleMessage()', () => {
     expect(JSON.stringify(result)).toContain('「凡敬畏神的人，你們都來聽！」');
     expect(JSON.stringify(result)).toContain('為 FORWARD 奉獻預備自己的心。');
   });
+
+  it('joins subsection scripture content and scope with a half-width space', () => {
+    const result = toBubbleMessage({
+      ...data,
+      subsectionBlocks: [
+        {
+          section: 'prayer',
+          position: 'after_content',
+          scriptureContent: '「凡敬畏神的人，你們都來聽！」',
+          scriptureScope: '詩篇 66:16',
+          content: '為 FORWARD 奉獻預備自己的心。',
+          sortOrder: 1,
+        },
+      ],
+    });
+    const payload = JSON.stringify(result);
+
+    expect(payload).toContain('「凡敬畏神的人，你們都來聽！」 詩篇 66:16');
+  });
+
+  it('includes devotional block metadata', () => {
+    const result = toBubbleMessage({
+      ...data,
+      subsectionBlocks: [
+        {
+          section: 'devotional',
+          position: 'before_content',
+          title: '今日靈修引導',
+          scriptureContent: '你們要先求他的國和他的義。',
+          scriptureScope: '馬太福音 6:33',
+          content: '安靜思想：今天我可以在哪一件事上先求神的國？',
+          sortOrder: 1,
+        },
+      ],
+    });
+    const payload = JSON.stringify(result);
+
+    expect(payload).toContain('今日靈修引導');
+    expect(payload).toContain('你們要先求他的國和他的義。');
+    expect(payload).toContain('馬太福音 6:33');
+  });
   it('includes Holy Week video section when date is in range', () => {
     const holyWeekData = {
       ...data,
@@ -61,5 +102,47 @@ describe('toBubbleMessage()', () => {
       'https://drive.google.com/file/d/12NBd3Q5sNbsoM2PsW2GQ34il5zeI1-2x/view?usp=share_link',
     );
     expect(result).toMatchSnapshot();
+  });
+  it('renders every subsection slot around its LINE section content', () => {
+    const slots = [
+      ['praise', 'before_content', 'praise-before'],
+      ['praise', 'after_content', 'praise-after'],
+      ['repentance', 'before_content', 'repentance-before'],
+      ['repentance', 'after_content', 'repentance-after'],
+      ['devotional', 'before_content', 'devotional-before'],
+      ['devotional', 'after_content', 'devotional-after'],
+      ['prayer', 'before_content', 'prayer-before'],
+      ['prayer', 'after_content', 'prayer-after'],
+    ] as const;
+    const message = toBubbleMessage({
+      ...data,
+      subsectionBlocks: slots.map(([section, position, content], sortOrder) => ({
+        section,
+        position,
+        content,
+        sortOrder: sortOrder + 1,
+      })),
+    });
+    const payload = JSON.stringify(message);
+    const position = (content: string) => payload.indexOf(content);
+
+    for (const content of slots.map(([, , content]) => content)) {
+      expect(position(content)).toBeGreaterThanOrEqual(0);
+    }
+    expect(position('praise-before')).toBeLessThan(position('你們要稱謝耶和華'));
+    expect(position('你們要稱謝耶和華')).toBeLessThan(position('praise-after'));
+    expect(position('repentance-before')).toBeLessThan(position('聖靈，求祢今日光照我的生命。'));
+    expect(position('聖靈，求祢今日光照我的生命。')).toBeLessThan(position('repentance-after'));
+    expect(position('devotional-before')).toBeLessThan(position('出埃及記 第 8 章'));
+    expect(position('出埃及記 第 8 章')).toBeLessThan(position('devotional-after'));
+    expect(position('prayer-before')).toBeLessThan(position('”神啊！我將我的'));
+    expect(position('”神啊！我將我的')).toBeLessThan(position('prayer-after'));
+
+    expect(payload).toContain(
+      `"type":"box","layout":"vertical","contents":[{"type":"text","text":"${[
+        data.praise.content,
+        data.praise.scope,
+      ].join('\\n')}"`,
+    );
   });
 });

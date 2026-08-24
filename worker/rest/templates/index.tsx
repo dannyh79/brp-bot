@@ -57,12 +57,16 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
   const { date, dayOfWeek } = toLocaleDateObject(plan.date);
   const holyWeekVideo = holyWeekVideos[plan.date];
-  const devotionalBeforeBlocks = plan.subsectionBlocks.filter(
-    (block) => block.section === 'devotional' && block.position === 'before_content',
-  );
-  const prayerAfterBlocks = plan.subsectionBlocks.filter(
-    (block) => block.section === 'prayer' && block.position === 'after_content',
-  );
+  type SubsectionBlockData = (typeof plan.subsectionBlocks)[number];
+  const renderBlocks = (
+    section: SubsectionBlockData['section'],
+    position: SubsectionBlockData['position'],
+  ) =>
+    plan.subsectionBlocks
+      .filter((block) => block.section === section && block.position === position)
+      .map((block, index) => (
+        <SubsectionBlock key={`${block.section}-${block.position}-${block.sortOrder}-${index}`} {...block} />
+      ));
 
   return (
     <Layout title={`好好靈修 Daily Devotion - ${plan.date}`} customScript={customScript}>
@@ -94,9 +98,13 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 <span class="flex-none rounded-full bg-[#1D292E] w-3 h-3"></span>
                 <span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span>
               </div>
-              <div class="pb-2 pl-6 w-full font-bold">
-                <p>{plan.praise.content}</p>
-                <p>{plan.praise.scope}</p>
+              <div class="w-full space-y-2">
+                {renderBlocks('praise', 'before_content')}
+                <div class="pb-2 pl-6 font-bold">
+                  <p>{plan.praise.content}</p>
+                  <p>{plan.praise.scope}</p>
+                </div>
+                {renderBlocks('praise', 'after_content')}
               </div>
             </section>
 
@@ -107,6 +115,7 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 <span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span>
               </div>
               <div class="w-full space-y-2">
+                {renderBlocks('repentance', 'before_content')}
                 <div class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
                   {repentencePrelude.map((paragraph) => (
                     <p>{paragraph}</p>
@@ -117,6 +126,7 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                     <p>{paragraph}</p>
                   ))}
                 </div>
+                {renderBlocks('repentance', 'after_content')}
               </div>
             </section>
 
@@ -141,12 +151,7 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 {/* </div> */}
                 {/* end: block that only shows from 2026-03-29 thru 2026-04-05 */}
 
-                {devotionalBeforeBlocks.map((block, index) => (
-                  <SubsectionBlock
-                    key={`${block.section}-${block.sortOrder}-${index}`}
-                    {...block}
-                  />
-                ))}
+                {renderBlocks('devotional', 'before_content')}
 
                 {plan.devotional.scope.map((scope, index) => (
                   <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
@@ -156,6 +161,7 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                     <p>{paragraph}</p>
                   ))}
                 </div>
+                {renderBlocks('devotional', 'after_content')}
               </div>
             </section>
 
@@ -166,18 +172,14 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 <span class="rounded-lg bg-[#1D292E] w-0.75 h-full"></span>
               </div>
               <div class="w-full space-y-2">
+                {renderBlocks('prayer', 'before_content')}
                 <p class="rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">{preludePrayer}</p>
                 <div class="pb-2 pl-6">
                   {theLordPrayer.map((paragraph) => (
                     <p>{paragraph}</p>
                   ))}
                 </div>
-                {prayerAfterBlocks.map((block, index) => (
-                  <SubsectionBlock
-                    key={`${block.section}-${block.sortOrder}-${index}`}
-                    {...block}
-                  />
-                ))}
+                {renderBlocks('prayer', 'after_content')}
               </div>
             </section>
           </div>
@@ -214,8 +216,10 @@ const SubsectionBlock = ({
 }) => (
   <div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
     {title && <p class="font-bold text-xl">{title}</p>}
-    {scriptureContent && <p>{[scriptureContent, scriptureScope].filter(Boolean).join('，')}</p>}
-    <div class="pb-2 pl-6">
+    {(scriptureContent || scriptureScope) && (
+      <p>{[scriptureContent, scriptureScope].filter(Boolean).join(' ')}</p>
+    )}
+    <div class={title ? 'pb-2 pl-6' : undefined}>
       <p>{content}</p>
     </div>
   </div>

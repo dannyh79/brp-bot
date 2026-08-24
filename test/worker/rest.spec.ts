@@ -66,10 +66,54 @@ describe('GET /api/v1/plan', () => {
 
     expect(body).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
     expect(body).toContain('為教會禱告');
-    expect(body).toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
+    expect(body).toContain('<p>「凡敬畏神的人，你們都來聽！」 詩篇 66:16</p>');
     expect(body).toContain('為 FORWARD 奉獻預備自己的心。');
+
+    expect(body).toContain(
+      '<div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2"><div><p>樂意撒種，經歷神敞開天窗的豐盛祝福。</p></div></div>',
+    );
     expect(body.indexOf('樂意撒種，經歷神敞開天窗的豐盛祝福。')).toBeLessThan(
       body.indexOf('出埃及記 第 8 章'),
+    );
+  });
+
+  it('renders every subsection slot around its section content', async () => {
+    const slots = [
+      ['praise', 'before_content', 'praise-before'],
+      ['praise', 'after_content', 'praise-after'],
+      ['repentance', 'before_content', 'repentance-before'],
+      ['repentance', 'after_content', 'repentance-after'],
+      ['devotional', 'before_content', 'devotional-before'],
+      ['devotional', 'after_content', 'devotional-after'],
+      ['prayer', 'before_content', 'prayer-before'],
+      ['prayer', 'after_content', 'prayer-after'],
+    ] as const;
+    await env.DB.batch(
+      slots.map(([section, position, content], sortOrder) =>
+        env.DB.prepare(
+          'INSERT INTO subsection_blocks (date, section, position, content, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)',
+        ).bind('2025-01-01', section, position, content, sortOrder + 1),
+      ),
+    );
+
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
+    const body = await response.text();
+    const position = (content: string) => body.indexOf(content);
+
+    for (const content of slots.map(([, , content]) => content)) {
+      expect(position(content)).toBeGreaterThanOrEqual(0);
+    }
+    expect(position('praise-before')).toBeLessThan(position('你們要稱謝耶和華'));
+    expect(position('你們要稱謝耶和華')).toBeLessThan(position('praise-after'));
+    expect(position('repentance-before')).toBeLessThan(position('聖靈，求祢今日光照我的生命。'));
+    expect(position('聖靈，求祢今日光照我的生命。')).toBeLessThan(position('repentance-after'));
+    expect(position('devotional-before')).toBeLessThan(position('出埃及記 第 8 章'));
+    expect(position('出埃及記 第 8 章')).toBeLessThan(position('devotional-after'));
+    expect(position('prayer-before')).toBeLessThan(position('神啊！我將我的 ___'));
+    expect(position('神啊！我將我的 ___')).toBeLessThan(position('prayer-after'));
+
+    expect(body).toContain(
+      '<div class="w-full space-y-2"><div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2"><div><p>praise-before</p></div></div>',
     );
   });
   it('responds 404, when no plan found', async () => {
