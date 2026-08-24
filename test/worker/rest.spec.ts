@@ -37,6 +37,41 @@ describe('GET /api/v1/plan', () => {
     expect(await response.text()).toMatchSnapshot();
   });
 
+  it('renders normalized reading and prayer blocks in their requested order', async () => {
+    await env.DB.prepare(
+      `
+        INSERT INTO subsection_blocks (date, section, position, title, scripture_content, scripture_scope, content, sort_order)
+        VALUES
+          (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8),
+          (?1, ?9, ?10, NULL, NULL, NULL, ?11, ?8)
+        `,
+    )
+      .bind(
+        '2025-01-01',
+        'prayer',
+        'after_content',
+        '為教會禱告',
+        '「凡敬畏神的人，你們都來聽！」',
+        '詩篇 66:16',
+        '為 FORWARD 奉獻預備自己的心。',
+        1,
+        'devotional',
+        'before_content',
+        '樂意撒種，經歷神敞開天窗的豐盛祝福。',
+      )
+      .run();
+
+    const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2025-01-01&format=html`);
+    const body = await response.text();
+
+    expect(body).toContain('樂意撒種，經歷神敞開天窗的豐盛祝福。');
+    expect(body).toContain('為教會禱告');
+    expect(body).toContain('「凡敬畏神的人，你們都來聽！」，詩篇 66:16');
+    expect(body).toContain('為 FORWARD 奉獻預備自己的心。');
+    expect(body.indexOf('樂意撒種，經歷神敞開天窗的豐盛祝福。')).toBeLessThan(
+      body.indexOf('出埃及記 第 8 章'),
+    );
+  });
   it('responds 404, when no plan found', async () => {
     const response = await SELF.fetch(`${stubDomain}/api/v1/plan?date=2024-12-31`);
     expect(response.status).toBe(404);

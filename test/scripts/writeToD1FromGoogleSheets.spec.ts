@@ -1,4 +1,9 @@
-import { GoogleSheetsService, writeToD1FromGoogleSheets } from '@root/scripts/lib.mts';
+import { google } from 'googleapis';
+import {
+  GoogleSheetsService,
+  writeSubsectionBlocksToD1,
+  writeToD1FromGoogleSheets,
+} from '@root/scripts/lib.mts';
 import type { Service } from '@root/scripts/lib.mts';
 import type * as scriptsLib from '@root/scripts/lib.mts';
 
@@ -8,6 +13,7 @@ vi.mock('@root/scripts/lib.mts', async (importOriginal) => {
     ...actual,
     GoogleSheetsService: vi.fn(),
     writeToD1FromGoogleSheets: vi.fn(actual.writeToD1FromGoogleSheets),
+    writeSubsectionBlocksToD1: vi.fn(actual.writeSubsectionBlocksToD1),
   };
 });
 
@@ -17,11 +23,12 @@ describe('script writeToD1FromGoogleSheets', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.stubEnv('SPREADSHEET_ID', undefined);
-    vi.stubEnv('SHEET_RANGE_START', undefined);
-    vi.stubEnv('SHEET_RANGE_END', undefined);
+    vi.stubEnv('DATE_START', undefined);
+    vi.stubEnv('DATE_END', undefined);
     process.exitCode = undefined;
     vi.mocked(GoogleSheetsService).mockClear();
     vi.mocked(writeToD1FromGoogleSheets).mockClear();
+    vi.mocked(writeSubsectionBlocksToD1).mockClear();
   });
 
   it('prints help and exits nonzero when SPREADSHEET_ID is missing', async () => {
@@ -32,126 +39,142 @@ describe('script writeToD1FromGoogleSheets', () => {
     expect(process.exitCode).toBe(1);
   });
 
-  it('passes correct rangeStart and rangeEnd when SHEET_RANGE_START and SHEET_RANGE_END are set', async () => {
+  it('passes an inclusive date range to plan and subsection syncs', async () => {
     vi.stubEnv('SPREADSHEET_ID', 'test-id');
-    vi.stubEnv('SHEET_RANGE_START', '10');
-    vi.stubEnv('SHEET_RANGE_END', '20');
+    vi.stubEnv('DATE_START', '2026-11-01');
+    vi.stubEnv('DATE_END', '2026-11-30');
+    vi.mocked(writeToD1FromGoogleSheets).mockImplementationOnce(async () => {});
+    vi.mocked(writeSubsectionBlocksToD1).mockImplementationOnce(async () => {});
 
     await import('@root/scripts/writeToD1FromGoogleSheets.mts');
 
-    expect(GoogleSheetsService).toHaveBeenCalledTimes(1);
-    const serviceArgs = vi.mocked(GoogleSheetsService).mock.calls[0][0];
-    expect(serviceArgs).toHaveProperty('rangeStart', 10);
-    expect(serviceArgs).toHaveProperty('rangeEnd', 20);
+    expect(GoogleSheetsService).toHaveBeenCalledWith({
+      google,
+      sheetId: 'test-id',
+      sheetName: 'data-brp',
+      keyFilePath: './scripts/service-account.json',
+    });
+    expect(GoogleSheetsService).toHaveBeenCalledWith({
+      google,
+      sheetId: 'test-id',
+      sheetName: 'subsection_blocks',
+      keyFilePath: './scripts/service-account.json',
+    });
+    expect(writeToD1FromGoogleSheets).toHaveBeenCalledWith(expect.anything(), {
+      dateStart: '2026-11-01',
+      dateEnd: '2026-11-30',
+      isRemote: false,
+    });
+    expect(writeSubsectionBlocksToD1).toHaveBeenCalledWith(expect.anything(), {
+      dateStart: '2026-11-01',
+      dateEnd: '2026-11-30',
+      isRemote: false,
+    });
   });
 
-  it('passes correct rangeStart when only SHEET_RANGE_START is set', async () => {
+  it('warns and completes the plan sync when the subsection tab is missing', async () => {
     vi.stubEnv('SPREADSHEET_ID', 'test-id');
-    vi.stubEnv('SHEET_RANGE_START', '15');
+    vi.mocked(writeToD1FromGoogleSheets).mockResolvedValueOnce(undefined);
+    vi.mocked(writeSubsectionBlocksToD1).mockRejectedValueOnce(
+      Object.assign(new Error('Unable to parse range: subsection_blocks!A1:Z'), { code: 400 }),
+    );
+    const logger = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    await import('@root/scripts/writeToD1FromGoogleSheets.mts');
+    await expect(import('@root/scripts/writeToD1FromGoogleSheets.mts')).resolves.toBeDefined();
 
-    expect(GoogleSheetsService).toHaveBeenCalledTimes(1);
-    const serviceArgs = vi.mocked(GoogleSheetsService).mock.calls[0][0];
-    expect(serviceArgs).toHaveProperty('rangeStart', 15);
-    expect(serviceArgs.rangeEnd).toBeUndefined();
-  });
-
-  it('passes undefined range properties when no range env vars are set', async () => {
-    vi.stubEnv('SPREADSHEET_ID', 'test-id');
-
-    await import('@root/scripts/writeToD1FromGoogleSheets.mts');
-
-    expect(GoogleSheetsService).toHaveBeenCalledTimes(1);
-    const serviceArgs = vi.mocked(GoogleSheetsService).mock.calls[0][0];
-    expect(serviceArgs.rangeStart).toBeUndefined();
-    expect(serviceArgs.rangeEnd).toBeUndefined();
+    expect(logger).toHaveBeenCalledWith(
+      'Subsection blocks sheet "subsection_blocks" was not found; skipped subsection block sync.',
+    );
   });
 });
 
-describe('function writeToD1FromGoogleSheets', () => {
+describe('D1 writers', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('NO extra spaces or line breaks in query command', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService(), { executeCommand: execSync });
-    expect(execSync).toHaveBeenNthCalledWith(1, expect.stringContaining(expectedQueryValues), {
-      stdio: 'inherit',
-    });
-  });
+  it('passes the plan SQL as an argument instead of a shell command', async () => {
+    await writeToD1FromGoogleSheets(new DateRangeGoogleService(), { executeCommand: execSync });
 
-  it('writes row data to D1 local database', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService(), { executeCommand: execSync });
-
-    expect(execSync).toHaveBeenNthCalledWith(
-      1,
-      expect.stringMatching(
-        /^npx[\s]+wrangler[\s]+d1[\s]+execute[\s]+DB[\s]+--command="[\s]*INSERT[\s]+INTO[\s]+plans.*ON[\s]+CONFLICT[\s]+\(date\)[\s]+DO[\s]+UPDATE[\s]+SET[\s]+praise_scope[\s]*=[\s]*excluded.praise_scope,[\s]*praise_content[\s]*=[\s]*excluded.praise_content,[\s]*devotional_scope[\s]*=[\s]*excluded.devotional_scope,[\s]*devotional_content[\s]*=[\s]*excluded.devotional_content;/is,
-      ),
+    expect(execSync).toHaveBeenCalledWith(
+      'npx',
+      expect.arrayContaining(['wrangler', 'd1', 'execute', 'DB', '--command']),
       { stdio: 'inherit' },
     );
+    expect(execSync.mock.calls[0][1].at(-1)).toContain("('2026-11-01', '詩篇 118：28'");
   });
 
-  it('writes row data to D1 remote database', async () => {
-    await writeToD1FromGoogleSheets(new MockGoogleService(), {
-      isRemote: true,
+  it('writes only plan rows within the inclusive date range', async () => {
+    await writeToD1FromGoogleSheets(new DateRangeGoogleService(), {
+      dateStart: '2026-11-01',
+      dateEnd: '2026-11-01',
       executeCommand: execSync,
     });
 
-    expect(execSync).toHaveBeenNthCalledWith(
-      1,
-      expect.stringMatching(
-        /^npx[\s]+wrangler[\s]+d1[\s]+execute[\s]+DB[\s]+--remote[\s]+--command="[\s]*INSERT[\s]+INTO[\s]+plans.*ON[\s]+CONFLICT[\s]+\(date\)[\s]+DO[\s]+UPDATE[\s]+SET[\s]+praise_scope[\s]*=[\s]*excluded.praise_scope,[\s]*praise_content[\s]*=[\s]*excluded.praise_content,[\s]*devotional_scope[\s]*=[\s]*excluded.devotional_scope,[\s]*devotional_content[\s]*=[\s]*excluded.devotional_content;/is,
-      ),
-      { stdio: 'inherit' },
+    expect(execSync.mock.calls[0][1].at(-1)).toContain('2026-11-01');
+    expect(execSync.mock.calls[0][1].at(-1)).not.toContain('2026-11-02');
+  });
+
+  it('writes only subsection blocks within the inclusive date range', async () => {
+    await writeSubsectionBlocksToD1(new SubsectionBlockGoogleService(), {
+      dateStart: '2026-11-01',
+      dateEnd: '2026-11-01',
+      executeCommand: execSync,
+    });
+
+    expect(execSync.mock.calls[0][1].at(-1)).toContain(
+      "('2026-11-01', 'prayer', 'after_content', '為教會禱告', NULL, NULL, '為 FORWARD 奉獻預備自己的心。', 1)",
+    );
+    expect(execSync.mock.calls[0][1].at(-1)).not.toContain('2026-11-02');
+  });
+
+  it('deletes a selected range even when it has no subsection blocks', async () => {
+    await writeSubsectionBlocksToD1(new SubsectionBlockGoogleService(), {
+      dateStart: '2026-12-01',
+      dateEnd: '2026-12-01',
+      executeCommand: execSync,
+    });
+
+    expect(execSync.mock.calls[0][1].at(-1)).toBe(
+      "DELETE FROM subsection_blocks WHERE date >= '2026-12-01' AND date <= '2026-12-01';",
     );
   });
 });
 
-const stubData = [
-  // BRP data column heads with random columns
-  [
-    'date',
-    'some-random-column',
-    'praise_scope',
-    'praise_content',
-    'devotional_scope',
-    'devotional_content',
-  ],
-  [
-    '2025-02-01',
-    'some-random-column-cell',
-    '詩篇 100:4-5 CCB',
-    '要懷著感恩的心進入祂的門，唱著讚美的歌進入祂的院宇；\n要感謝祂，稱頌祂的名。因為耶和華是美善的，\n祂的慈愛永遠長存，祂的信實千古不變。',
-    '出埃及記 第 36 章',
-  ],
-  [
-    '2025-02-02',
-    'some-random-column-cell',
-    // Cell with excess line-breaks or spaces at both ends
-    '\n詩篇 145:1-3 CCB ',
-    // Cell with excess line-breaks or spaces at both ends and a space after non-Chinese punctuation marks.
-    '\n 我的上帝,我的王啊!我要尊崇你,我要永永遠遠稱頌你的名. \n我要天天稱頌你,永永遠遠讚美你的名。\n耶和華是偉大的,當受至高的頌讚,祂的偉大無法測度。\n',
-    '出埃及記 第 37 章',
-  ],
-
-  // Row with devotional_content value
-  [
-    '2025-04-14',
-    'some-random-column-cell',
-    '歷代志下 5:13 CCB',
-    '吹號的和歌樂手一起同聲讚美和稱謝耶和華，伴隨著號、鈸及各種樂器的聲音，\n高聲讚美耶和華：「祂是美善的， 祂的慈愛永遠長存！」\n那時，有雲彩充滿了耶和華的殿。',
-    '馬可福音 11:12-19',
-    // Cell with excess line-breaks or spaces at both ends and a space after non-Chinese punctuation marks.
-    '\n耶穌如何面對不結果子的無花果樹呢? 這對於你的生命有哪些提醒呢?',
-  ],
-];
-
-const expectedQueryValues = `('2025-02-01', '詩篇 100:4-5 CCB', '要懷著感恩的心進入祂的門，唱著讚美的歌進入祂的院宇；\n要感謝祂，稱頌祂的名。因為耶和華是美善的，\n祂的慈愛永遠長存，祂的信實千古不變。', '出埃及記 第 36 章', NULL),\n('2025-02-02', '詩篇 145:1-3 CCB', '我的上帝，我的王啊！我要尊崇你，我要永永遠遠稱頌你的名。\n我要天天稱頌你，永永遠遠讚美你的名。\n耶和華是偉大的，當受至高的頌讚，祂的偉大無法測度。', '出埃及記 第 37 章', NULL),\n('2025-04-14', '歷代志下 5:13 CCB', '吹號的和歌樂手一起同聲讚美和稱謝耶和華，伴隨著號、鈸及各種樂器的聲音，\n高聲讚美耶和華：「祂是美善的， 祂的慈愛永遠長存！」\n那時，有雲彩充滿了耶和華的殿。', '馬可福音 11:12-19', '耶穌如何面對不結果子的無花果樹呢？這對於你的生命有哪些提醒呢？')`;
-
-class MockGoogleService implements Service<string[][]> {
+class SubsectionBlockGoogleService implements Service<string[][]> {
   execute(): Promise<string[][]> {
-    return Promise.resolve(stubData);
+    return Promise.resolve([
+      [
+        'date',
+        'section',
+        'position',
+        'title',
+        'scripture_content',
+        'scripture_scope',
+        'content',
+        'sort_order',
+      ],
+      [
+        '2026-11-01',
+        'prayer',
+        'after_content',
+        '為教會禱告',
+        '',
+        '',
+        '為 FORWARD 奉獻預備自己的心。',
+        '1',
+      ],
+      ['2026-11-02', 'devotional', 'before_content', '', '', '', '隔日引導。', '1'],
+    ]);
+  }
+}
+
+class DateRangeGoogleService implements Service<string[][]> {
+  execute(): Promise<string[][]> {
+    return Promise.resolve([
+      ['date', 'praise_scope', 'praise_content', 'devotional_scope', 'devotional_content'],
+      ['2026-11-01', '詩篇 118:28', '你是我的上帝，我要稱謝你。', '瑪拉基書 第 4 章', ''],
+      ['2026-11-02', '馬拉基書 3:6', '耶和華說我是不改變的。', '歷代志上 第 29 章', ''],
+    ]);
   }
 }

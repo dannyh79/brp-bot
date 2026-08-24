@@ -32,6 +32,19 @@ export const PlanSchema = z
         example: defaultValues['devotional'],
       }),
     }),
+    subsectionBlocks: z
+      .array(
+        z.object({
+          section: z.enum(['praise', 'repentance', 'devotional', 'prayer']),
+          position: z.enum(['before_content', 'after_content']),
+          title: z.string().optional(),
+          scriptureContent: z.string().optional(),
+          scriptureScope: z.string().optional(),
+          content: z.string(),
+          sortOrder: z.number(),
+        }),
+      )
+      .default([]),
     prayer: z.string().default(defaultValues['prayer']).openapi({
       example: defaultValues['prayer'],
     }),

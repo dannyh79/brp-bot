@@ -29,6 +29,41 @@ describe('D1PlanRepository', () => {
       });
     });
 
+    it('returns normalized subsection blocks', async () => {
+      await insertPlanRecord();
+      await env.DB.prepare(
+        `
+          INSERT INTO subsection_blocks (date, section, position, title, scripture_content, scripture_scope, content, sort_order)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+          `,
+      )
+        .bind(
+          '2025-01-01',
+          'prayer',
+          'after_content',
+          '為教會禱告',
+          '「凡敬畏神的人，你們都來聽！」',
+          '詩篇 66:16',
+          '為 FORWARD 奉獻預備自己的心。',
+          1,
+        )
+        .run();
+
+      expect(await repo.findById('2025-01-01')).toMatchObject({
+        subsectionBlocks: [
+          {
+            section: 'prayer',
+            position: 'after_content',
+            title: '為教會禱告',
+            scriptureContent: '「凡敬畏神的人，你們都來聽！」',
+            scriptureScope: '詩篇 66:16',
+            content: '為 FORWARD 奉獻預備自己的心。',
+            sortOrder: 1,
+          },
+        ],
+      });
+    });
+
     it('returns null, when no record found', async () => {
       await insertPlanRecord();
       const result = await repo.findById('2024-12-31');

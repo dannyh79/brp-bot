@@ -57,6 +57,12 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
   const [preludePrayer, ...theLordPrayer] = plan.prayer.split('\n');
   const { date, dayOfWeek } = toLocaleDateObject(plan.date);
   const holyWeekVideo = holyWeekVideos[plan.date];
+  const devotionalBeforeBlocks = plan.subsectionBlocks.filter(
+    (block) => block.section === 'devotional' && block.position === 'before_content',
+  );
+  const prayerAfterBlocks = plan.subsectionBlocks.filter(
+    (block) => block.section === 'prayer' && block.position === 'after_content',
+  );
 
   return (
     <Layout title={`好好靈修 Daily Devotion - ${plan.date}`} customScript={customScript}>
@@ -135,6 +141,13 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                 {/* </div> */}
                 {/* end: block that only shows from 2026-03-29 thru 2026-04-05 */}
 
+                {devotionalBeforeBlocks.map((block, index) => (
+                  <SubsectionBlock
+                    key={`${block.section}-${block.sortOrder}-${index}`}
+                    {...block}
+                  />
+                ))}
+
                 {plan.devotional.scope.map((scope, index) => (
                   <ScopeWithLink key={scope} scope={scope} link={plan.devotional.link[index]} />
                 ))}
@@ -159,6 +172,12 @@ export const PlanPage: FC<PlanPageProps> = ({ plan, customScript }) => {
                     <p>{paragraph}</p>
                   ))}
                 </div>
+                {prayerAfterBlocks.map((block, index) => (
+                  <SubsectionBlock
+                    key={`${block.section}-${block.sortOrder}-${index}`}
+                    {...block}
+                  />
+                ))}
               </div>
             </section>
           </div>
@@ -179,5 +198,25 @@ const ScopeWithLink = ({ scope, link }: { scope: string; link: string }) => (
     >
       YouVersion 連結
     </a>
+  </div>
+);
+
+const SubsectionBlock = ({
+  title,
+  scriptureContent,
+  scriptureScope,
+  content,
+}: {
+  title?: string;
+  scriptureContent?: string;
+  scriptureScope?: string;
+  content: string;
+}) => (
+  <div class="space-y-2 rounded-2xl bg-[#1D292E] text-white ml-2 px-4 py-2">
+    {title && <p class="font-bold text-xl">{title}</p>}
+    {scriptureContent && <p>{[scriptureContent, scriptureScope].filter(Boolean).join('，')}</p>}
+    <div class="pb-2 pl-6">
+      <p>{content}</p>
+    </div>
   </div>
 );

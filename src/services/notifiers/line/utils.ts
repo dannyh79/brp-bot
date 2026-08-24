@@ -24,10 +24,16 @@ const holyWeekVideos: Record<string, string | undefined> = {
 };
 
 export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage => {
-  const { date: dateFromData, praise, repentence, devotional, prayer } = arg;
+  const { date: dateFromData, praise, repentence, devotional, prayer, subsectionBlocks } = arg;
   const { date, dayOfWeek } = toLocaleDateObject(dateFromData);
   const [personalPrayer, ...mainPrayer] = prayer.split('\n');
   const holyWeekVideo = holyWeekVideos[dateFromData];
+  const devotionalBeforeBlocks = subsectionBlocks.filter(
+    (block) => block.section === 'devotional' && block.position === 'before_content',
+  );
+  const prayerAfterBlocks = subsectionBlocks.filter(
+    (block) => block.section === 'prayer' && block.position === 'after_content',
+  );
 
   return {
     type: 'flex',
@@ -367,6 +373,23 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                     type: 'box',
                     layout: 'vertical',
                     contents: [
+                      ...devotionalBeforeBlocks.map((block) => ({
+                        type: 'box' as const,
+                        layout: 'vertical' as const,
+                        contents: [
+                          {
+                            type: 'text' as const,
+                            text: block.content,
+                            size: 'xs' as const,
+                            color: '#FFFFFF',
+                            wrap: true,
+                            lineSpacing: '5px',
+                          },
+                        ],
+                        backgroundColor: '#1D292E',
+                        paddingAll: 'md',
+                        cornerRadius: 'lg',
+                      })),
                       ...devotional.scope.map((scope, index) =>
                         toScopeWithLink({ scope, link: devotional.link[index] }),
                       ),
@@ -514,6 +537,48 @@ export const toBubbleMessage = (arg: NonNullable<GetPlanOutput>): LineMessage =>
                 paddingBottom: 'md',
                 paddingTop: 'sm',
               },
+              ...prayerAfterBlocks.map((block) => ({
+                type: 'box' as const,
+                layout: 'vertical' as const,
+                contents: [
+                  ...(block.title
+                    ? [
+                        {
+                          type: 'text' as const,
+                          text: block.title,
+                          size: 'lg' as const,
+                          weight: 'bold' as const,
+                        },
+                      ]
+                    : []),
+                  ...(block.scriptureContent
+                    ? [
+                        {
+                          type: 'text' as const,
+                          text: [block.scriptureContent, block.scriptureScope]
+                            .filter(Boolean)
+                            .join('，'),
+                          size: 'xs' as const,
+                          color: '#FFFFFF',
+                          wrap: true,
+                          lineSpacing: '5px',
+                        },
+                      ]
+                    : []),
+                  {
+                    type: 'text' as const,
+                    text: block.content,
+                    size: 'xs' as const,
+                    color: '#FFFFFF',
+                    wrap: true,
+                    lineSpacing: '5px',
+                  },
+                ],
+                backgroundColor: '#1D292E',
+                paddingAll: 'md',
+                cornerRadius: 'lg',
+                spacing: 'md',
+              })),
             ],
             spacing: 'lg',
             backgroundColor: '#EEF0F4',

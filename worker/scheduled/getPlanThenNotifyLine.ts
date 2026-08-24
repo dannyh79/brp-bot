@@ -15,6 +15,7 @@ export const getPlanThenNotifyLine =
       praise: { scope: ' ', content: 'No Plan Found' },
       repentence: ' ',
       devotional: { scope: [' '], link: [''], content: [' '] },
+      subsectionBlocks: [],
       prayer: ' ',
     };
 
