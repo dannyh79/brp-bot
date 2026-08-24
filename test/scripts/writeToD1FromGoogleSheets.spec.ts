@@ -86,7 +86,7 @@ describe('D1 writers', () => {
       expect.arrayContaining(['wrangler', 'd1', 'execute', 'DB', '--command']),
       { stdio: 'inherit' },
     );
-    expect(execSync.mock.calls[0][1].at(-1)).toContain("('2026-11-01', '詩篇 118:28'");
+    expect(execSync.mock.calls[0][1].at(-1)).toContain("('2026-11-01', '詩篇 118：28'");
   });
 
   it('writes only plan rows within the inclusive date range', async () => {

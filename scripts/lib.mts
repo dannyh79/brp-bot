@@ -179,52 +179,25 @@ type PlanDataRow = {
   praise_scope: string;
   praise_content: string;
   devotional_scope: string;
-  devotional_intro: string | undefined;
-  church_prayer_guide: string | undefined;
 };
-
-type DataRow = Partial<PlanDataRow> & Record<string, string | undefined>;
-
-const novemberStart = '2026-11-01';
-const sourceFieldMap: Record<string, keyof PlanDataRow> = {
-  'devotional_content': 'devotional_intro',
-  'pray for church': 'church_prayer_guide',
-};
-const proseFields = new Set<keyof PlanDataRow>([
-  'praise_content',
-  'devotional_intro',
-  'church_prayer_guide',
-]);
 
 const formatRows = (rows: string[][]): PlanDataRow[] => {
-  const headers = rows[0].map((h) => h.trim().toLowerCase());
-  const dataRows = rows.slice(1);
-  return dataRows.map(
-    (row: string[]) =>
-      row.reduce((object, cell, index) => {
-        const field = sourceFieldMap[headers[index]] ?? headers[index];
-        if (
-          ['devotional_intro', 'church_prayer_guide'].includes(field) &&
-          object.date &&
-          object.date < novemberStart
-        ) {
-          return object;
-        }
+  const headers = rows[0].map((header) => header.trim().toLowerCase());
+  return rows.slice(1).flatMap((row) => {
+    const value = Object.fromEntries(headers.map((header, index) => [header, row[index] ?? '']));
+    if (!value.date || !value.praise_scope || !value.praise_content || !value.devotional_scope) {
+      return [];
+    }
 
-        const formattedCell = toTrimmed(
-          proseFields.has(field as keyof PlanDataRow)
-            ? cell === undefined
-              ? ''
-              : toChinesePunctuation(cell)
-            : (cell ?? ''),
-        );
-        object[field] =
-          formattedCell === '' && ['devotional_intro', 'church_prayer_guide'].includes(field)
-            ? undefined
-            : formattedCell;
-        return object;
-      }, {} as DataRow) as PlanDataRow,
-  );
+    return [
+      {
+        date: value.date,
+        praise_scope: toChinesePunctuation(toTrimmed(value.praise_scope)),
+        praise_content: toChinesePunctuation(toTrimmed(value.praise_content)),
+        devotional_scope: toTrimmed(value.devotional_scope),
+      },
+    ];
+  });
 };
 
 const escapeSql = (str: string) => str.replace(/'/g, "''");
@@ -242,19 +215,17 @@ const executeD1Query = (query: string, isRemote: boolean, executeCommand: Comman
 
 const writeToD1 = (isRemote: boolean, executeCommand: CommandExecutor) => (rows: PlanDataRow[]) => {
   const query = `
-  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope, devotional_intro, church_prayer_guide) VALUES
+  INSERT INTO plans (date, praise_scope, praise_content, devotional_scope) VALUES
     ${rows
       .map(
         (r) =>
-          `('${escapeSql(r.date)}', '${escapeSql(r.praise_scope)}', '${escapeSql(r.praise_content)}', '${escapeSql(r.devotional_scope)}', ${toSqlValue(r.devotional_intro)}, ${toSqlValue(r.church_prayer_guide)})`,
+          `('${escapeSql(r.date)}', '${escapeSql(r.praise_scope)}', '${escapeSql(r.praise_content)}', '${escapeSql(r.devotional_scope)}')`,
       )
       .join(',\n')}
     ON CONFLICT (date) DO UPDATE SET
       praise_scope = excluded.praise_scope,
       praise_content = excluded.praise_content,
-      devotional_scope = excluded.devotional_scope,
-      devotional_intro = excluded.devotional_intro,
-      church_prayer_guide = COALESCE(excluded.church_prayer_guide, plans.church_prayer_guide);
+      devotional_scope = excluded.devotional_scope;
   `;
 
   executeD1Query(query, isRemote, executeCommand);
