@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "checkJs": false,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "5.0",
     "isolatedModules": true,
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
