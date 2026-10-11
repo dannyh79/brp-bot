@@ -1,5 +1,8 @@
 import { Plan, toLocaleDateObject } from '@/readingPlans';
 
+/** Telegram sendMessage text limit after entity parsing. See https://core.telegram.org/bots/api#sendmessage. */
+export const TELEGRAM_MESSAGE_MAX_LENGTH = 4096;
+
 const repentancePrelude =
   '聖靈，求祢今日光照我的生命。\n顯明那些祢命定我去行，我卻尚未行的事；\n也顯明那些祢不喜悅，我卻仍執意去行的事。';
 
@@ -76,8 +79,8 @@ export const toTextMessage = (plan: Plan): string => {
 
 export const splitMessage = (text: string): string[] => {
   const parts: string[] = [];
-  while (text.length > 4096) {
-    let end = 4096;
+  while (text.length > TELEGRAM_MESSAGE_MAX_LENGTH) {
+    let end = TELEGRAM_MESSAGE_MAX_LENGTH;
     // Keep a surrogate pair together even at Telegram's size boundary.
     if (text.charCodeAt(end - 1) >= 0xd800 && text.charCodeAt(end - 1) <= 0xdbff) end--;
     const newline = text.lastIndexOf('\n', end - 1);
