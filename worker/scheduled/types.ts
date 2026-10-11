@@ -1,5 +1,6 @@
-import { GetPlanArgs, Plan, Recipient } from '@/readingPlans';
+import { GetPlanArgs, GetPlanOutput, Plan, Recipient } from '@/readingPlans';
 import { LineMultiNotifier } from '@/services/notifiers';
+import { Notifier } from '@/services/notifiers/types';
 
 export type ScheduledWorker = (
   event: ScheduledController,
@@ -24,4 +25,9 @@ export type Services = {
 export type AppContext = {
   usecases: Usecases;
   services: Services;
+};
+
+export type TelegramAppContext = {
+  usecases: { getPlan: Usecase<GetPlanArgs, GetPlanOutput> };
+  services: { notifier: Notifier<string[], string, PromiseSettledResult<void>[]> };
 };

@@ -101,6 +101,24 @@ See `worker/rest/index.tsx` and `worker/rest/templates/customScript.ts.example` 
 
 ## Gotchas
 
+### Telegram setup (optional)
+
+1. Send `/newbot` to [@BotFather](https://t.me/BotFather) and save the bot token. Add the bot to your group with permission to send messages, or to your channel as an admin with permission to post.
+2. Send `/start` privately to the bot (for admin alerts), `/start@your_bot_username` in the group, or a new post in the channel. Call [`getUpdates`](https://core.telegram.org/bots/api#getupdates) with your token; copy `message.chat.id` (private/group) or `channel_post.chat.id` (channel). No webhook is needed; `getUpdates` requires any existing webhook to be removed first.
+3. Fill these settings in `.dev.vars` locally and `secrets.json` for deployment:
+
+   ```dotenv
+   TELEGRAM_BOT_TOKEN=123456:your-bot-token
+   TELEGRAM_CHAT_IDS=-1001234567890,@your_channel
+   TELEGRAM_ADMIN_CHAT_ID=123456789
+   ```
+
+   `TELEGRAM_CHAT_IDS` is a comma-separated list; a public channel's `@username` also works. Leave all three settings blank or absent to disable Telegram; partial configuration is an error. Upload production secrets with `pnpm exec wrangler secret bulk secrets.json`.
+
+4. Seed a plan for today's Taipei date, use the scheduled-task command above, and confirm receipt in a test chat. The trigger runs both LINE and Telegram; use test destinations for both. Telegram follows the existing cron, sends missing-plan alerts only to its admin, and splits long messages into ordered parts.
+
+Delivery is intended for small chat lists. Failed chats do not block other destinations or LINE, but rerunning a partial delivery can duplicate messages.
+
 ### LINE
 
 #### How to Get Your LINE Group's Group ID for Live Testing
