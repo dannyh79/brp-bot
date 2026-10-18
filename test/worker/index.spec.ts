@@ -19,7 +19,7 @@ beforeEach(() => {
     'fetch',
     vi.fn(() => Promise.reject(new Error('Unexpected network request'))),
   );
-  vi.spyOn(scheduled, 'newServices', 'get').mockReturnValue(mocks.lineServices);
+  vi.spyOn(scheduled, 'newLineServices', 'get').mockReturnValue(mocks.lineServices);
   vi.spyOn(scheduled, 'newTelegramServices', 'get').mockReturnValue(mocks.telegramServices);
   vi.spyOn(lineJob, 'default', 'get').mockReturnValue(() => mocks.line);
   vi.spyOn(telegramJob, 'default', 'get').mockReturnValue(() => mocks.telegram);
@@ -62,12 +62,28 @@ describe('Scheduled channel isolation acceptance', () => {
       await expect(run()).rejects.toThrow('scheduled notification jobs failed');
       expect(mocks.line).toHaveBeenCalledOnce();
       expect(mocks.telegram).toHaveBeenCalledOnce();
-      expect(errorSpy).toHaveBeenCalledWith(
-        `Scheduled ${channel.toUpperCase()} job failed`,
-        'delivery failed',
-      );
+      expect(errorSpy).toHaveBeenCalledWith('Scheduled notification job failed', {
+        channel: channel.toUpperCase(),
+        error: 'delivery failed',
+      });
     },
   );
+
+  it('identifies both failed channels in structured error logs', async () => {
+    mocks.line.mockRejectedValue(new Error('LINE delivery failed'));
+    mocks.telegram.mockRejectedValue(new Error('Telegram delivery failed'));
+
+    await expect(run()).rejects.toThrow('scheduled notification jobs failed');
+    expect(errorSpy).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalledWith('Scheduled notification job failed', {
+      channel: 'LINE',
+      error: 'LINE delivery failed',
+    });
+    expect(errorSpy).toHaveBeenCalledWith('Scheduled notification job failed', {
+      channel: 'TELEGRAM',
+      error: 'Telegram delivery failed',
+    });
+  });
 
   it.each([
     ['lineServices', 'telegram'],
