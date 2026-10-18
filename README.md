@@ -119,6 +119,8 @@ See `worker/rest/index.tsx` and `worker/rest/templates/customScript.ts.example` 
 
 Delivery is intended for small chat lists. Failed chats do not block other destinations or LINE, but rerunning a partial delivery can duplicate messages.
 
+Messages use bold framed section headings, lighter subsection titles, quoted scripture, and linked chapter names. The plan's wording and question numbers are preserved, with content directly below each heading and a small gap between sections.
+
 ### LINE
 
 #### How to Get Your LINE Group's Group ID for Live Testing

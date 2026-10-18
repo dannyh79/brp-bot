@@ -16,13 +16,16 @@ afterEach(() => {
 });
 
 const send = async (recipients: string[], message: string) => {
-  const pending = new TelegramMultiNotifier({ botToken: token }).pushMessage(recipients, message);
+  const pending = new TelegramMultiNotifier({ botToken: token }).pushMessage(recipients, {
+    text: message,
+    entities: [],
+  });
   await vi.runAllTimersAsync();
   return pending;
 };
 
 describe('Telegram delivery acceptance', () => {
-  it('sends plain text, preserving special characters without a parse mode', async () => {
+  it('sends literal text and formatting entities without a parse mode', async () => {
     mockFetch.mockImplementation(() => Promise.resolve(success()));
     const results = await send(['-100123', '@devotion_channel'], '祈求 <神> & _盼望_');
     expect(results.map((result) => result.status)).toEqual(['fulfilled', 'fulfilled']);
@@ -35,8 +38,19 @@ describe('Telegram delivery acceptance', () => {
     expect(JSON.parse(request.body)).toEqual({
       chat_id: '-100123',
       text: '祈求 <神> & _盼望_',
+      entities: [],
       link_preview_options: { is_disabled: true },
     });
+  });
+
+  it('includes formatting entities in each Telegram request', async () => {
+    mockFetch.mockImplementation(() => Promise.resolve(success()));
+    const message = {
+      text: '── 祈求 ──\n神啊',
+      entities: [{ type: 'bold' as const, offset: 0, length: 8 }],
+    };
+    await new TelegramMultiNotifier({ botToken: token }).pushMessage(['-100123'], message);
+    expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toMatchObject(message);
   });
 
   it('delivers every part in order and paces requests for group limits', async () => {

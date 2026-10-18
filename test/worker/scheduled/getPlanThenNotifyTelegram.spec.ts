@@ -43,7 +43,10 @@ describe('Telegram scheduled delivery acceptance', () => {
   it('sends a missing-plan notice only to the Telegram admin', async () => {
     getPlan.mockResolvedValue(null);
     await getPlanThenNotifyTelegram(context)(event, configuredEnv, execution);
-    expect(pushMessage).toHaveBeenCalledExactlyOnceWith(['987654'], 'No Plan Found for 2025-01-01');
+    expect(pushMessage).toHaveBeenCalledExactlyOnceWith(['987654'], {
+      text: 'No Plan Found for 2025-01-01',
+      entities: [],
+    });
   });
 
   it('skips Telegram without looking up a plan when all Telegram settings are absent or blank', async () => {
@@ -115,7 +118,7 @@ describe('Telegram scheduled delivery acceptance', () => {
     );
     expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({
       chat_id: '-100123',
-      text: toTextMessage(plan),
+      ...toTextMessage(plan),
       link_preview_options: { is_disabled: true },
     });
   });

@@ -29,7 +29,7 @@ export const getPlanThenNotifyTelegram =
     const plan = await ctx.usecases.getPlan({ date });
     const results = await ctx.services.notifier.pushMessage(
       plan ? [...new Set(recipients)] : [admin],
-      plan ? toTextMessage(plan) : `No Plan Found for ${date}`,
+      plan ? toTextMessage(plan) : { text: `No Plan Found for ${date}`, entities: [] },
     );
     const failures = results.filter((result) => result.status === 'rejected');
     console.log('Telegram notification completed', {
