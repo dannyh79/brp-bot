@@ -3,6 +3,8 @@
 // Runtime types generated with workerd@1.20250709.0 2025-05-05 nodejs_compat
 declare namespace Cloudflare {
   interface Env {
+    LINE_ENABLED?: string;
+    TELEGRAM_ENABLED?: string;
     LINE_ADMIN_RECIPIENT_ID: string;
     LINE_CHANNEL_ACCESS_TOKEN: string;
     TELEGRAM_BOT_TOKEN?: string;
