@@ -1,6 +1,7 @@
 import { z } from '@hono/zod-openapi';
 import { Notifier } from '../types';
 import { splitMessage } from './utils';
+import { TelegramMessage } from './types';
 
 /**
  * Telegram allows 20 messages/minute per group; it also advises at most 1/second per chat
@@ -20,12 +21,15 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class TelegramMultiNotifier implements Notifier<
   string[],
-  string,
+  TelegramMessage,
   PromiseSettledResult<void>[]
 > {
   constructor(private readonly config: { botToken: string }) {}
 
-  async pushMessage(recipients: string[], message: string): Promise<PromiseSettledResult<void>[]> {
+  async pushMessage(
+    recipients: string[],
+    message: TelegramMessage,
+  ): Promise<PromiseSettledResult<void>[]> {
     const parts = splitMessage(message);
     if (!parts.length) return [];
     const results: PromiseSettledResult<void>[] = [];
@@ -33,10 +37,10 @@ export class TelegramMultiNotifier implements Notifier<
     // shortcut: delivery stays within one cron invocation, use a queue before large broadcasts.
     for (const recipient of recipients) {
       try {
-        for (const text of parts) {
+        for (const part of parts) {
           if (attempted) await wait(TELEGRAM_SEND_INTERVAL_MS);
           attempted = true;
-          await this.send(recipient, text);
+          await this.send(recipient, part);
         }
         results.push({ status: 'fulfilled', value: undefined });
       } catch (reason) {
@@ -46,7 +50,7 @@ export class TelegramMultiNotifier implements Notifier<
     return results;
   }
 
-  private async send(chatId: string, text: string): Promise<void> {
+  private async send(chatId: string, message: TelegramMessage): Promise<void> {
     // Local policy: two attempts, a 10s request timeout, and no waits above 60s.
     for (let attempt = 0; attempt < 2; attempt++) {
       let response: Response;
@@ -56,7 +60,7 @@ export class TelegramMultiNotifier implements Notifier<
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: chatId,
-            text,
+            ...message,
             link_preview_options: { is_disabled: true },
           }),
           signal: AbortSignal.timeout(10000),
