@@ -5,6 +5,9 @@ declare namespace Cloudflare {
   interface Env {
     LINE_ADMIN_RECIPIENT_ID: string;
     LINE_CHANNEL_ACCESS_TOKEN: string;
+    TELEGRAM_BOT_TOKEN?: string;
+    TELEGRAM_CHAT_IDS?: string;
+    TELEGRAM_ADMIN_CHAT_ID?: string;
     API_TOKEN: string;
     DB: D1Database;
   }
@@ -14,10 +17,9 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
   [Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-  interface ProcessEnv
-    extends StringifyValues<
-      Pick<Cloudflare.Env, 'LINE_ADMIN_RECIPIENT_ID' | 'LINE_CHANNEL_ACCESS_TOKEN' | 'API_TOKEN'>
-    > {}
+  interface ProcessEnv extends StringifyValues<
+    Pick<Cloudflare.Env, 'LINE_ADMIN_RECIPIENT_ID' | 'LINE_CHANNEL_ACCESS_TOKEN' | 'API_TOKEN'>
+  > {}
 }
 
 // Begin runtime types
@@ -6361,8 +6363,7 @@ interface IncomingRequestCfPropertiesBotManagement {
    */
   clientTrustScore: number;
 }
-interface IncomingRequestCfPropertiesBotManagementEnterprise
-  extends IncomingRequestCfPropertiesBotManagement {
+interface IncomingRequestCfPropertiesBotManagementEnterprise extends IncomingRequestCfPropertiesBotManagement {
   /**
    * Results of Cloudflare's Bot Management analysis
    */
@@ -7613,7 +7614,8 @@ declare module 'cloudflare:workers' {
   export abstract class WorkflowEntrypoint<
     Env = unknown,
     T extends Rpc.Serializable<T> | unknown = unknown,
-  > implements Rpc.WorkflowEntrypointBranded
+  >
+    implements Rpc.WorkflowEntrypointBranded
   {
     [Rpc.__WORKFLOW_ENTRYPOINT_BRAND]: never;
     protected ctx: ExecutionContext;
