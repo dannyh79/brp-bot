@@ -2,6 +2,10 @@ LINE_ADMIN_RECIPIENT_ID=your-personal-LINE-id
 LINE_CHANNEL_ACCESS_TOKEN=your-LINE-channel-access-token
 API_TOKEN=some-very-secretive-token
 
+# Scheduled channel toggles: use exactly true or false; unset preserves existing behavior.
+LINE_ENABLED=true
+TELEGRAM_ENABLED=true
+
 # Optional Telegram delivery: leave all three blank to disable.
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_IDS=

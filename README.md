@@ -101,6 +101,18 @@ See `worker/rest/index.tsx` and `worker/rest/templates/customScript.ts.example` 
 
 ## Gotchas
 
+### Scheduled channel switches
+
+Set these variables in your production Wrangler config's `[vars]` section (or Cloudflare's Variables and Secrets settings). Use `.dev.vars` locally.
+
+```toml
+[vars]
+LINE_ENABLED = "true"
+TELEGRAM_ENABLED = "false"
+```
+
+`"false"` skips that channel before database access, service initialization, or delivery, including admin alerts. Unset switches preserve existing behavior; Telegram still requires its own configuration. Values must be exactly `"true"` or `"false"`; invalid values fail only that channel while the other can still run. These switches affect scheduled notifications only.
+
 ### Telegram setup (optional)
 
 1. Send `/newbot` to [@BotFather](https://t.me/BotFather) and save the bot token. Add the bot to your group with permission to send messages, or to your channel as an admin with permission to post.

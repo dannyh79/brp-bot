@@ -7,20 +7,28 @@ import app from './rest';
 export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     const jobs = {
-      LINE: async () => {
-        const usecases = newUsecases(newRepositories(env));
-        const services = newLineServices(env);
-        await getPlanThenNotifyLine({ usecases, services })(event, env, ctx);
+      LINE: {
+        enabled: env.LINE_ENABLED ?? 'true',
+        run: async () => {
+          const usecases = newUsecases(newRepositories(env));
+          const services = newLineServices(env);
+          await getPlanThenNotifyLine({ usecases, services })(event, env, ctx);
+        },
       },
-      TELEGRAM: async () => {
-        const usecases = newUsecases(newRepositories(env));
-        const services = newTelegramServices(env);
-        await getPlanThenNotifyTelegram({ usecases, services })(event, env, ctx);
+      TELEGRAM: {
+        enabled: env.TELEGRAM_ENABLED ?? 'true',
+        run: async () => {
+          const usecases = newUsecases(newRepositories(env));
+          const services = newTelegramServices(env);
+          await getPlanThenNotifyTelegram({ usecases, services })(event, env, ctx);
+        },
       },
     };
     const results = await Promise.allSettled(
-      Object.entries(jobs).map(async ([channel, run]) => {
+      Object.entries(jobs).map(async ([channel, { enabled, run }]) => {
         try {
+          if (enabled === 'false') return;
+          if (enabled !== 'true') throw new Error(`${channel}_ENABLED must be "true" or "false"`);
           await run();
         } catch (reason) {
           console.error('Scheduled notification job failed', {
