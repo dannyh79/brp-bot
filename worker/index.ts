@@ -8,7 +8,7 @@ export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     const jobs = {
       LINE: {
-        enabled: env.LINE_ENABLED ?? 'true',
+        enabled: env.LINE_ENABLED ?? 'false',
         run: async () => {
           const usecases = newUsecases(newRepositories(env));
           const services = newLineServices(env);
@@ -16,7 +16,7 @@ export default {
         },
       },
       TELEGRAM: {
-        enabled: env.TELEGRAM_ENABLED ?? 'true',
+        enabled: env.TELEGRAM_ENABLED ?? 'false',
         run: async () => {
           const usecases = newUsecases(newRepositories(env));
           const services = newTelegramServices(env);

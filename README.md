@@ -107,11 +107,11 @@ Set these variables in your production Wrangler config's `[vars]` section (or Cl
 
 ```toml
 [vars]
-LINE_ENABLED = "true"
+LINE_ENABLED = "false"
 TELEGRAM_ENABLED = "false"
 ```
 
-`"false"` skips that channel before database access, service initialization, or delivery, including admin alerts. Unset switches preserve existing behavior; Telegram still requires its own configuration. Values must be exactly `"true"` or `"false"`; invalid values fail only that channel while the other can still run. These switches affect scheduled notifications only.
+Both channels default to `"false"` when unset. Set a channel's switch to `"true"` to enable scheduled notifications; Telegram also requires its own configuration. `"false"` skips that channel before database access, service initialization, or delivery, including admin alerts. Values must be exactly `"true"` or `"false"`; invalid values fail only that channel while the other can still run. These switches affect scheduled notifications only.
 
 ### Telegram setup (optional)
 

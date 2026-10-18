@@ -42,6 +42,9 @@ const run = (settings: Partial<Env> = {}) =>
 
 describe('Scheduled channel isolation acceptance', () => {
   it.each([
+    [{}, 0, 0],
+    [{ LINE_ENABLED: 'true' }, 1, 0],
+    [{ TELEGRAM_ENABLED: 'true' }, 0, 1],
     [{ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' }, 1, 1],
     [{ LINE_ENABLED: 'false', TELEGRAM_ENABLED: 'true' }, 0, 1],
     [{ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'false' }, 1, 0],
@@ -65,7 +68,9 @@ describe('Scheduled channel isolation acceptance', () => {
     mocks[factory].mockImplementation(() => {
       throw new Error('Must not initialize');
     });
-    await expect(run({ [flag]: 'false' })).resolves.toBeUndefined();
+    await expect(
+      run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true', [flag]: 'false' }),
+    ).resolves.toBeUndefined();
     expect(mocks[factory]).not.toHaveBeenCalled();
     expect(mocks[job]).not.toHaveBeenCalled();
     expect(mocks[otherJob]).toHaveBeenCalledOnce();
@@ -75,7 +80,7 @@ describe('Scheduled channel isolation acceptance', () => {
   it.each(['', 'FALSE', 'flase', '0', '1'])(
     'rejects invalid flag %j before sending on that channel, while running the other channel',
     async (value) => {
-      await expect(run({ LINE_ENABLED: value })).rejects.toThrow(
+      await expect(run({ LINE_ENABLED: value, TELEGRAM_ENABLED: 'true' })).rejects.toThrow(
         'scheduled notification jobs failed',
       );
       expect(mocks.lineServices).not.toHaveBeenCalled();
@@ -97,7 +102,7 @@ describe('Scheduled channel isolation acceptance', () => {
         }),
     );
     let finished = false;
-    const pending = run().then(() => {
+    const pending = run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' }).then(() => {
       finished = true;
     });
     await Promise.resolve();
@@ -113,7 +118,9 @@ describe('Scheduled channel isolation acceptance', () => {
     'still attempts both channels when %s delivery fails',
     async (channel) => {
       mocks[channel].mockRejectedValue(new Error('delivery failed'));
-      await expect(run()).rejects.toThrow('scheduled notification jobs failed');
+      await expect(run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' })).rejects.toThrow(
+        'scheduled notification jobs failed',
+      );
       expect(mocks.line).toHaveBeenCalledOnce();
       expect(mocks.telegram).toHaveBeenCalledOnce();
       expect(errorSpy).toHaveBeenCalledWith('Scheduled notification job failed', {
@@ -127,7 +134,9 @@ describe('Scheduled channel isolation acceptance', () => {
     mocks.line.mockRejectedValue(new Error('LINE delivery failed'));
     mocks.telegram.mockRejectedValue(new Error('Telegram delivery failed'));
 
-    await expect(run()).rejects.toThrow('scheduled notification jobs failed');
+    await expect(run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' })).rejects.toThrow(
+      'scheduled notification jobs failed',
+    );
     expect(errorSpy).toHaveBeenCalledTimes(2);
     expect(errorSpy).toHaveBeenCalledWith('Scheduled notification job failed', {
       channel: 'LINE',
@@ -148,7 +157,9 @@ describe('Scheduled channel isolation acceptance', () => {
       mocks[factory].mockImplementation(() => {
         throw new Error('initialization failed');
       });
-      await expect(run()).rejects.toThrow('scheduled notification jobs failed');
+      await expect(run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' })).rejects.toThrow(
+        'scheduled notification jobs failed',
+      );
       expect(mocks[otherChannel]).toHaveBeenCalledOnce();
     },
   );
