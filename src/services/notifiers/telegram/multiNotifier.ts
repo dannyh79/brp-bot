@@ -16,7 +16,12 @@ const responseSchema = z.object({
   ok: z.boolean(),
   error_code: z.number().int().optional(),
   description: z.string().optional(),
-  parameters: z.object({ retry_after: z.number().int().min(0).optional() }).optional(),
+  parameters: z
+    .object({
+      retry_after: z.number().int().min(0).optional(),
+      migrate_to_chat_id: z.number().int().negative().optional(),
+    })
+    .optional(),
 });
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -37,11 +42,12 @@ export class TelegramMultiNotifier implements Notifier<
     let attempted = false;
     // shortcut: delivery stays within one cron invocation, use a queue before large broadcasts.
     for (const recipient of recipients) {
+      let chatId = recipient;
       try {
         for (const part of parts) {
           if (attempted) await wait(TELEGRAM_SEND_INTERVAL_MS);
           attempted = true;
-          await this.send(recipient, part);
+          chatId = await this.send(chatId, part);
         }
         results.push({ status: 'fulfilled', value: undefined });
       } catch (reason) {
@@ -51,7 +57,7 @@ export class TelegramMultiNotifier implements Notifier<
     return results;
   }
 
-  private async send(chatId: string, message: TelegramMessage): Promise<void> {
+  private async send(chatId: string, message: TelegramMessage): Promise<string> {
     // Local policy: two attempts, a 10s request timeout, and no waits above 60s.
     for (let attempt = 0; attempt < 2; attempt++) {
       let response: Response;
@@ -79,7 +85,16 @@ export class TelegramMultiNotifier implements Notifier<
       const parsed = responseSchema.safeParse(body);
       if (!parsed.success) throw new Error('Telegram returned an invalid response');
       const data = parsed.data;
-      if (response.ok && data.ok) return;
+      if (response.ok && data.ok) return chatId;
+      /** Telegram returns the replacement ID when a group upgrades to a supergroup.
+       * @see https://core.telegram.org/bots/api#responseparameters
+       */
+      const migratedChatId = data.parameters?.migrate_to_chat_id;
+      if (!data.ok && data.error_code === 400 && attempt === 0 && migratedChatId !== undefined) {
+        chatId = String(migratedChatId);
+        await wait(TELEGRAM_SEND_INTERVAL_MS);
+        continue;
+      }
       /** Telegram specifies the flood-control wait in seconds.
        * @see https://core.telegram.org/bots/api#responseparameters
        */
@@ -101,5 +116,6 @@ export class TelegramMultiNotifier implements Notifier<
           (description ? `: ${description}` : ''),
       );
     }
+    throw new Error('Telegram delivery attempts exhausted');
   }
 }
