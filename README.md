@@ -131,6 +131,8 @@ Both channels default to `"false"` when unset. Set a channel's switch to `"true"
 
 Delivery is intended for small chat lists. Failed chats do not block other destinations or LINE, but rerunning a partial delivery can duplicate messages.
 
+When a group upgrades to a supergroup, Telegram returns [`migrate_to_chat_id`](https://core.telegram.org/bots/api#responseparameters). The sender retries once with that ID and uses it for remaining message parts. Update `TELEGRAM_CHAT_IDS` (and `TELEGRAM_ADMIN_CHAT_ID` if it points to that group) in local and deployed secrets to avoid migration retries on later runs. Rejected deliveries include the channel, HTTP/API status and Telegram's description, with the bot token redacted.
+
 Messages use bold framed section headings, lighter subsection titles, quoted scripture, and linked chapter names. The plan's wording and question numbers are preserved, with content directly below each heading and a small gap between sections.
 
 ### LINE

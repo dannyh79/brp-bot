@@ -37,7 +37,12 @@ export const getPlanThenNotifyTelegram =
       failed: failures.length,
     });
     if (failures.length) {
-      throw new Error(`Telegram delivery failed for ${failures.length} chat(s)`);
+      const errors = failures.map(({ reason }) =>
+        reason instanceof Error ? reason.message : 'Unknown error',
+      );
+      throw new Error(
+        `Telegram delivery failed for ${failures.length} chat(s): ${errors.join('; ')}`,
+      );
     }
   };
 

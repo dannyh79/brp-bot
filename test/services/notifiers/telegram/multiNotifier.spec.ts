@@ -80,6 +80,27 @@ describe('Telegram delivery acceptance', () => {
     ]);
   });
 
+  it('preserves Telegram permission errors so operators can identify the required fix', async () => {
+    mockFetch.mockResolvedValue(
+      Response.json(
+        {
+          ok: false,
+          error_code: 403,
+          description: 'Forbidden: not enough rights to send text messages to the chat',
+        },
+        { status: 403 },
+      ),
+    );
+    const [result] = await send(['-100123'], 'test');
+    expect(result.status).toBe('rejected');
+    if (result.status === 'rejected') {
+      expect(result.reason.message).toBe(
+        'Telegram delivery failed (HTTP 403, API 403): Forbidden: not enough rights to send text messages to the chat',
+      );
+    }
+    expect(mockFetch).toHaveBeenCalledOnce();
+  });
+
   it('honors retry_after once for an explicit rate-limit rejection', async () => {
     const times: number[] = [];
     mockFetch.mockImplementation(() => {
@@ -96,6 +117,76 @@ describe('Telegram delivery acceptance', () => {
     expect((await send(['-100123'], 'test'))[0].status).toBe('fulfilled');
     expect(times[1] - times[0]).toBeGreaterThanOrEqual(5000);
   });
+
+  it('follows a group migration and uses the new chat ID for the remaining message parts', async () => {
+    const times: number[] = [];
+    mockFetch.mockImplementation(() => {
+      times.push(Date.now());
+      return Promise.resolve(
+        times.length === 1
+          ? Response.json(
+              {
+                ok: false,
+                error_code: 400,
+                description: 'Bad Request: group chat was upgraded to a supergroup chat',
+                parameters: { migrate_to_chat_id: -1009876543210 },
+              },
+              { status: 400 },
+            )
+          : success(),
+      );
+    });
+    const results = await send(['-123'], 'a'.repeat(4096) + 'b');
+    expect(results.map((result) => result.status)).toEqual(['fulfilled']);
+    expect(mockFetch.mock.calls.map(([, request]) => JSON.parse(request.body).chat_id)).toEqual([
+      '-123',
+      '-1009876543210',
+      '-1009876543210',
+    ]);
+    expect(mockFetch.mock.calls.map(([, request]) => JSON.parse(request.body).text)).toEqual([
+      'a'.repeat(4096),
+      'a'.repeat(4096),
+      'b',
+    ]);
+    expect(times[1] - times[0]).toBeGreaterThanOrEqual(3100);
+    expect(times[2] - times[1]).toBeGreaterThanOrEqual(3100);
+  });
+
+  it('bounds retries when Telegram repeatedly reports a group migration', async () => {
+    mockFetch.mockImplementation(() =>
+      Promise.resolve(
+        Response.json(
+          {
+            ok: false,
+            error_code: 400,
+            parameters: { migrate_to_chat_id: -1009876543210 },
+          },
+          { status: 400 },
+        ),
+      ),
+    );
+    expect((await send(['-123'], 'test'))[0].status).toBe('rejected');
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+
+  /** @see https://core.telegram.org/bots/api#responseparameters */
+  it.each([0, 123, -1.5, '-100123', Number.MIN_SAFE_INTEGER - 1])(
+    'does not follow an invalid migration destination: %s',
+    async (migrateToChatId) => {
+      mockFetch.mockResolvedValue(
+        Response.json(
+          {
+            ok: false,
+            error_code: 400,
+            parameters: { migrate_to_chat_id: migrateToChatId },
+          },
+          { status: 400 },
+        ),
+      );
+      expect((await send(['-123'], 'test'))[0].status).toBe('rejected');
+      expect(mockFetch).toHaveBeenCalledOnce();
+    },
+  );
 
   it.each([61, -1, '5', 0.5, undefined])(
     'does not wait for invalid or excessive retry_after: %s',

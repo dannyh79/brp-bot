@@ -148,6 +148,18 @@ describe('Scheduled channel isolation acceptance', () => {
     });
   });
 
+  it('includes the failed channel and underlying reason in the final scheduled exception', async () => {
+    mocks.telegram.mockRejectedValue(
+      new Error(
+        'Telegram delivery failed for 1 chat(s): Forbidden: not enough rights to send text messages to the chat',
+      ),
+    );
+    await expect(run({ LINE_ENABLED: 'true', TELEGRAM_ENABLED: 'true' })).rejects.toThrow(
+      'One or more scheduled notification jobs failed: TELEGRAM: Telegram delivery failed for 1 chat(s): Forbidden: not enough rights to send text messages to the chat',
+    );
+    expect(mocks.line).toHaveBeenCalledOnce();
+  });
+
   it.each([
     ['lineServices', 'telegram'],
     ['telegramServices', 'line'],
