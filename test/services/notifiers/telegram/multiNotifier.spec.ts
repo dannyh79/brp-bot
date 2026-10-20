@@ -169,6 +169,7 @@ describe('Telegram delivery acceptance', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
+  /** @see https://core.telegram.org/bots/api#responseparameters */
   it.each([0, 123, -1.5, '-100123', Number.MIN_SAFE_INTEGER - 1])(
     'does not follow an invalid migration destination: %s',
     async (migrateToChatId) => {
