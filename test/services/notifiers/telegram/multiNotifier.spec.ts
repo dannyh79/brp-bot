@@ -80,6 +80,27 @@ describe('Telegram delivery acceptance', () => {
     ]);
   });
 
+  it('preserves Telegram permission errors so operators can identify the required fix', async () => {
+    mockFetch.mockResolvedValue(
+      Response.json(
+        {
+          ok: false,
+          error_code: 403,
+          description: 'Forbidden: not enough rights to send text messages to the chat',
+        },
+        { status: 403 },
+      ),
+    );
+    const [result] = await send(['-100123'], 'test');
+    expect(result.status).toBe('rejected');
+    if (result.status === 'rejected') {
+      expect(result.reason.message).toBe(
+        'Telegram delivery failed (HTTP 403, API 403): Forbidden: not enough rights to send text messages to the chat',
+      );
+    }
+    expect(mockFetch).toHaveBeenCalledOnce();
+  });
+
   it('honors retry_after once for an explicit rate-limit rejection', async () => {
     const times: number[] = [];
     mockFetch.mockImplementation(() => {

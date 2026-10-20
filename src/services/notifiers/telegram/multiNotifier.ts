@@ -15,6 +15,7 @@ const TELEGRAM_SEND_INTERVAL_MS = 60_000 / TELEGRAM_GROUP_MESSAGES_PER_MINUTE + 
 const responseSchema = z.object({
   ok: z.boolean(),
   error_code: z.number().int().optional(),
+  description: z.string().optional(),
   parameters: z.object({ retry_after: z.number().int().min(0).optional() }).optional(),
 });
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -94,8 +95,10 @@ export class TelegramMultiNotifier implements Notifier<
         await wait(Math.max(TELEGRAM_SEND_INTERVAL_MS, retryAfter * 1000));
         continue;
       }
+      const description = data.description?.replaceAll(this.config.botToken, '[redacted]');
       throw new Error(
-        `Telegram delivery failed (HTTP ${response.status}, API ${data.error_code ?? 'unknown'})`,
+        `Telegram delivery failed (HTTP ${response.status}, API ${data.error_code ?? 'unknown'})` +
+          (description ? `: ${description}` : ''),
       );
     }
   }

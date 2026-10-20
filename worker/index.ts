@@ -24,23 +24,26 @@ export default {
         },
       },
     };
-    const results = await Promise.allSettled(
+    const failures: string[] = [];
+    await Promise.allSettled(
       Object.entries(jobs).map(async ([channel, { enabled, run }]) => {
         try {
           if (enabled === 'false') return;
           if (enabled !== 'true') throw new Error(`${channel}_ENABLED must be "true" or "false"`);
           await run();
         } catch (reason) {
+          const error = reason instanceof Error ? reason.message : 'Unknown error';
           console.error('Scheduled notification job failed', {
             channel,
-            error: reason instanceof Error ? reason.message : 'Unknown error',
+            error,
           });
+          failures.push(`${channel}: ${error}`);
           throw reason;
         }
       }),
     );
-    if (results.some((result) => result.status === 'rejected')) {
-      throw new Error('One or more scheduled notification jobs failed');
+    if (failures.length) {
+      throw new Error(`One or more scheduled notification jobs failed: ${failures.join('; ')}`);
     }
   },
   fetch: app.fetch,

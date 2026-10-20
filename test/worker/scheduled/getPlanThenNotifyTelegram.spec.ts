@@ -100,6 +100,32 @@ describe('Telegram scheduled delivery acceptance', () => {
     });
   });
 
+  it('retains the Telegram API reason when a destination rejects the scheduled message', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve(
+          Response.json(
+            {
+              ok: false,
+              error_code: 403,
+              description: 'Forbidden: not enough rights to send text messages to the chat',
+            },
+            { status: 403 },
+          ),
+        ),
+      ),
+    );
+    await expect(
+      getPlanThenNotifyTelegram({
+        usecases: { getPlan },
+        services: newTelegramServices(configuredEnv),
+      })(event, { ...configuredEnv, TELEGRAM_CHAT_IDS: '-100123' }, execution),
+    ).rejects.toThrow(
+      'Telegram delivery failed for 1 chat(s): Telegram delivery failed (HTTP 403, API 403): Forbidden: not enough rights to send text messages to the chat',
+    );
+  });
+
   it('reads the real D1 plan and posts it without using LINE recipients', async () => {
     await insertPlanRecord();
     await insertRecipientRecord();
