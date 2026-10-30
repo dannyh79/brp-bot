@@ -5,8 +5,8 @@ declare namespace Cloudflare {
   interface Env {
     LINE_ENABLED?: string;
     TELEGRAM_ENABLED?: string;
-    LINE_ADMIN_RECIPIENT_ID: string;
-    LINE_CHANNEL_ACCESS_TOKEN: string;
+    LINE_ADMIN_RECIPIENT_ID?: string;
+    LINE_CHANNEL_ACCESS_TOKEN?: string;
     TELEGRAM_BOT_TOKEN?: string;
     TELEGRAM_CHAT_IDS?: string;
     TELEGRAM_ADMIN_CHAT_ID?: string;
