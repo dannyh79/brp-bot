@@ -1,5 +1,6 @@
-LINE_ADMIN_RECIPIENT_ID=your-personal-LINE-id
-LINE_CHANNEL_ACCESS_TOKEN=your-LINE-channel-access-token
+# Optional LINE delivery: leave both blank to disable.
+LINE_ADMIN_RECIPIENT_ID=
+LINE_CHANNEL_ACCESS_TOKEN=
 API_TOKEN=some-very-secretive-token
 
 # Scheduled channel toggles: use exactly true or false; unset defaults to false.

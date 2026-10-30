@@ -16,7 +16,9 @@ export const newUsecases = (repos: Repositories): Usecases => ({
 });
 
 export const newLineServices = (env: Env): Services => ({
-  notifier: new LineMultiNotifier({ channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN }),
+  notifier: new LineMultiNotifier({
+    channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN?.trim() ?? '',
+  }),
 });
 
 export const newTelegramServices = (env: Env): TelegramAppContext['services'] => ({

@@ -1,7 +1,8 @@
 import { createExecutionContext, createScheduledController, env } from 'cloudflare:test';
 import { PlanSchema } from '@/readingPlans';
 import { toTextMessage } from '@/services/notifiers/telegram/utils';
-import { newRepositories, newTelegramServices, newUsecases } from '@worker/scheduled';
+import worker from '@worker/index';
+import { newTelegramServices } from '@worker/scheduled';
 import getPlanThenNotifyTelegram from '@worker/scheduled/getPlanThenNotifyTelegram';
 import { insertPlanRecord, insertRecipientRecord, planRecordFixture } from 'test/helpers/d1';
 
@@ -126,18 +127,35 @@ describe('Telegram scheduled delivery acceptance', () => {
     );
   });
 
-  it('reads the real D1 plan and posts it without using LINE recipients', async () => {
+  it('runs the worker without channel credentials when both channels are enabled but unconfigured', async () => {
+    const fetch = vi.fn(() => Promise.reject(new Error('Unexpected network request')));
+    vi.stubGlobal('fetch', fetch);
+    const settings: Env = {
+      DB: env.DB,
+      API_TOKEN: 'test-api-token',
+      LINE_ENABLED: 'true',
+      TELEGRAM_ENABLED: 'true',
+    };
+    await worker.scheduled(event, settings, execution);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('runs Telegram from the worker without LINE settings or recipients', async () => {
     await insertPlanRecord();
     await insertRecipientRecord();
     const fetch = vi.fn(() =>
       Promise.resolve(Response.json({ ok: true, result: { message_id: 1 } })),
     );
     vi.stubGlobal('fetch', fetch);
-    const settings = { ...configuredEnv, TELEGRAM_CHAT_IDS: '-100123' };
-    await getPlanThenNotifyTelegram({
-      usecases: newUsecases(newRepositories(settings)),
-      services: newTelegramServices(settings),
-    })(event, settings, execution);
+    const settings: Env = {
+      DB: env.DB,
+      API_TOKEN: 'test-api-token',
+      TELEGRAM_ENABLED: 'true',
+      TELEGRAM_BOT_TOKEN: configuredEnv.TELEGRAM_BOT_TOKEN,
+      TELEGRAM_CHAT_IDS: '-100123',
+      TELEGRAM_ADMIN_CHAT_ID: configuredEnv.TELEGRAM_ADMIN_CHAT_ID,
+    };
+    await worker.scheduled(event, settings, execution);
     expect(fetch).toHaveBeenCalledOnce();
     expect(fetch.mock.calls[0][0]).toBe(
       'https://api.telegram.org/bot123456:secret-token/sendMessage',

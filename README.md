@@ -113,6 +113,8 @@ TELEGRAM_ENABLED = "false"
 
 Both channels default to `"false"` when unset. Set a channel's switch to `"true"` to enable scheduled notifications; Telegram also requires its own configuration. `"false"` skips that channel before database access, service initialization, or delivery, including admin alerts. Values must be exactly `"true"` or `"false"`; invalid values fail only that channel while the other can still run. These switches affect scheduled notifications only.
 
+All LINE/Telegram settings are optional. Unconfigured channels skip their job; partially configured enabled channels fail before plan lookup or delivery. LINE needs both `LINE_CHANNEL_ACCESS_TOKEN` and `LINE_ADMIN_RECIPIENT_ID`; Telegram needs the three settings below.
+
 ### Telegram setup (optional)
 
 1. Send `/newbot` to [@BotFather](https://t.me/BotFather) and save the bot token. Add the bot to your group with permission to send messages, or to your channel as an admin with permission to post.
