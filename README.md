@@ -7,8 +7,8 @@
 - asdf
 - An up-to-date asdf pnpm plugin (`asdf plugin update pnpm`)
 
-The pnpm workspace overrides keep Cloudflare's pinned Zod and ESLint's minimatch
-dependencies on patched versions. Remove them when upstream updates its requirements.
+The pnpm workspace overrides keep vulnerable Zod and minimatch versions patched.
+Remove them when upstream dependencies no longer require them.
 
 ## Getting Started
 
