@@ -67,8 +67,9 @@ export default defineConfig({
         },
       },
 
-      // NOTE: Run node tests separately from not extending defineWorkersConfig
+      // Node-only scripts must not inherit the Cloudflare worker plugin.
       {
+        extends: false,
         resolve: {
           // NOTE: Ensure alias matches tsconfig.json
           alias: {
