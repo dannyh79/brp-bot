@@ -3,7 +3,6 @@
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "checkJs": false,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
@@ -16,10 +15,12 @@
     "paths": {
       "@/*": ["./src/*"],
       "@root/*": ["./*"],
-      "@worker/*": ["./worker/*"]
+      "@worker/*": ["./worker/*"],
+      "test/*": ["./test/*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "types": ["node"],
     "strict": true,
     "target": "es2021"
   },

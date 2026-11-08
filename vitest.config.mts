@@ -69,6 +69,7 @@ export default defineConfig({
 
       // NOTE: Run node tests separately from not extending defineWorkersConfig
       {
+        extends: false,
         resolve: {
           // NOTE: Ensure alias matches tsconfig.json
           alias: {

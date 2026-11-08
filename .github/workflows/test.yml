@@ -14,7 +14,7 @@ on:
 
 env:
   NODE_VERSION: 26.13.0
-  PNPM_VERSION: 10
+  PNPM_VERSION: 12.18.0
 
 jobs:
   typecheck:
