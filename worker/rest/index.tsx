@@ -1,9 +1,13 @@
 import { swaggerUI } from '@hono/swagger-ui';
-import { OpenAPIHono } from '@hono/zod-openapi';
+import { OpenAPIHono, z } from '@hono/zod-openapi';
+import { basicAuth } from 'hono/basic-auth';
+import { csrf } from 'hono/csrf';
+import { createMiddleware } from 'hono/factory';
 import { toDateString } from '@worker/lib';
 import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
-import { PlanPage } from './templates';
+import { NotificationPage, PlanPage } from './templates';
+import { notificationChannels, sendNotification } from './notificationChannels';
 
 const app = new OpenAPIHono();
 
@@ -14,6 +18,54 @@ const app = new OpenAPIHono();
 //   return ctx.json({}, 200);
 // });
 //#endregion
+
+const notificationAuth = createMiddleware(async (c, next) => {
+  const password = (c.env as Env).NOTIFICATION_ADMIN_PASSWORD;
+  if (!password?.trim()) return c.text('Notification authentication is not configured', 503);
+  await basicAuth({ username: 'admin', password })(c, next);
+});
+app.use('/admin/notifications', notificationAuth);
+app.use('/api/v1/admin/notifications', notificationAuth);
+const notificationHeaders = createMiddleware(async (c, next) => {
+  c.header('Cache-Control', 'no-store');
+  c.header(
+    'Content-Security-Policy',
+    "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  );
+  await next();
+});
+app.use('/admin/notifications', notificationHeaders);
+app.use('/api/v1/admin/notifications', notificationHeaders);
+app.use('/api/v1/admin/notifications', csrf());
+
+const notificationInput = z.object({
+  date: z.iso.date(),
+  channel: z.enum(Object.keys(notificationChannels) as (keyof typeof notificationChannels)[]),
+});
+const channels = Object.entries(notificationChannels).map(([value, { label }]) => ({ value, label }));
+
+app.get('/admin/notifications', async (c) => {
+  return c.render(await NotificationPage({ channels }));
+});
+
+app.post('/api/v1/admin/notifications', async (c) => {
+  const form = await c.req.parseBody();
+  const parsed = notificationInput.safeParse(form);
+  if (!parsed.success || (form.action !== 'confirm' && form.action !== 'send')) {
+    c.status(400);
+    return c.render(await NotificationPage({ channels, message: 'Invalid date or channel' }));
+  }
+  if (form.action === 'confirm') {
+    return c.render(await NotificationPage({ channels, confirmation: parsed.data }));
+  }
+  const { status, body } = await sendNotification(c.env as Env, parsed.data.date, parsed.data.channel);
+  const message = 'delivered' in body
+    ? `${'message' in body ? `${body.message} — ` : ''}Delivered: ${body.delivered}, failed: ${body.failed}`
+    : body.message;
+  c.status(status);
+  return c.render(await NotificationPage({ channels, message }));
+});
+
 
 // Register OpenAPI endpoints
 
