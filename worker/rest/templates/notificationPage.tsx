@@ -1,22 +1,14 @@
 import { html, raw } from 'hono/html';
 
-const script = `
-const form = document.querySelector('#send'), result = document.querySelector('#result'), button = form.querySelector('button');
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const date = form.date.value, channel = form.channel.value;
-  if (!confirm('Send the ' + channel + ' plan for ' + date + '? This can duplicate previous deliveries.')) return;
-  button.disabled = true;
-  result.textContent = 'Sending…';
-  try {
-    const response = await fetch('/api/v1/admin/notifications', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({date, channel})});
-    const data = await response.json();
-    result.textContent = response.ok ? 'Delivered: ' + data.delivered + ', failed: ' + data.failed : (data.message || 'Delivery failed') + (data.failed !== undefined ? ' (delivered: ' + data.delivered + ', failed: ' + data.failed + ')' : '');
-  } catch { result.textContent = 'Request failed. Check logs before retrying; delivery may have occurred.'; }
-  finally { button.disabled = false; }
-});`;
-
-export const NotificationPage = ({ channels }: { channels: { value: string; label: string }[] }) =>
+export const NotificationPage = ({
+  channels,
+  confirmation,
+  message,
+}: {
+  channels: { value: string; label: string }[];
+  confirmation?: { channel: string; date: string };
+  message?: string;
+}) =>
   html`<!doctype html>${(
       <html lang="en">
         <head>
@@ -31,20 +23,29 @@ export const NotificationPage = ({ channels }: { channels: { value: string; labe
         <body>
           <h1>Resend notification</h1>
           <p>Resending may duplicate messages already delivered.</p>
-          <form id="send">
-            <label>
-              Channel
-              <select name="channel">
-                {channels.map(({ value, label }) => <option value={value}>{label}</option>)}
-              </select>
-            </label>
-            <label>
-              Plan date (Taipei) <input name="date" type="date" required />
-            </label>
-            <button>Send notification</button>
-          </form>
-          <p id="result" role="status"></p>
-          <script>{raw(script)}</script>
+          {confirmation ? (
+            <form method="post" action="/admin/notifications">
+              <p>Send {confirmation.channel} for {confirmation.date}?</p>
+              <input type="hidden" name="channel" value={confirmation.channel} />
+              <input type="hidden" name="date" value={confirmation.date} />
+              <button name="action" value="send">Confirm send</button>
+              <a href="/admin/notifications">Cancel</a>
+            </form>
+          ) : (
+            <form method="post" action="/admin/notifications">
+              <label>
+                Channel
+                <select name="channel">
+                  {channels.map(({ value, label }) => <option value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label>
+                Plan date (Taipei) <input name="date" type="date" required />
+              </label>
+              <button name="action" value="confirm">Review notification</button>
+            </form>
+          )}
+          {message && <p role="status">{message}</p>}
         </body>
       </html>
     )}`;

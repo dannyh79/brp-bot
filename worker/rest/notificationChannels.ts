@@ -1,5 +1,10 @@
 import { GetPlanOutput } from '@/readingPlans';
-import { newLineServices, newTelegramServices } from '@worker/scheduled';
+import {
+  newLineServices,
+  newRepositories,
+  newTelegramServices,
+  newUsecases,
+} from '@worker/scheduled';
 import getPlanThenNotifyTelegram from '@worker/scheduled/getPlanThenNotifyTelegram';
 import { Usecases } from '@worker/scheduled/types';
 
@@ -54,3 +59,33 @@ export const notificationChannels = {
     },
   },
 };
+
+export async function sendNotification(
+  env: Env,
+  date: string,
+  channel: keyof typeof notificationChannels,
+) {
+  const delivery = notificationChannels[channel];
+  if (!delivery.configured(env))
+    return { status: 503 as const, body: { message: `${channel} is not configured` } };
+  const usecases = newUsecases(newRepositories(env));
+  const plan = await usecases.getPlan({ date });
+  if (!plan) return { status: 404 as const, body: { message: 'Plan not found' } };
+  try {
+    const results = await delivery.send({ env, date, plan, usecases });
+    const failed = results.filter((result) => result.status === 'rejected').length;
+    const delivered = results.length - failed;
+    if (!failed) return { status: 200 as const, body: { delivered, failed } };
+    console.error('Manual notification delivery failed', { date, channel, delivered, failed });
+    return {
+      status: 502 as const,
+      body: { message: 'Delivery failed; check logs before retrying', delivered, failed },
+    };
+  } catch {
+    console.error('Manual notification delivery failed', { date, channel });
+    return {
+      status: 502 as const,
+      body: { message: 'Delivery failed; check logs before retrying', delivered: 0, failed: 0 },
+    };
+  }
+}

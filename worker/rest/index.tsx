@@ -1,13 +1,13 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { basicAuth } from 'hono/basic-auth';
+import { csrf } from 'hono/csrf';
 import { createMiddleware } from 'hono/factory';
-import { newRepositories, newUsecases } from '@worker/scheduled';
 import { toDateString } from '@worker/lib';
 import { registerAuthComponent } from './middlewares';
 import * as endpoints from './v1/endpoints';
 import { NotificationPage, PlanPage } from './templates';
-import { notificationChannels } from './notificationChannels';
+import { notificationChannels, sendNotification } from './notificationChannels';
 
 const app = new OpenAPIHono();
 
@@ -26,14 +26,41 @@ const notificationAuth = createMiddleware(async (c, next) => {
 });
 app.use('/admin/notifications', notificationAuth);
 app.use('/api/v1/admin/notifications', notificationAuth);
+app.use('/admin/notifications', csrf());
+
+const notificationInput = z.object({
+  date: z.iso.date(),
+  channel: z.enum(Object.keys(notificationChannels) as (keyof typeof notificationChannels)[]),
+});
+const channels = Object.entries(notificationChannels).map(([value, { label }]) => ({ value, label }));
 
 app.get('/admin/notifications', async (c) => {
   c.header('Cache-Control', 'no-store');
   c.header(
     'Content-Security-Policy',
-    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
   );
-  return c.render(await NotificationPage({ channels: Object.entries(notificationChannels).map(([value, { label }]) => ({ value, label })) }));
+  return c.render(await NotificationPage({ channels }));
+});
+
+app.post('/admin/notifications', async (c) => {
+  c.header('Cache-Control', 'no-store');
+  c.header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+  const form = await c.req.parseBody();
+  const parsed = notificationInput.safeParse(form);
+  if (!parsed.success || (form.action !== 'confirm' && form.action !== 'send')) {
+    c.status(400);
+    return c.render(await NotificationPage({ channels, message: 'Invalid date or channel' }));
+  }
+  if (form.action === 'confirm') {
+    return c.render(await NotificationPage({ channels, confirmation: parsed.data }));
+  }
+  const { status, body } = await sendNotification(c.env as Env, parsed.data.date, parsed.data.channel);
+  const message = 'delivered' in body
+    ? `${'message' in body ? `${body.message} — ` : ''}Delivered: ${body.delivered}, failed: ${body.failed}`
+    : body.message;
+  c.status(status);
+  return c.render(await NotificationPage({ channels, message }));
 });
 
 app.post('/api/v1/admin/notifications', async (c) => {
@@ -47,29 +74,10 @@ app.post('/api/v1/admin/notifications', async (c) => {
   } catch {
     return c.json({ message: 'Invalid JSON' }, 400);
   }
-  const parsed = z
-    .object({ date: z.iso.date(), channel: z.enum(Object.keys(notificationChannels) as (keyof typeof notificationChannels)[]) })
-    .safeParse(body);
+  const parsed = notificationInput.safeParse(body);
   if (!parsed.success) return c.json({ message: 'Invalid date or channel' }, 400);
-  const { date, channel } = parsed.data;
-  const delivery = notificationChannels[channel];
-  if (!delivery.configured(env)) return c.json({ message: `${channel} is not configured` }, 503);
-  const usecases = newUsecases(newRepositories(env));
-  const plan = await usecases.getPlan({ date });
-  if (!plan) return c.json({ message: 'Plan not found' }, 404);
-  try {
-    const results = await delivery.send({ env, date, plan, usecases });
-    const failed = results.filter((result) => result.status === 'rejected').length;
-    const delivered = results.length - failed;
-    if (failed) {
-      console.error('Manual notification delivery failed', { date, channel, delivered, failed });
-      return c.json({ message: 'Delivery failed; check logs before retrying', delivered, failed }, 502);
-    }
-    return c.json({ delivered, failed });
-  } catch {
-    console.error('Manual notification delivery failed', { date, channel });
-    return c.json({ message: 'Delivery failed; check logs before retrying', delivered: 0, failed: 0 }, 502);
-  }
+  const { status, body: result } = await sendNotification(env, parsed.data.date, parsed.data.channel);
+  return c.json(result, status);
 });
 
 // Register OpenAPI endpoints

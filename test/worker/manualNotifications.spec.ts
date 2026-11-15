@@ -55,6 +55,32 @@ describe('manual notification delivery', () => {
     expect(network).not.toHaveBeenCalled();
   });
 
+  it('requires same-origin confirmation before sending from the mobile page', async () => {
+    await insertPlanRecord();
+    const post = (action: string, origin = 'http://localhost') =>
+      app.request(
+        '/admin/notifications',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': token(),
+            'Origin': origin,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ date: '2025-01-01', channel: 'telegram', action }).toString(),
+        },
+        settings,
+      );
+    expect((await post('send', 'https://attacker.example')).status).toBe(403);
+    const confirmation = await post('confirm');
+    expect(confirmation.status).toBe(200);
+    expect(await confirmation.text()).toContain('Confirm send');
+    expect(network).not.toHaveBeenCalled();
+    const sent = await post('send');
+    expect(sent.status).toBe(200);
+    expect(await sent.text()).toContain('Delivered: 1, failed: 0');
+    expect(network).toHaveBeenCalledOnce();
+  });
   it('provides a mobile page and sends only an existing plan for the chosen date', async () => {
     await insertPlanRecord();
     const jwt = token();
