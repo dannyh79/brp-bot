@@ -25,7 +25,7 @@ const token = (credentials = 'admin:test-password') => `Basic ${btoa(credentials
 
 async function request(auth?: string, date = '2025-01-01', method = 'POST', channel = 'telegram') {
   return app.request(
-    '/admin/notifications',
+    method === 'GET' ? '/admin/notifications' : '/api/v1/admin/notifications',
     {
       method,
       headers: {
@@ -59,7 +59,7 @@ describe('manual notification delivery', () => {
     expect(network).not.toHaveBeenCalled();
   });
 
-  it('does not expose the obsolete JSON notification endpoint', async () => {
+  it('rejects JSON submissions instead of sending', async () => {
     await insertPlanRecord();
     const response = await app.request(
       '/api/v1/admin/notifications',
@@ -70,7 +70,7 @@ describe('manual notification delivery', () => {
       },
       settings,
     );
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
     expect(network).not.toHaveBeenCalled();
   });
 
@@ -78,7 +78,7 @@ describe('manual notification delivery', () => {
     await insertPlanRecord();
     const post = (action: string, origin = 'http://localhost') =>
       app.request(
-        '/admin/notifications',
+        '/api/v1/admin/notifications',
         {
           method: 'POST',
           headers: {
@@ -93,7 +93,9 @@ describe('manual notification delivery', () => {
     expect((await post('send', 'https://attacker.example')).status).toBe(403);
     const confirmation = await post('confirm');
     expect(confirmation.status).toBe(200);
-    expect(await confirmation.text()).toContain('Confirm send');
+    const html = await confirmation.text();
+    expect(html).toContain('Confirm send');
+    expect(html).toContain('action="/api/v1/admin/notifications"');
     expect(network).not.toHaveBeenCalled();
     const sent = await post('send');
     expect(sent.status).toBe(200);
@@ -105,7 +107,9 @@ describe('manual notification delivery', () => {
     const jwt = token();
     const page = await request(jwt, '', 'GET');
     expect(page.status).toBe(200);
-    expect(await page.text()).toContain('type="date"');
+    const html = await page.text();
+    expect(html).toContain('type="date"');
+    expect(html).toContain('action="/api/v1/admin/notifications"');
     expect((await request(jwt, '2025-02-30')).status).toBe(400);
     expect((await request(jwt, '2025-01-02')).status).toBe(404);
     const response = await request(jwt);

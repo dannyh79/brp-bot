@@ -24,7 +24,7 @@ export const NotificationPage = ({
           <h1>Resend notification</h1>
           <p>Resending may duplicate messages already delivered.</p>
           {confirmation ? (
-            <form method="post" action="/admin/notifications">
+            <form method="post" action="/api/v1/admin/notifications">
               <p>Send {confirmation.channel} for {confirmation.date}?</p>
               <input type="hidden" name="channel" value={confirmation.channel} />
               <input type="hidden" name="date" value={confirmation.date} />
@@ -32,7 +32,7 @@ export const NotificationPage = ({
               <a href="/admin/notifications">Cancel</a>
             </form>
           ) : (
-            <form method="post" action="/admin/notifications">
+            <form method="post" action="/api/v1/admin/notifications">
               <label>
                 Channel
                 <select name="channel">

@@ -25,7 +25,8 @@ const notificationAuth = createMiddleware(async (c, next) => {
   await basicAuth({ username: 'admin', password })(c, next);
 });
 app.use('/admin/notifications', notificationAuth);
-app.use('/admin/notifications', async (c, next) => {
+app.use('/api/v1/admin/notifications', notificationAuth);
+const notificationHeaders = createMiddleware(async (c, next) => {
   c.header('Cache-Control', 'no-store');
   c.header(
     'Content-Security-Policy',
@@ -33,7 +34,9 @@ app.use('/admin/notifications', async (c, next) => {
   );
   await next();
 });
-app.use('/admin/notifications', csrf());
+app.use('/admin/notifications', notificationHeaders);
+app.use('/api/v1/admin/notifications', notificationHeaders);
+app.use('/api/v1/admin/notifications', csrf());
 
 const notificationInput = z.object({
   date: z.iso.date(),
@@ -45,7 +48,7 @@ app.get('/admin/notifications', async (c) => {
   return c.render(await NotificationPage({ channels }));
 });
 
-app.post('/admin/notifications', async (c) => {
+app.post('/api/v1/admin/notifications', async (c) => {
   const form = await c.req.parseBody();
   const parsed = notificationInput.safeParse(form);
   if (!parsed.success || (form.action !== 'confirm' && form.action !== 'send')) {
