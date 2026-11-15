@@ -26,6 +26,14 @@ const notificationAuth = createMiddleware(async (c, next) => {
 });
 app.use('/admin/notifications', notificationAuth);
 app.use('/api/v1/admin/notifications', notificationAuth);
+app.use('/admin/notifications', async (c, next) => {
+  c.header('Cache-Control', 'no-store');
+  c.header(
+    'Content-Security-Policy',
+    "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  );
+  await next();
+});
 app.use('/admin/notifications', csrf());
 
 const notificationInput = z.object({
@@ -35,17 +43,10 @@ const notificationInput = z.object({
 const channels = Object.entries(notificationChannels).map(([value, { label }]) => ({ value, label }));
 
 app.get('/admin/notifications', async (c) => {
-  c.header('Cache-Control', 'no-store');
-  c.header(
-    'Content-Security-Policy',
-    "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
-  );
   return c.render(await NotificationPage({ channels }));
 });
 
 app.post('/admin/notifications', async (c) => {
-  c.header('Cache-Control', 'no-store');
-  c.header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
   const form = await c.req.parseBody();
   const parsed = notificationInput.safeParse(form);
   if (!parsed.success || (form.action !== 'confirm' && form.action !== 'send')) {
