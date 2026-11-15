@@ -25,7 +25,6 @@ const notificationAuth = createMiddleware(async (c, next) => {
   await basicAuth({ username: 'admin', password })(c, next);
 });
 app.use('/admin/notifications', notificationAuth);
-app.use('/api/v1/admin/notifications', notificationAuth);
 app.use('/admin/notifications', async (c, next) => {
   c.header('Cache-Control', 'no-store');
   c.header(
@@ -64,22 +63,6 @@ app.post('/admin/notifications', async (c) => {
   return c.render(await NotificationPage({ channels, message }));
 });
 
-app.post('/api/v1/admin/notifications', async (c) => {
-  const env = c.env as Env;
-  let body: unknown;
-  try {
-    if (!c.req.header('Content-Type')?.toLowerCase().startsWith('application/json')) {
-      return c.json({ message: 'Expected JSON' }, 400);
-    }
-    body = await c.req.json();
-  } catch {
-    return c.json({ message: 'Invalid JSON' }, 400);
-  }
-  const parsed = notificationInput.safeParse(body);
-  if (!parsed.success) return c.json({ message: 'Invalid date or channel' }, 400);
-  const { status, body: result } = await sendNotification(env, parsed.data.date, parsed.data.channel);
-  return c.json(result, status);
-});
 
 // Register OpenAPI endpoints
 

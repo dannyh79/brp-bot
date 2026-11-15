@@ -25,14 +25,18 @@ const token = (credentials = 'admin:test-password') => `Basic ${btoa(credentials
 
 async function request(auth?: string, date = '2025-01-01', method = 'POST', channel = 'telegram') {
   return app.request(
-    method === 'GET' ? '/admin/notifications' : '/api/v1/admin/notifications',
+    '/admin/notifications',
     {
       method,
       headers: {
         ...(auth ? { Authorization: auth } : {}),
-        ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {}),
+        ...(method === 'POST'
+          ? { 'Content-Type': 'application/x-www-form-urlencoded', 'Origin': 'http://localhost' }
+          : {}),
       },
-      ...(method === 'POST' ? { body: JSON.stringify({ date, channel }) } : {}),
+      ...(method === 'POST'
+        ? { body: new URLSearchParams({ date, channel, action: 'send' }).toString() }
+        : {}),
     },
     settings,
   );
@@ -47,11 +51,26 @@ describe('manual notification delivery', () => {
     }
     expect((await request(undefined, '', 'GET')).status).toBe(401);
     const disabled = await app.request(
-      '/api/v1/admin/notifications',
+      '/admin/notifications',
       { headers: { Authorization: token('admin:') } },
       { ...settings, NOTIFICATION_ADMIN_PASSWORD: '' },
     );
     expect(disabled.status).toBe(503);
+    expect(network).not.toHaveBeenCalled();
+  });
+
+  it('does not expose the obsolete JSON notification endpoint', async () => {
+    await insertPlanRecord();
+    const response = await app.request(
+      '/api/v1/admin/notifications',
+      {
+        method: 'POST',
+        headers: { 'Authorization': token(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: '2025-01-01', channel: 'telegram' }),
+      },
+      settings,
+    );
+    expect(response.status).toBe(404);
     expect(network).not.toHaveBeenCalled();
   });
 
@@ -91,7 +110,7 @@ describe('manual notification delivery', () => {
     expect((await request(jwt, '2025-01-02')).status).toBe(404);
     const response = await request(jwt);
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ delivered: 1, failed: 0 });
+    expect(await response.text()).toContain('Delivered: 1, failed: 0');
     const sends = network.mock.calls.filter(([url]) => url.includes('api.telegram.org'));
     expect(sends).toHaveLength(1);
     expect(JSON.parse(sends[0][1].body).chat_id).toBe('-100123');
@@ -103,7 +122,7 @@ describe('manual notification delivery', () => {
     const jwt = token();
     const response = await request(jwt, '2025-01-01', 'POST', 'line');
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ delivered: 1, failed: 0 });
+    expect(await response.text()).toContain('Delivered: 1, failed: 0');
     expect(network.mock.calls.some(([url]) => url.includes('api.telegram.org'))).toBe(false);
     expect(
       network.mock.calls.some(([url]) => url === 'https://api.line.me/v2/bot/message/push'),
@@ -111,11 +130,7 @@ describe('manual notification delivery', () => {
     network.mockResolvedValue(new Response('private detail', { status: 403 }));
     const failed = await request(jwt, '2025-01-01', 'POST', 'line');
     expect(failed.status).toBe(502);
-    expect(await failed.json()).toEqual({
-      message: 'Delivery failed; check logs before retrying',
-      delivered: 0,
-      failed: 1,
-    });
+    expect(await failed.text()).toContain('Delivered: 0, failed: 1');
   });
 
   it('reports delivery failures without exposing the Telegram response', async () => {
@@ -126,10 +141,8 @@ describe('manual notification delivery', () => {
     );
     const response = await request(jwt);
     expect(response.status).toBe(502);
-    expect(await response.json()).toEqual({
-      message: 'Delivery failed; check logs before retrying',
-      delivered: 0,
-      failed: 1,
-    });
+    const page = await response.text();
+    expect(page).toContain('Delivered: 0, failed: 1');
+    expect(page).not.toContain('private detail');
   });
 });
