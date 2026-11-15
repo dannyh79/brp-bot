@@ -2,6 +2,7 @@ import { html, raw } from 'hono/html';
 import { FC, PropsWithChildren } from 'hono/jsx';
 import { toLocaleDateObject } from '@/readingPlans';
 import * as endpoints from '../v1/endpoints';
+export { NotificationPage } from './notificationPage';
 
 export type LayoutProps = PropsWithChildren<{ title: string; customScript?: string | undefined }>;
 

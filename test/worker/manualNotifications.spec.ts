@@ -25,7 +25,7 @@ const token = (credentials = 'admin:test-password') => `Basic ${btoa(credentials
 
 async function request(auth?: string, date = '2025-01-01', method = 'POST', channel = 'telegram') {
   return app.request(
-    '/api/v1/admin/notifications',
+    method === 'GET' ? '/admin/notifications' : '/api/v1/admin/notifications',
     {
       method,
       headers: {
@@ -38,13 +38,14 @@ async function request(auth?: string, date = '2025-01-01', method = 'POST', chan
   );
 }
 
-describe('manual Telegram delivery', () => {
+describe('manual notification delivery', () => {
   it('rejects missing and incorrect credentials and disables access without a password', async () => {
     for (const auth of [undefined, token('admin:wrong'), token('other:test-password')]) {
       const response = await request(auth);
       expect(response.status).toBe(401);
       expect(response.headers.get('WWW-Authenticate')).toContain('Basic');
     }
+    expect((await request(undefined, '', 'GET')).status).toBe(401);
     const disabled = await app.request(
       '/api/v1/admin/notifications',
       { headers: { Authorization: token('admin:') } },

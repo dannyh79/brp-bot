@@ -142,9 +142,9 @@ When a group upgrades to a supergroup, Telegram returns [`migrate_to_chat_id`](h
 #### Manual notification recovery
 
 1. Generate a strong, unique password and set the `NOTIFICATION_ADMIN_PASSWORD` Worker secret with `pnpm exec wrangler secret put NOTIFICATION_ADMIN_PASSWORD`. The endpoint is disabled when the secret is unset or blank. The selected channel's delivery settings are also required.
-2. Open `https://your-worker-domain/api/v1/admin/notifications` on your phone and sign in with username `admin` and the password. Choose LINE or Telegram and the plan's Taipei date, then confirm. Only the selected channel is sent; channel enable switches do not prevent manual recovery. Missing plans return an error.
+2. Open `https://your-worker-domain/admin/notifications` on your phone and sign in with username `admin` and the password. Choose LINE or Telegram and the plan's Taipei date, then confirm. Only the selected channel is sent; channel enable switches do not prevent manual recovery. Missing plans return an error.
 
-Use HTTPS only. Anyone with the password can send notifications; Basic Auth has no MFA. Configure Cloudflare rate limiting for this path on every exposed hostname, including `workers.dev`, or disable alternate routes. Repeated sends can duplicate previously delivered messages; check the failed run and delivery results before trying again. A disconnected request may have delivered even if the page reports an error.
+Use HTTPS only. Anyone with the password can send notifications; Basic Auth has no MFA. Configure Cloudflare rate limiting for `/admin/notifications` and `/api/v1/admin/notifications` on every exposed hostname, including `workers.dev`, or disable alternate routes. Repeated sends can duplicate previously delivered messages; check the failed run and delivery results before trying again. A disconnected request may have delivered even if the page reports an error.
 
 Messages use bold framed section headings, lighter subsection titles, quoted scripture, and linked chapter names. The plan's wording and question numbers are preserved, with content directly below each heading and a small gap between sections.
 

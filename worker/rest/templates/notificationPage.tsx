@@ -9,14 +9,14 @@ form.addEventListener('submit', async (event) => {
   button.disabled = true;
   result.textContent = 'Sending…';
   try {
-    const response = await fetch(location.pathname, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({date, channel})});
+    const response = await fetch('/api/v1/admin/notifications', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({date, channel})});
     const data = await response.json();
     result.textContent = response.ok ? 'Delivered: ' + data.delivered + ', failed: ' + data.failed : (data.message || 'Delivery failed') + (data.failed !== undefined ? ' (delivered: ' + data.delivered + ', failed: ' + data.failed + ')' : '');
   } catch { result.textContent = 'Request failed. Check logs before retrying; delivery may have occurred.'; }
   finally { button.disabled = false; }
 });`;
 
-export const NotificationPage = () =>
+export const NotificationPage = ({ channels }: { channels: { value: string; label: string }[] }) =>
   html`<!doctype html>${(
       <html lang="en">
         <head>
@@ -35,8 +35,7 @@ export const NotificationPage = () =>
             <label>
               Channel
               <select name="channel">
-                <option value="telegram">Telegram</option>
-                <option value="line">LINE</option>
+                {channels.map(({ value, label }) => <option value={value}>{label}</option>)}
               </select>
             </label>
             <label>
