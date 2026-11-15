@@ -11,3 +11,6 @@ TELEGRAM_ENABLED=false
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_IDS=
 TELEGRAM_ADMIN_CHAT_ID=
+
+# Basic Auth password for manual notification recovery (leave blank to disable).
+NOTIFICATION_ADMIN_PASSWORD=
